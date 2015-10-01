@@ -16,7 +16,8 @@ Vagrant.configure(2) do |config|
   config.vm.box = "agera-centos65"
 
   # CentOS6.5
-  config.vm.box_url = "http://www.lyricalsoftware.com/downloads/centos65.box"
+  #config.vm.box_url = "http://www.lyricalsoftware.com/downloads/centos65.box"
+  config.vm.box_url = "https://googledrive.com/host/0B4tZlTbOXHYWVGpHRWZuTThGVUE/centos65_virtualbox_50G.box"
 
   # ミドルウェアインストールのbash
   config.vm.provision :shell, :privileged => false, :path => "vagrant-machine-setup.sh"

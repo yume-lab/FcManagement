@@ -25,13 +25,6 @@ sudo yum -y install httpd
 sudo mv /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.back
 sudo cp /dev_root/vagrant/conf/httpd.conf /etc/httpd/conf/httpd.conf
 
-# apache ドキュメントルート書き換え
-sudo sed -i 's_DocumentRoot \"/var/www/html\"_DocumentRoot \"/dev_root/webapps\"_' /etc/httpd/conf/httpd.conf
-# apache ServerName変更
-sudo sed -i 's/#ServerName www.vagrant.com:80/ServerName 127.0.0.1/' /etc/httpd/conf/httpd.conf
-# apache アプリケーションで設定される.htaccess許可
-sudo sed -i '/<Directory \"\/var\/www\/html\">/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/httpd/conf/httpd.conf
-
 # MySQL
 echo "== start MySQL =="
 sudo yum -y install mysql-server
