@@ -2,6 +2,8 @@
 
 # CentOS6.5 でのミドルウェアインストール
 
+LOCAL_ROOT=/dev_root/vagrant
+
 sudo yum -y update
 
 # PHP依存モジュール
@@ -12,7 +14,7 @@ sudo yum -y install --enablerepo=remi --enablerepo=remi-php56 php php-intl php-m
 
 # iniの書き換え
 sudo mv /etc/php.ini /etc/php.ini.back
-sudo cp /dev_root/vagrant/conf/php.ini /etc/php.ini
+sudo cp $LOCAL_ROOT/conf/php.ini /etc/php.ini
 
 # composer
 curl -sS https://getcomposer.org/installer | php
@@ -23,7 +25,7 @@ echo "== start apache =="
 sudo yum -y install httpd
 
 sudo mv /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.back
-sudo cp /dev_root/vagrant/conf/httpd.conf /etc/httpd/conf/httpd.conf
+sudo cp $LOCAL_ROOT/conf/httpd.conf /etc/httpd/conf/httpd.conf
 
 # MySQL
 echo "== start MySQL =="
@@ -31,7 +33,7 @@ sudo yum -y install mysql-server
 
 # MongoDB
 echo "== start MongoDB =="
-sudo cp /dev_root/vagrant/repo/mongodb.repo /etc/yum.repos.d/mongodb.repo
+sudo cp $LOCAL_ROOT/repo/mongodb.repo /etc/yum.repos.d/mongodb.repo
 sudo yum -y install --enablerepo=mongodb mongodb-org
 
 # インストール確認
