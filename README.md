@@ -25,11 +25,12 @@
 5. VMにログインCakePHPをインストール
     ```
     $ vagrant ssh
-    # Cakeインストール
-    $ cd /dev_root/webapps
-    $ composer install
     # サブモジュール更新
+    $ cd /dev_root
     $ git submodule update --init
+    # Cakeインストール
+    $ cd webapps
+    $ composer install
     ```
 
 6. http://192.168.33.11 にアクセス
