@@ -23,9 +23,9 @@
 </head>
 <body>
 
-    <section id="header">
+    <div id="header">
         <?= $this->element('header') ?>
-    </section>
+    </div>
 
     <div id="contents">
         <div class="ch-container">
