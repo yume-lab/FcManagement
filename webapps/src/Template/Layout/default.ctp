@@ -20,6 +20,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 <head>
     <?= $this->Html->charset() ?>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="<?= CHARISMA_ROOT ?>/img/favicon.ico">
     <title>
         <?= $cakeDescription ?>:
         <?= $this->fetch('title') ?>
@@ -28,6 +29,8 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 
     <?= $this->Html->css('base.css') ?>
     <?= $this->Html->css('cake.css') ?>
+
+    <?= $this->element('charisma/header') ?>
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
@@ -53,5 +56,8 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     </section>
     <footer>
     </footer>
+
+    <?= $this->element('charisma/footer') ?>
+
 </body>
 </html>

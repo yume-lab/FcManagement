@@ -3,25 +3,23 @@
  * Charismaのロード.
  * <head>タグ内で読み込むCSS, JSを記載します.
  */
-
-$CHARISMA_ROOT = '/ch-assets';
-$CHARISMA_CSS = $CHARISMA_ROOT.'/css';
-$CHARISMA_BOWER = $CHARISMA_ROOT.'/bower_components';
-
-
-$this->Html->css('css/bootstrap-cerulean.min.css" rel="stylesheet">');
 ?>
-    <link href="css/charisma-app.css" rel="stylesheet">
-    <link href='bower_components/fullcalendar/dist/fullcalendar.css' rel='stylesheet'>
-    <link href='bower_components/fullcalendar/dist/fullcalendar.print.css' rel='stylesheet' media='print'>
-    <link href='bower_components/chosen/chosen.min.css' rel='stylesheet'>
-    <link href='bower_components/colorbox/example3/colorbox.css' rel='stylesheet'>
-    <link href='bower_components/responsive-tables/responsive-tables.css' rel='stylesheet'>
-    <link href='bower_components/bootstrap-tour/build/css/bootstrap-tour.min.css' rel='stylesheet'>
-    <link href='css/jquery.noty.css' rel='stylesheet'>
-    <link href='css/noty_theme_default.css' rel='stylesheet'>
-    <link href='css/elfinder.min.css' rel='stylesheet'>
-    <link href='css/elfinder.theme.css' rel='stylesheet'>
-    <link href='css/jquery.iphone.toggle.css' rel='stylesheet'>
-    <link href='css/uploadify.css' rel='stylesheet'>
-    <link href='css/animate.min.css' rel='stylesheet'>
+
+<?= $this->Html->css(CHARISMA_CSS.'/bootstrap-cerulean.min.css') ?>
+<?= $this->Html->css(CHARISMA_CSS.'/charisma-app.css') ?>
+
+<?= $this->Html->css(CHARISMA_BOWER.'/fullcalendar/dist/fullcalendar.css') ?>
+<?= $this->Html->css(CHARISMA_BOWER.'/chosen/chosen.min.css') ?>
+<?= $this->Html->css(CHARISMA_BOWER.'/colorbox/example3/colorbox.css') ?>
+<?= $this->Html->css(CHARISMA_BOWER.'/responsive-tables/responsive-tables.css') ?>
+<?= $this->Html->css(CHARISMA_BOWER.'/bootstrap-tour/build/css/bootstrap-tour.min.css') ?>
+
+<?= $this->Html->css(CHARISMA_CSS.'/jquery.noty.css') ?>
+<?= $this->Html->css(CHARISMA_CSS.'/noty_theme_default.css') ?>
+<?= $this->Html->css(CHARISMA_CSS.'/elfinder.min.css') ?>
+<?= $this->Html->css(CHARISMA_CSS.'/elfinder.theme.css') ?>
+<?= $this->Html->css(CHARISMA_CSS.'/jquery.iphone.toggle.css') ?>
+<?= $this->Html->css(CHARISMA_CSS.'/uploadify.css') ?>
+<?= $this->Html->css(CHARISMA_CSS.'/animate.min.css') ?>
+
+<?= $this->Html->script(CHARISMA_BOWER.'/jquery/jquery.min.js') ?>
