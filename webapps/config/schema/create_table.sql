@@ -10,4 +10,5 @@ CREATE TABLE users (
   created datetime NOT NULL,
   updated datetime NOT NULL,
   PRIMARY KEY (id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='ユーザデータ' AUTO_INCREMENT=1;
+
