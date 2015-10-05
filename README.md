@@ -22,10 +22,16 @@
     $ vagrant ssh
     ```
 
-5. VMにログインして、CakePHPをインストール
-    ```
-    $ vagrant ssh
+5. VMにログインして、モジュールインストール
     
+    サブモジュール更新
+    ```
+    $ cd /dev_root
+    $ git submodule update --init
+    ```
+    
+    Cakeインストール
+    ```
     $ cd /dev_root/webapps
     $ composer install
     ```

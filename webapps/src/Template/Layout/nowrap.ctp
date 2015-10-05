@@ -1,6 +1,7 @@
 <?php
 /**
- * アゲラー管理システムの共通テンプレート
+ * アゲラー管理システムの共通テンプレート.
+ * ヘッダーとサイドバーを表示させない用です.
  */
 
 ?>
@@ -23,27 +24,11 @@
 </head>
 <body>
 
-    <div id="header">
-        <?= $this->element('header') ?>
-    </div>
-
     <div id="contents">
         <div class="ch-container">
             <div class="row">
-                <div id="sidebar" class="col-sm-2 col-lg-2">
-                    <?= $this->element('sidebar') ?>
-                </div>
-
-                <div id="content" class="col-lg-10 col-sm-10">
-                    <div class="row">
-                        <div class="box col-md-12">
-                            <?= $this->fetch('content') ?>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="footer" class="col-lg-10 col-sm-10">
-                    <?= $this->element('footer') ?>
+                <div id="content" class="col-lg-12 col-sm-10">
+                    <?= $this->fetch('content') ?>
                 </div>
             </div>
         </div>

@@ -83,3 +83,14 @@ define('CAKE_CORE_INCLUDE_PATH', ROOT . DS . 'vendor' . DS . 'cakephp' . DS . 'c
  */
 define('CORE_PATH', CAKE_CORE_INCLUDE_PATH . DS);
 define('CAKE', CORE_PATH . 'src' . DS);
+
+/**
+ * Path to the Charisma template directory.
+ */
+define('CHARISMA_ROOT', '/ch-assets');
+
+define('CHARISMA_CSS', CHARISMA_ROOT.'/css');
+
+define('CHARISMA_JS', CHARISMA_ROOT.'/js');
+
+define('CHARISMA_BOWER', CHARISMA_ROOT.'/bower_components');

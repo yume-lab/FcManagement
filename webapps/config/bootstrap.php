@@ -62,9 +62,19 @@ use Cake\Utility\Security;
  * idea to create multiple configuration files, and separate the configuration
  * that changes from configuration that does not. This makes deployment simpler.
  */
+
+$VAGRANT_IP = '192.168.33.11';
+$environment = 'production';
+switch ($_SERVER['HTTP_HOST']) {
+    case $VAGRANT_IP:
+        $environment = 'dev';
+}
+
+$envConfig = '/env/app-'.$environment;
 try {
     Configure::config('default', new PhpConfig());
     Configure::load('app', 'default', false);
+    Configure::load($envConfig, 'default', true);
 } catch (\Exception $e) {
     die($e->getMessage() . "\n");
 }
