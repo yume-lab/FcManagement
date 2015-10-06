@@ -16,10 +16,9 @@ class IndexController extends AppController {
      *
      * @return void|\Cake\Network\Response
      */
-    public function index() {
-
-        $hasLogin = !empty(parent::getSession()->read('User'));
-        if ($hasLogin) {
+    public function index()
+    {
+        if (parent::isAuthorized($this->Auth->user())) {
             return $this->redirect('/dashboard');
         }
         return $this->redirect('/login');

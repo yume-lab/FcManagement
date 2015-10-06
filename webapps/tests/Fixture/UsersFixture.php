@@ -29,8 +29,8 @@ class UsersFixture extends TestFixture
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
         ],
         '_options' => [
-            'engine' => 'MyISAM',
-            'collation' => 'latin1_swedish_ci'
+            'engine' => 'InnoDB',
+            'collation' => 'utf8_unicode_ci'
         ],
     ];
     // @codingStandardsIgnoreEnd
@@ -48,8 +48,8 @@ class UsersFixture extends TestFixture
             'first_name' => 'Lorem ipsum dolor sit amet',
             'last_name' => 'Lorem ipsum dolor sit amet',
             'is_deleted' => 1,
-            'created' => '2015-10-03 16:18:12',
-            'updated' => '2015-10-03 16:18:12'
+            'created' => '2015-10-05 11:11:12',
+            'updated' => '2015-10-05 11:11:12'
         ],
     ];
 }

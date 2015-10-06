@@ -27,7 +27,7 @@
             </button>
             <ul class="dropdown-menu">
                 <!-- <li class="divider"></li> -->
-                <li><a href="@routes.Authentication.logout()">ログアウト</a></li>
+                <li><a href="/logout">ログアウト</a></li>
             </ul>
         </div>
         <!-- user dropdown ends -->

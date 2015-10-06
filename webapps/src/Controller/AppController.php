@@ -14,11 +14,33 @@ class AppController extends Controller
      * 初期処理.
      * @return void
      */
-    public function initialize() {
+    public function initialize()
+    {
         parent::initialize();
 
         $this->loadComponent('RequestHandler');
         $this->loadComponent('Flash');
+        $this->loadComponent('Auth', [
+            'authorize' => ['Controller'],
+            'authenticate' => [
+                'Form' => [
+                    'userModel' => 'Users',
+                    'fields' => [
+                        'username' => 'email',
+                        'password' => 'password'
+                    ]
+                ]
+            ],
+            'loginRedirect' => [
+                'controller' => 'Dashboard',
+                'action' => 'index'
+            ],
+            'logoutRedirect' => [
+                'controller' => 'Users',
+                'action' => 'login'
+            ],
+            'authError' => 'ログインしてください。'
+        ]);
     }
 
     /**
@@ -27,7 +49,8 @@ class AppController extends Controller
      * @param \Cake\Event\Event $event The beforeRender event.
      * @return void
      */
-    public function beforeRender(Event $event) {
+    public function beforeRender(Event $event)
+    {
         if (!array_key_exists('_serialize', $this->viewVars) &&
             in_array($this->response->type(), ['application/json', 'application/xml'])
         ) {
@@ -36,10 +59,15 @@ class AppController extends Controller
     }
 
     /**
-     * セッションオブジェクトを取得します.
-     * @return \Cake\Network\Session
+     * 認証済チェックの基底処理を行います.
+     *
+     * @see \Cake\Controller\Component\AuthComponent $Auth
+     * @param null $user
+     * @return bool
      */
-    protected function getSession() {
-        return $this->request->session();
+    public function isAuthorized($user = null)
+    {
+        return !empty($user);
     }
+
 }

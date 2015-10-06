@@ -31,8 +31,8 @@ Router::scope('/', function ($routes) {
 
     $routes->connect('/pages/*', ['controller' => 'Pages', 'action' => 'display']);
 
-    $routes->connect('/login', ['controller' => 'Login', 'action' => 'index']);
-    $routes->connect('/login/auth', ['controller' => 'Login', 'action' => 'auth']);
+    $routes->connect('/login', ['controller' => 'Users', 'action' => 'login']);
+    $routes->connect('/logout', ['controller' => 'Users', 'action' => 'logout']);
 
     $routes->connect('/dashboard', ['controller' => 'Dashboard', 'action' => 'index']);
 
