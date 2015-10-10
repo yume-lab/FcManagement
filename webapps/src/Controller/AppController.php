@@ -6,6 +6,10 @@ use Cake\Event\Event;
 
 /**
  * 管理システムの基底Class.
+ *
+ * @property      \Cake\Controller\Component\RequestHandlerComponent $RequestHandler
+ * @property      \Cake\Controller\Component\FlashComponent $Flash
+ * @property      \Cake\Controller\Component\AuthComponent $Auth
  */
 class AppController extends Controller
 {
@@ -68,6 +72,14 @@ class AppController extends Controller
     public function isAuthorized($user = null)
     {
         return !empty($user);
+    }
+
+    /**
+     * ヘッダー、フッター、サイドメニューを表示させないようにします.
+     */
+    protected function removeViewFrame()
+    {
+        $this->viewBuilder()->layout('nowrap');
     }
 
 }

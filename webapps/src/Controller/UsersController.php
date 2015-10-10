@@ -3,16 +3,49 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\Core\Configure;
+use Cake\Event\Event;
 
 /**
  * Users Controller
+ * システム利用者のCRUDコントローラー
  *
  * @property \App\Model\Table\UsersTable $Users
  */
 class UsersController extends AppController
 {
+
     /**
-     * Index method
+     * リクエスト毎の処理.
+     * ユーザー追加については別の認証をかける.
+     *
+     * @param \Cake\Event\Event $event
+     */
+    public function beforeFilter(Event $event) {
+        parent::beforeFilter($event);
+
+        $actions = ['add'];
+        $action = $this->request->param('action');
+
+        if (!in_array($action, $actions)) {
+            return;
+        }
+        $this->Auth->allow($actions);
+
+        // TODO: Basic認証のユーザーとパスワードを決める
+        $username = "admin";
+        $password = "password";
+
+        if (!isset($_SERVER['PHP_AUTH_USER'])) {
+            $this->authByBasic();
+        } else {
+            if ($_SERVER['PHP_AUTH_USER'] !== $username || $_SERVER['PHP_AUTH_PW'] !== $password) {
+                $this->authByBasic();
+            }
+        }
+    }
+
+    /**
+     * 一覧表示.
      *
      * @return void
      */
@@ -39,20 +72,21 @@ class UsersController extends AppController
     }
 
     /**
-     * Add method
+     * ユーザーの追加を行います.
      *
      * @return void Redirects on successful add, renders view otherwise.
      */
     public function add()
     {
+        parent::removeViewFrame();
         $user = $this->Users->newEntity();
         if ($this->request->is('post')) {
             $user = $this->Users->patchEntity($user, $this->request->data);
             if ($this->Users->save($user)) {
-                $this->Flash->success(__('The user has been saved.'));
+                $this->Flash->success('登録しました');
                 return $this->redirect(['action' => 'index']);
             } else {
-                $this->Flash->error(__('The user could not be saved. Please, try again.'));
+                $this->Flash->error('登録に失敗しました');
             }
         }
         $this->set(compact('user'));
@@ -111,7 +145,7 @@ class UsersController extends AppController
      */
     public function login()
     {
-        $this->viewBuilder()->layout('nowrap');
+        parent::removeViewFrame();
         if ($this->request->is('post')) {
             $user = $this->Auth->identify();
             if ($user) {
@@ -132,4 +166,16 @@ class UsersController extends AppController
         $this->Flash->success('ログアウトしました。');
         return $this->redirect($this->Auth->logout());
     }
+
+
+    /**
+     * Basic認証を行います.
+     */
+    protected function authByBasic()
+    {
+        header('WWW-Authenticate: Basic realm="Please enter your ID and password"');
+        header('HTTP/1.0 401 Unauthorized');
+        die("Authorization Required");
+    }
+
 }
