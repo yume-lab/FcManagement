@@ -4,10 +4,8 @@
  */
 
 $login = $user['user'];
-
 // TODO: 複数店舗できるように
-$info = array_shift($user['stores']);
-$store = $info['store'];
+$store = $user['current'];
 ?>
 
 <div class="navbar navbar-default" role="navigation">

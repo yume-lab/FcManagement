@@ -31,9 +31,11 @@ class UserAuthComponent extends AuthComponent
             ->toArray()
         ;
 
+        $current = array_shift($stores);
         $info = [
             'user' => $user,
-            'stores' => $stores
+            'stores' => $stores,
+            'current' => $current['store']
         ];
 
         //$this->log($info);
