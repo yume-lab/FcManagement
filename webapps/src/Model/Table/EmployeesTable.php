@@ -1,17 +1,19 @@
 <?php
 namespace App\Model\Table;
 
-use App\Model\Entity\User;
+use App\Model\Entity\Employee;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * Users Model
+ * Employees Model
  *
+ * @property \Cake\ORM\Association\BelongsTo $Roles
+ * @property \Cake\ORM\Association\BelongsTo $Stores
  */
-class UsersTable extends Table
+class EmployeesTable extends Table
 {
 
     /**
@@ -24,14 +26,19 @@ class UsersTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('users');
-        $this->displayField('id');
+        $this->table('employees');
+        $this->displayField('name');
         $this->primaryKey('id');
 
         $this->addBehavior('Timestamp');
 
-        $this->hasMany('UserStores', [
-            'foreignKey' => 'user_id'
+        $this->belongsTo('Roles', [
+            'foreignKey' => 'role_id',
+            'joinType' => 'INNER'
+        ]);
+        $this->belongsTo('Stores', [
+            'foreignKey' => 'store_id',
+            'joinType' => 'INNER'
         ]);
     }
 
@@ -44,6 +51,7 @@ class UsersTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
+            ->add('id', 'valid', ['rule' => 'numeric'])
             ->allowEmpty('id', 'create');
 
         $validator
@@ -52,8 +60,24 @@ class UsersTable extends Table
             ->notEmpty('email');
 
         $validator
-            ->requirePresence('password', 'create')
-            ->notEmpty('password');
+            ->requirePresence('phone_number', 'create')
+            ->notEmpty('phone_number');
+
+        $validator
+            ->requirePresence('zip_code', 'create')
+            ->notEmpty('zip_code');
+
+        $validator
+            ->requirePresence('address_1', 'create')
+            ->notEmpty('address_1');
+
+        $validator
+            ->requirePresence('address_2', 'create')
+            ->notEmpty('address_2');
+
+        $validator
+            ->requirePresence('address_3', 'create')
+            ->notEmpty('address_3');
 
         $validator
             ->requirePresence('first_name', 'create')
@@ -62,6 +86,10 @@ class UsersTable extends Table
         $validator
             ->requirePresence('last_name', 'create')
             ->notEmpty('last_name');
+
+        $validator
+            ->requirePresence('name', 'create')
+            ->notEmpty('name');
 
         $validator
             ->add('is_deleted', 'valid', ['rule' => 'boolean'])
@@ -81,6 +109,8 @@ class UsersTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->isUnique(['email']));
+        $rules->add($rules->existsIn(['role_id'], 'Roles'));
+        $rules->add($rules->existsIn(['store_id'], 'Stores'));
         return $rules;
     }
 }

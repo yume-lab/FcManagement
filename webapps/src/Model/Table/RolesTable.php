@@ -1,17 +1,19 @@
 <?php
 namespace App\Model\Table;
 
-use App\Model\Entity\User;
+use App\Model\Entity\Role;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * Users Model
+ * Roles Model
  *
+ * @property \Cake\ORM\Association\HasMany $Employees
+ * @property \Cake\ORM\Association\HasMany $UserStores
  */
-class UsersTable extends Table
+class RolesTable extends Table
 {
 
     /**
@@ -24,14 +26,17 @@ class UsersTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('users');
-        $this->displayField('id');
+        $this->table('roles');
+        $this->displayField('name');
         $this->primaryKey('id');
 
         $this->addBehavior('Timestamp');
 
+        $this->hasMany('Employees', [
+            'foreignKey' => 'role_id'
+        ]);
         $this->hasMany('UserStores', [
-            'foreignKey' => 'user_id'
+            'foreignKey' => 'role_id'
         ]);
     }
 
@@ -44,24 +49,17 @@ class UsersTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
+            ->add('id', 'valid', ['rule' => 'numeric'])
             ->allowEmpty('id', 'create');
 
         $validator
-            ->add('email', 'valid', ['rule' => 'email'])
-            ->requirePresence('email', 'create')
-            ->notEmpty('email');
+            ->requirePresence('alias', 'create')
+            ->notEmpty('alias')
+            ->add('alias', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
 
         $validator
-            ->requirePresence('password', 'create')
-            ->notEmpty('password');
-
-        $validator
-            ->requirePresence('first_name', 'create')
-            ->notEmpty('first_name');
-
-        $validator
-            ->requirePresence('last_name', 'create')
-            ->notEmpty('last_name');
+            ->requirePresence('name', 'create')
+            ->notEmpty('name');
 
         $validator
             ->add('is_deleted', 'valid', ['rule' => 'boolean'])
@@ -69,18 +67,5 @@ class UsersTable extends Table
             ->notEmpty('is_deleted');
 
         return $validator;
-    }
-
-    /**
-     * Returns a rules checker object that will be used for validating
-     * application integrity.
-     *
-     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
-     * @return \Cake\ORM\RulesChecker
-     */
-    public function buildRules(RulesChecker $rules)
-    {
-        $rules->add($rules->isUnique(['email']));
-        return $rules;
     }
 }

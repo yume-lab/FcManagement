@@ -48,9 +48,21 @@ class AppController extends Controller
     }
 
     /**
+     * リクエスト毎の処理.
+     *
+     * @param Event $event
+     * @return void
+     */
+    public function beforeFilter(Event $event)
+    {
+        $user = $this->Auth->user();
+        $this->log(print_r($user, true));
+    }
+
+    /**
      * レンダリング直前処理.
      *
-     * @param \Cake\Event\Event $event The beforeRender event.
+     * @param Event $event
      * @return void
      */
     public function beforeRender(Event $event)
