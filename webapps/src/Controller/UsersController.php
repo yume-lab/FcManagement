@@ -15,36 +15,6 @@ class UsersController extends AppController
 {
 
     /**
-     * リクエスト毎の処理.
-     * ユーザー追加については別の認証をかける.
-     *
-     * @param \Cake\Event\Event $event
-     */
-    public function beforeFilter(Event $event) {
-        parent::beforeFilter($event);
-
-        $actions = ['add'];
-        $action = $this->request->param('action');
-
-        if (!in_array($action, $actions)) {
-            return;
-        }
-        $this->Auth->allow($actions);
-
-        // TODO: Basic認証のユーザーとパスワードを決める
-        $username = "admin";
-        $password = "password";
-
-        if (!isset($_SERVER['PHP_AUTH_USER'])) {
-            $this->authByBasic();
-        } else {
-            if ($_SERVER['PHP_AUTH_USER'] !== $username || $_SERVER['PHP_AUTH_PW'] !== $password) {
-                $this->authByBasic();
-            }
-        }
-    }
-
-    /**
      * 一覧表示.
      *
      * @return void
@@ -146,6 +116,7 @@ class UsersController extends AppController
     public function login()
     {
         parent::removeViewFrame();
+        $user = $this->Users->newEntity();
         if ($this->request->is('post')) {
             $user = $this->Auth->identify();
             if ($user) {
@@ -155,6 +126,8 @@ class UsersController extends AppController
                 $this->Flash->error('メールアドレス、またはパスワードが正しくありません。');
             }
         }
+        $this->set(compact('user'));
+        $this->set('_serialize', ['user']);
     }
 
     /**
@@ -166,16 +139,4 @@ class UsersController extends AppController
         $this->Flash->success('ログアウトしました。');
         return $this->redirect($this->Auth->logout());
     }
-
-
-    /**
-     * Basic認証を行います.
-     */
-    protected function authByBasic()
-    {
-        header('WWW-Authenticate: Basic realm="Please enter your ID and password"');
-        header('HTTP/1.0 401 Unauthorized');
-        die("Authorization Required");
-    }
-
 }

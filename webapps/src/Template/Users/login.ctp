@@ -12,10 +12,11 @@
             メールアドレスとパスワードを入力してください
         </div>
         <?= $this->Flash->render() ?>
-        <form class="form-horizontal" action="/login" method="post">
+        <?= $this->Form->create($user, ['action' => 'login', 'type' => 'post', 'class' => 'form-horizontal']) ?>
             <fieldset>
                 <div class="input-group input-group-lg">
                     <span class="input-group-addon"><i class="glyphicon glyphicon-user red"></i></span>
+
                     <input name="email" type="text" class="form-control" placeholder="メールアドレス">
                 </div>
                 <div class="clearfix"></div>
@@ -32,6 +33,6 @@
                 </p>
 
             </fieldset>
-        </form>
+        <?= $this->Form->end() ?>
     </div>
 </div>
