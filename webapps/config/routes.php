@@ -34,6 +34,8 @@ Router::scope('/', function ($routes) {
     $routes->connect('/login', ['controller' => 'Users', 'action' => 'login']);
     $routes->connect('/logout', ['controller' => 'Users', 'action' => 'logout']);
 
+    $routes->connect('/employee', ['controller' => 'Employees', 'action' => 'index']);
+
     $routes->connect('/dashboard', ['controller' => 'Dashboard', 'action' => 'index']);
 
     $routes->fallbacks('DashedRoute');
