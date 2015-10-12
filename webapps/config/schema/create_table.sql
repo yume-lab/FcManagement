@@ -2,7 +2,7 @@
 
 -- ユーザーマスタ
 CREATE TABLE users (
-  id INT unsigned NOT NULL,
+  id INT unsigned NOT NULL AUTO_INCREMENT,
   email VARCHAR(50) NOT NULL,
   password VARCHAR(255) NOT NULL,
   first_name VARCHAR(50) NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE users (
 
 -- 店舗マスタ
 CREATE TABLE stores (
-  id INT unsigned NOT NULL,
+  id INT unsigned NOT NULL AUTO_INCREMENT,
   store_category_id INT unsigned NOT NULL,
   name VARCHAR(255) NOT NULL,
   phone_number VARCHAR(20) NOT NULL,
@@ -34,7 +34,7 @@ CREATE TABLE stores (
 
 -- 店舗の種別マスタ
 CREATE TABLE store_categories (
-  id INT unsigned NOT NULL,
+  id INT unsigned NOT NULL AUTO_INCREMENT,
   alias VARCHAR(20) NOT NULL,
   name VARCHAR(50) NOT NULL,
   is_deleted TINYINT(1) NOT NULL DEFAULT 0,
@@ -46,7 +46,7 @@ CREATE TABLE store_categories (
 
 -- ユーザーの役割マスタ
 CREATE TABLE roles (
-  id INT unsigned NOT NULL,
+  id INT unsigned NOT NULL AUTO_INCREMENT,
   alias VARCHAR(20) NOT NULL,
   name VARCHAR(50) NOT NULL,
   is_deleted TINYINT(1) NOT NULL DEFAULT 0,
@@ -58,7 +58,7 @@ CREATE TABLE roles (
 
 -- ユーザーが管理している店舗の紐付けマスタ
 CREATE TABLE user_stores (
-  id INT unsigned NOT NULL,
+  id INT unsigned NOT NULL AUTO_INCREMENT,
   user_id INT unsigned NOT NULL,
   store_id INT unsigned NOT NULL,
   role_id INT unsigned NOT NULL,
@@ -71,7 +71,7 @@ CREATE TABLE user_stores (
 
 -- 従業員マスタ
 CREATE TABLE employees (
-  id INT unsigned NOT NULL,
+  id INT unsigned NOT NULL AUTO_INCREMENT,
   role_id INT unsigned NOT NULL,
   store_id INT unsigned NOT NULL,
   email VARCHAR(50) NOT NULL,
