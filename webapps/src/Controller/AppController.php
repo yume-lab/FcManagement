@@ -9,7 +9,7 @@ use Cake\Event\Event;
  *
  * @property      \Cake\Controller\Component\RequestHandlerComponent $RequestHandler
  * @property      \Cake\Controller\Component\FlashComponent $Flash
- * @property      \Cake\Controller\Component\AuthComponent $Auth
+ * @property      \App\Controller\Component\UserAuthComponent $UserAuth
  */
 class AppController extends Controller
 {
@@ -24,7 +24,7 @@ class AppController extends Controller
 
         $this->loadComponent('RequestHandler');
         $this->loadComponent('Flash');
-        $this->loadComponent('Auth', [
+        $this->loadComponent('UserAuth', [
             'authorize' => ['Controller'],
             'authenticate' => [
                 'Form' => [
@@ -55,7 +55,7 @@ class AppController extends Controller
      */
     public function beforeFilter(Event $event)
     {
-        $user = $this->Auth->user();
+        $user = $this->UserAuth->user();
         $this->log(print_r($user, true));
     }
 

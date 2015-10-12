@@ -18,7 +18,7 @@ class IndexController extends AppController {
      */
     public function index()
     {
-        if (parent::isAuthorized($this->Auth->user())) {
+        if (parent::isAuthorized($this->UserAuth->user())) {
             return $this->redirect('/dashboard');
         }
         return $this->redirect('/login');

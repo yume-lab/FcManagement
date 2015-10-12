@@ -10,7 +10,6 @@ use Cake\Event\Event;
  * システム利用者のCRUDコントローラー
  *
  * @property \App\Model\Table\UsersTable $Users
- * @property \App\Model\Table\UserStoresTable $UserStores
  */
 class UsersController extends AppController
 {
@@ -118,10 +117,10 @@ class UsersController extends AppController
     {
         parent::removeViewFrame();
         if ($this->request->is('post')) {
-            $user = $this->Auth->identify();
+            $user = $this->UserAuth->identify();
             if ($user) {
-                $this->Auth->setUser($user);
-                return $this->redirect($this->Auth->redirectUrl());
+                $this->UserAuth->setUser($user);
+                return $this->redirect($this->UserAuth->redirectUrl());
             } else {
                 $this->Flash->error('メールアドレス、またはパスワードが正しくありません。');
             }
@@ -135,6 +134,6 @@ class UsersController extends AppController
     public function logout()
     {
         $this->Flash->success('ログアウトしました。');
-        return $this->redirect($this->Auth->logout());
+        return $this->redirect($this->UserAuth->logout());
     }
 }
