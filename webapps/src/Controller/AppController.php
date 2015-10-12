@@ -55,8 +55,10 @@ class AppController extends Controller
      */
     public function beforeFilter(Event $event)
     {
+        parent::beforeFilter($event);
         $user = $this->UserAuth->user();
-        $this->log(print_r($user, true));
+        $this->set(compact('user'));
+        $this->set('_serialize', ['user']);
     }
 
     /**

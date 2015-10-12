@@ -2,6 +2,12 @@
 /**
  * ヘッダーエレメント
  */
+
+$login = $user['user'];
+
+// TODO: 複数店舗できるように
+$info = array_shift($user['stores']);
+$store = $info['store'];
 ?>
 
 <div class="navbar navbar-default" role="navigation">
@@ -22,7 +28,7 @@
         <div class="btn-group pull-right">
             <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                 <i class="glyphicon glyphicon-user"></i>
-                <span class="hidden-sm hidden-xs"> ◯◯さん</span>
+                <span class="hidden-sm hidden-xs"> <?= $login['first_name'] ?>さん</span>
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
@@ -33,6 +39,13 @@
         <!-- user dropdown ends -->
 
         <div class="btn-group pull-right theme-container tada">
+
+            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <i class="glyphicon glyphicon-tint"></i><span
+                    class="hidden-sm hidden-xs"> <?= $store['name'].'店' ?></span>
+                <span class="caret"></span>
+            </button>
+            <!-- TODO: 複数店舗できるように
             <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
               <i class="glyphicon glyphicon-tint"></i><span
                 class="hidden-sm hidden-xs"> 店舗選択</span>
@@ -42,6 +55,7 @@
               <li><a data-value="classic" href="#"><i class="whitespace"></i> てすと１</a></li>
               <li><a data-value="classic" href="#"><i class="whitespace"></i> てすと２</a></li>
             </ul>
+            -->
         </div>
 
         <ul class="collapse navbar-collapse nav navbar-nav top-menu">
