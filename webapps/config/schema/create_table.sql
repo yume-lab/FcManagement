@@ -8,8 +8,8 @@ CREATE TABLE users (
   first_name VARCHAR(50) NOT NULL,
   last_name VARCHAR(50) NOT NULL,
   is_deleted TINYINT(1) NOT NULL DEFAULT 0,
-  created datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  created datetime NOT NULL,
+  updated datetime NOT NULL,
   PRIMARY KEY (id),
   UNIQUE (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='ユーザーマスタ' AUTO_INCREMENT=1;
@@ -27,8 +27,8 @@ CREATE TABLE stores (
   opened TIME,
   closed TIME,
   is_deleted TINYINT(1) NOT NULL DEFAULT 0,
-  created datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  created datetime NOT NULL,
+  updated datetime NOT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='店舗マスタ' AUTO_INCREMENT=1;
 
@@ -38,8 +38,8 @@ CREATE TABLE store_categories (
   alias VARCHAR(20) NOT NULL,
   name VARCHAR(50) NOT NULL,
   is_deleted TINYINT(1) NOT NULL DEFAULT 0,
-  created datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  created datetime NOT NULL,
+  updated datetime NOT NULL,
   PRIMARY KEY (id),
   UNIQUE (alias)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='店舗種別マスタ' AUTO_INCREMENT=1;
@@ -50,8 +50,8 @@ CREATE TABLE roles (
   alias VARCHAR(20) NOT NULL,
   name VARCHAR(50) NOT NULL,
   is_deleted TINYINT(1) NOT NULL DEFAULT 0,
-  created datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  created datetime NOT NULL,
+  updated datetime NOT NULL,
   PRIMARY KEY (id),
   UNIQUE (alias)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='役割マスタ' AUTO_INCREMENT=1;
@@ -63,8 +63,8 @@ CREATE TABLE user_stores (
   store_id INT unsigned NOT NULL,
   role_id INT unsigned NOT NULL,
   is_deleted TINYINT(1) NOT NULL DEFAULT 0,
-  created datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  created datetime NOT NULL,
+  updated datetime NOT NULL,
   PRIMARY KEY (id),
   UNIQUE (user_id, store_id, role_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='ユーザー管理店舗マスタ' AUTO_INCREMENT=1;
@@ -84,8 +84,8 @@ CREATE TABLE employees (
   last_name VARCHAR(50) NOT NULL,
   name VARCHAR(255) NOT NULL,
   is_deleted TINYINT(1) NOT NULL DEFAULT 0,
-  created datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  created datetime NOT NULL,
+  updated datetime NOT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='従業員マスタ' AUTO_INCREMENT=1;
 
