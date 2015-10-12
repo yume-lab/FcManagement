@@ -31,6 +31,8 @@ class UserAuthComponent extends AuthComponent
             ->toArray()
         ;
 
+        $this->log($user);
+        $this->log($stores);
         $current = array_shift($stores);
         $info = [
             'user' => $user,
@@ -42,4 +44,16 @@ class UserAuthComponent extends AuthComponent
         parent::setUser($info);
     }
 
+    /**
+     * 現在ログインしているユーザーの操作店舗情報を取得します.
+     *
+     * @see \App\Model\Table\StoresTable
+     * @param $field
+     * @return array|string
+     */
+    public function store($field = '')
+    {
+        $current = parent::user('current');
+        return (empty($field) ? $current : $current[$field]);
+    }
 }

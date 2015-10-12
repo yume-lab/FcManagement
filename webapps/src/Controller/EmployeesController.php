@@ -19,7 +19,8 @@ class EmployeesController extends AppController
     public function index()
     {
         $this->paginate = [
-            'contain' => ['Roles', 'Stores']
+            'contain' => ['Roles', 'Stores'],
+            'conditions' => ['store_id' => $this->UserAuth->store('id')]
         ];
         $this->set('employees', $this->paginate($this->Employees));
         $this->set('_serialize', ['employees']);
