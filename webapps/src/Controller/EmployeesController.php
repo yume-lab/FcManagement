@@ -5,6 +5,7 @@ use App\Controller\AppController;
 
 /**
  * Employees Controller
+ * パート管理用コントローラ
  *
  * @property \App\Model\Table\EmployeesTable $Employees
  */
@@ -20,7 +21,11 @@ class EmployeesController extends AppController
     {
         $this->paginate = [
             'contain' => ['Roles', 'Stores'],
-            'conditions' => ['store_id' => $this->UserAuth->store('id')]
+            'conditions' => ['store_id' => $this->UserAuth->store('id')],
+            'limit' => 2,
+            'order' => [
+                'Employees.id' => 'asc'
+            ]
         ];
         $this->set('employees', $this->paginate($this->Employees));
         $this->set('_serialize', ['employees']);

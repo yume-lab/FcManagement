@@ -36,7 +36,7 @@
 
                 <div id="content" class="col-lg-10 col-sm-10">
                     <div class="row">
-                        <div class="box col-md-12">
+                        <div class="col-md-12">
                             <?= $this->fetch('content') ?>
                         </div>
                     </div>
