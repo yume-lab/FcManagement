@@ -22,7 +22,7 @@ class EmployeesController extends AppController
         $this->paginate = [
             'contain' => ['Roles', 'Stores'],
             'conditions' => ['store_id' => $this->UserAuth->store('id')],
-            'limit' => 2,
+            'limit' => 10,
             'order' => [
                 'Employees.id' => 'asc'
             ]

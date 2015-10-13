@@ -1,24 +1,25 @@
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Form->postLink(
-                __('Delete'),
-                ['action' => 'delete', $employee->id],
-                ['confirm' => __('Are you sure you want to delete # {0}?', $employee->id)]
-            )
-        ?></li>
-        <li><?= $this->Html->link(__('List Employees'), ['action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('List Roles'), ['controller' => 'Roles', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Role'), ['controller' => 'Roles', 'action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Stores'), ['controller' => 'Stores', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Store'), ['controller' => 'Stores', 'action' => 'add']) ?></li>
-    </ul>
-</nav>
-<div class="employees form large-9 medium-8 columns content">
-    <?= $this->Form->create($employee) ?>
-    <fieldset>
-        <legend><?= __('Edit Employee') ?></legend>
-        <?php
+<?php $this->assign('title', 'パート編集'); ?>
+
+<div class="box-inner">
+    <div class="box-header well" data-original-title="">
+        <h2><i class="glyphicon glyphicon-user"></i> パート編集</h2>
+    </div>
+    <div class="box-content">
+        <?= $this->Form->create($employee) ?>
+        <fieldset>
+            <legend><?= __('Edit Employee') ?></legend>
+
+            <table class="table table-striped table-bordered bootstrap-datatable responsive">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <td>test</td>
+                </tr>
+                </thead>
+            </table>
+
+
+                    <?php
             echo $this->Form->input('role_id', ['options' => $roles]);
             echo $this->Form->input('store_id', ['options' => $stores]);
             echo $this->Form->input('email');
@@ -31,8 +32,9 @@
             echo $this->Form->input('last_name');
             echo $this->Form->input('name');
             echo $this->Form->input('is_deleted');
-        ?>
-    </fieldset>
-    <?= $this->Form->button(__('Submit')) ?>
-    <?= $this->Form->end() ?>
+            ?>
+        </fieldset>
+        <?= $this->Form->button(__('Submit')) ?>
+        <?= $this->Form->end() ?>
+    </div>
 </div>

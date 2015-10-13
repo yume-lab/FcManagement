@@ -5,7 +5,10 @@
         <h2><i class="glyphicon glyphicon-user"></i> パート一覧</h2>
     </div>
     <div class="box-content">
-        <div class="box col-md-12">
+        <div class="box col-md-6">
+            <?php // TODO: 検索とかつけたい ?>
+        </div>
+        <div class="box col-md-6" style="text-align: right;">
             <a class="btn btn-primary" href="/employees/add">
                 <i class="glyphicon glyphicon-plus icon-white"></i>
                 新規追加
@@ -35,7 +38,7 @@
                             <i class="glyphicon glyphicon-zoom-in icon-white"></i>
                             詳細
                         </a>
-                        <a class="btn btn-info btn-sm" href="/employees/edit/<?= $employee->id ?>">
+                        <a class="btn btn-warning btn-sm" href="/employees/edit/<?= $employee->id ?>">
                             <i class="glyphicon glyphicon-edit icon-white"></i>
                             更新
                         </a>
