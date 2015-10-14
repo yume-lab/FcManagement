@@ -7,34 +7,22 @@
     <div class="box-content">
         <?= $this->Form->create($employee) ?>
         <fieldset>
-            <legend><?= __('Edit Employee') ?></legend>
-
-            <table class="table table-striped table-bordered bootstrap-datatable responsive">
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <td>test</td>
-                </tr>
-                </thead>
-            </table>
-
-
-                    <?php
-            echo $this->Form->input('role_id', ['options' => $roles]);
-            echo $this->Form->input('store_id', ['options' => $stores]);
-            echo $this->Form->input('email');
-            echo $this->Form->input('phone_number');
-            echo $this->Form->input('zip_code');
-            echo $this->Form->input('address_1');
-            echo $this->Form->input('address_2');
-            echo $this->Form->input('address_3');
-            echo $this->Form->input('first_name');
-            echo $this->Form->input('last_name');
-            echo $this->Form->input('name');
-            echo $this->Form->input('is_deleted');
+            <legend>パート情報編集</legend>
+            <?php
+                echo $this->Form->input('role_id', ['label' => '役割', 'options' => $roles]);
+                echo $this->Form->input('store_id', [
+                    'label' => '所属店舗', 'options' => $stores, 'disabled' => 'disabled']);
+                echo $this->Form->input('email', ['label' => 'メールアドレス']);
+                echo $this->Form->input('phone_number', ['label' => '電話番号']);
+                echo $this->Form->input('zip_code', ['label' => '郵便番号']);
+                echo $this->Form->input('address_1', ['label' => '都道府県']);
+                echo $this->Form->input('address_2', ['label' => '市区町村']);
+                echo $this->Form->input('address_3', ['label' => 'その他']);
+                echo $this->Form->input('last_name', ['label' => '苗字']);
+                echo $this->Form->input('first_name', ['label' => '名前']);
             ?>
         </fieldset>
-        <?= $this->Form->button(__('Submit')) ?>
+        <?= $this->Form->button(__('更新する')) ?>
         <?= $this->Form->end() ?>
     </div>
 </div>

@@ -26,15 +26,21 @@ class AppView extends View
 {
 
     /**
-     * Initialization hook method.
-     *
-     * Use this method to add common initialization code like loading helpers.
-     *
-     * e.g. `$this->loadHelper('Html');`
-     *
+     * 初期処理.
+     * Formヘルパーで表示するデフォルトのスタイルを変更します.
+     * 
      * @return void
      */
     public function initialize()
     {
+
+        $customTemplates = [
+//            'label' => '<label class="control-label"{{attrs}}>{{text}}</label>',
+            'label' => '<h4{{attrs}}>{{text}}</h4>',
+            'input' => '<input class="form-control" type="{{type}}" name="{{name}}"{{attrs}} />',
+            'select' => '<select class="form-control" name="{{name}}"{{attrs}}>{{content}}</select>',
+            'inputContainer' => '<div class="form-group">{{content}}</div>',
+        ];
+        $this->Form->templates($customTemplates);
     }
 }
