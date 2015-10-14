@@ -43,7 +43,8 @@
                             <i class="glyphicon glyphicon-edit icon-white"></i>
                             更新
                         </a>
-                        <a class="btn btn-danger btn-sm" href="/employees/delete/<?= $employee->id ?>">
+                        <a class="btn btn-confirm btn-danger btn-sm" href="#"
+                           data-action="/employees/delete/<?= $employee->id ?>">
                             <i class="glyphicon glyphicon-trash icon-white"></i>
                             削除
                         </a>
@@ -69,3 +70,42 @@
         </div>
     </div>
 </div>
+
+
+<?php // TODO: 作りが気に入らない ?>
+<?php // 削除確認ダイアログ ?>
+<div class="modal fade" id="confirm-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h3>削除確認</h3>
+            </div>
+            <div class="modal-body">
+                <p>対象データを削除しますか？</p>
+            </div>
+            <form class="form" method="post" action="">
+            </form>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-default" data-dismiss="modal">キャンセル</a>
+                <a href="#" class="btn btn-danger done">削除する</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    $('.btn-confirm').on('click', function (e) {
+        e.preventDefault();
+        var action = $(this).data('action') || '#';
+        var $modal = $('#confirm-modal');
+
+        $modal.find('.form').attr('action', action);
+        $modal.find('.done').on('click', function() {
+            $('.form').submit();
+        });
+        $modal.modal('show');
+    });
+});
+</script>
