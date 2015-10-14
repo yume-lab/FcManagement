@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Core\Configure;
 
 /**
  * Employees Controller
@@ -21,8 +22,11 @@ class EmployeesController extends AppController
     {
         $this->paginate = [
             'contain' => ['Roles', 'Stores'],
-            'conditions' => ['store_id' => parent::getCurrentStoreId()],
-            'limit' => 10,
+            'conditions' => [
+                'Employees.store_id' => parent::getCurrentStoreId(),
+                'Employees.is_deleted' => false
+            ],
+            'limit' => Configure::read('Define.List.Count'),
             'order' => [
                 'Employees.id' => 'asc'
             ]
@@ -42,10 +46,10 @@ class EmployeesController extends AppController
         if ($this->request->is('post')) {
             $employee = $this->Employees->patchEntity($employee, $this->request->data);
             if ($this->Employees->save($employee)) {
-                $this->Flash->success(__('登録が完了しました'));
+                $this->Flash->success('登録が完了しました。');
                 return $this->redirect(['action' => 'index']);
             } else {
-                $this->Flash->error(__('The employee could not be saved. Please, try again.'));
+                $this->Flash->error('登録に失敗しました。担当者に問い合わせてください。');
             }
         }
         $roles = $this->Employees->Roles->find('list', ['limit' => 200]);
@@ -73,7 +77,7 @@ class EmployeesController extends AppController
                 $this->Flash->success(__('従業員情報を更新しました。'));
                 return $this->redirect(['action' => 'index']);
             } else {
-                $this->Flash->error(__('The employee could not be saved. Please, try again.'));
+                $this->Flash->error('更新に失敗しました。担当者に問い合わせてください。');
             }
         }
         $roles = $this->Employees->Roles->find('list', ['limit' => 200]);
@@ -83,9 +87,10 @@ class EmployeesController extends AppController
     }
 
     /**
-     * Delete method
+     * 従業員削除画面.
+     * 削除時は、Employees.is_deletedを"1"(削除)に更新します
      *
-     * @param string|null $id Employee id.
+     * @param string|null $id 従業員ID.
      * @return void Redirects to index.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
@@ -93,10 +98,11 @@ class EmployeesController extends AppController
     {
         $this->request->allowMethod(['post', 'delete']);
         $employee = $this->Employees->get($id);
-        if ($this->Employees->delete($employee)) {
-            $this->Flash->success(__('The employee has been deleted.'));
+        $employee = $this->Employees->patchEntity($employee, $this->request->data);
+        if ($this->Employees->save($employee)) {
+            $this->Flash->success('従業員を削除しました。');
         } else {
-            $this->Flash->error(__('The employee could not be deleted. Please, try again.'));
+            $this->Flash->error('削除に失敗しました。担当者に問い合わせてください。');
         }
         return $this->redirect(['action' => 'index']);
     }

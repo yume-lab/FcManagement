@@ -10,7 +10,7 @@
             <?php // TODO: 検索とかつけたい ?>
         </div>
         <div class="box col-md-6" style="text-align: right;">
-            <a class="btn btn-primary" href="/employees/add">
+            <a class="btn btn-info" href="/employees/add">
                 <i class="glyphicon glyphicon-plus icon-white"></i>
                 新規追加
             </a>
@@ -35,11 +35,7 @@
                     <td><?= h($employee->has('store') ? $employee->store->name : '') ?></td>
                     <td><?= h($employee->has('role') ? $employee->role->name : '') ?></td>
                     <td class="actions center">
-                        <a class="btn btn-success btn-sm" href="/employees/view/<?= $employee->id ?>">
-                            <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                            詳細
-                        </a>
-                        <a class="btn btn-warning btn-sm" href="/employees/edit/<?= $employee->id ?>">
+                        <a class="btn btn-primary btn-sm" href="/employees/edit/<?= $employee->id ?>">
                             <i class="glyphicon glyphicon-edit icon-white"></i>
                             更新
                         </a>
@@ -84,11 +80,12 @@
             <div class="modal-body">
                 <p>対象データを削除しますか？</p>
             </div>
-            <form class="form" method="post" action="">
+            <form class="delete-form" method="post" action="">
+                <?= $this->Form->input('is_deleted', ['type' => 'hidden', 'value' => 1]) ?>
             </form>
             <div class="modal-footer">
                 <a href="#" class="btn btn-default" data-dismiss="modal">キャンセル</a>
-                <a href="#" class="btn btn-danger done">削除する</a>
+                <a href="#" class="btn btn-danger done-delete">削除する</a>
             </div>
         </div>
     </div>
@@ -96,16 +93,16 @@
 
 <script type="text/javascript">
 $(function () {
-    $('.btn-confirm').on('click', function (e) {
+    var selector = '.delete-form';
+    $('.btn-confirm').on('click', function(e) {
         e.preventDefault();
         var action = $(this).data('action') || '#';
         var $modal = $('#confirm-modal');
-
-        $modal.find('.form').attr('action', action);
-        $modal.find('.done').on('click', function() {
-            $('.form').submit();
-        });
+        $modal.find(selector).attr('action', action);
         $modal.modal('show');
+    });
+    $('.done-delete').on('click', function() {
+        $(selector).submit();
     });
 });
 </script>

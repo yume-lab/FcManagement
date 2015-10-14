@@ -98,4 +98,13 @@ return [
     'Session' => [
         'defaults' => 'php',
     ],
+
+    /**
+     * 固定値
+     */
+    'Define' => [
+        'List' => [
+            'Count' => 10
+        ]
+    ]
 ];
