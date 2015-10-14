@@ -5,6 +5,7 @@
         <h2><i class="glyphicon glyphicon-user"></i> パート編集</h2>
     </div>
     <div class="box-content">
+        <?= $this->Flash->render() ?>
         <?= $this->Form->create($employee) ?>
         <fieldset>
             <legend>パート情報編集</legend>
@@ -22,7 +23,10 @@
                 echo $this->Form->input('first_name', ['label' => '名前']);
             ?>
         </fieldset>
-        <?= $this->Form->button(__('更新する')) ?>
+        <p class="center col-md-5">
+            <?= $this->Html->link(__('一覧に戻る'), $previous, ['class' => 'btn btn-default']) ?>
+            <?= $this->Form->button(__('更新する'), ['class' => 'btn btn-primary']) ?>
+        </p>
         <?= $this->Form->end() ?>
     </div>
 </div>

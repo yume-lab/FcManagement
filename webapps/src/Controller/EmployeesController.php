@@ -22,7 +22,7 @@ class EmployeesController extends AppController
         $this->paginate = [
             'contain' => ['Roles', 'Stores'],
             'conditions' => ['store_id' => $this->UserAuth->store('id')],
-            'limit' => 10,
+            'limit' => 5,
             'order' => [
                 'Employees.id' => 'asc'
             ]
@@ -71,9 +71,9 @@ class EmployeesController extends AppController
     }
 
     /**
-     * Edit method
+     * 従業員更新画面.
      *
-     * @param string|null $id Employee id.
+     * @param string|null $id 従業員ID.
      * @return void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
@@ -85,7 +85,7 @@ class EmployeesController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $employee = $this->Employees->patchEntity($employee, $this->request->data);
             if ($this->Employees->save($employee)) {
-                $this->Flash->success(__('The employee has been saved.'));
+                $this->Flash->success(__('従業員情報を更新しました。'));
                 return $this->redirect(['action' => 'index']);
             } else {
                 $this->Flash->error(__('The employee could not be saved. Please, try again.'));
@@ -93,7 +93,8 @@ class EmployeesController extends AppController
         }
         $roles = $this->Employees->Roles->find('list', ['limit' => 200]);
         $stores = $this->Employees->Stores->find('list', ['limit' => 200]);
-        $this->set(compact('employee', 'roles', 'stores'));
+        $previous = $this->request->referer();
+        $this->set(compact('employee', 'roles', 'stores', 'previous'));
         $this->set('_serialize', ['employee']);
     }
 

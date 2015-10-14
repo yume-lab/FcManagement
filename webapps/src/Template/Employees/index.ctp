@@ -5,6 +5,7 @@
         <h2><i class="glyphicon glyphicon-user"></i> パート一覧</h2>
     </div>
     <div class="box-content">
+        <?= $this->Flash->render() ?>
         <div class="box col-md-6">
             <?php // TODO: 検索とかつけたい ?>
         </div>
@@ -53,7 +54,7 @@
         </table>
 
         <div class="col-md-12">
-            <div class="dataTables_info" id="DataTables_Table_0_info">
+            <div class="dataTables_info">
                 <?= $this->Paginator->counter('{{pages}}ページ中 {{page}}ページ目 ') ?>
             </div>
         </div>
