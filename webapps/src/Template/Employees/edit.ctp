@@ -8,11 +8,14 @@
         <?= $this->Flash->render() ?>
         <?= $this->Form->create($employee) ?>
         <fieldset>
-            <legend>パート情報編集</legend>
+            <legend>店舗情報</legend>
             <?php
                 echo $this->Form->input('role_id', ['label' => '役割', 'options' => $roles]);
                 echo $this->Form->input('store_id', [
                     'label' => '所属店舗', 'options' => $stores, 'disabled' => 'disabled']);
+            ?>
+            <legend>従業員情報</legend>
+            <?php
                 echo $this->Form->input('email', ['label' => 'メールアドレス']);
                 echo $this->Form->input('phone_number', ['label' => '電話番号']);
                 echo $this->Form->input('zip_code', ['label' => '郵便番号']);

@@ -87,15 +87,6 @@ class EmployeesTable extends Table
             ->requirePresence('last_name', 'create')
             ->notEmpty('last_name');
 
-        $validator
-            ->requirePresence('name', 'create')
-            ->notEmpty('name');
-
-        $validator
-            ->add('is_deleted', 'valid', ['rule' => 'boolean'])
-            ->requirePresence('is_deleted', 'create')
-            ->notEmpty('is_deleted');
-
         return $validator;
     }
 

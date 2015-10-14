@@ -57,7 +57,8 @@ class AppController extends Controller
     {
         parent::beforeFilter($event);
         $user = $this->UserAuth->user();
-        $this->set(compact('user'));
+        $previous = $this->request->referer();
+        $this->set(compact('user', 'previous'));
         $this->set('_serialize', ['user']);
     }
 
@@ -94,6 +95,16 @@ class AppController extends Controller
     protected function removeViewFrame()
     {
         $this->viewBuilder()->layout('nowrap');
+    }
+
+    /**
+     * 現在操作している店舗IDを取得します.
+     *
+     * @return int 店舗ID
+     */
+    protected function getCurrentStoreId()
+    {
+        return $this->UserAuth->store('id');
     }
 
 }

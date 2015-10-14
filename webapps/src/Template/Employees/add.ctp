@@ -1,32 +1,34 @@
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('List Employees'), ['action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('List Roles'), ['controller' => 'Roles', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Role'), ['controller' => 'Roles', 'action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Stores'), ['controller' => 'Stores', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Store'), ['controller' => 'Stores', 'action' => 'add']) ?></li>
-    </ul>
-</nav>
-<div class="employees form large-9 medium-8 columns content">
-    <?= $this->Form->create($employee) ?>
-    <fieldset>
-        <legend><?= __('Add Employee') ?></legend>
-        <?php
-            echo $this->Form->input('role_id', ['options' => $roles]);
-            echo $this->Form->input('store_id', ['options' => $stores]);
-            echo $this->Form->input('email');
-            echo $this->Form->input('phone_number');
-            echo $this->Form->input('zip_code');
-            echo $this->Form->input('address_1');
-            echo $this->Form->input('address_2');
-            echo $this->Form->input('address_3');
-            echo $this->Form->input('first_name');
-            echo $this->Form->input('last_name');
-            echo $this->Form->input('name');
-            echo $this->Form->input('is_deleted');
-        ?>
-    </fieldset>
-    <?= $this->Form->button(__('Submit')) ?>
-    <?= $this->Form->end() ?>
+<?php $this->assign('title', 'パート追加'); ?>
+
+<div class="box-inner">
+    <div class="box-header well" data-original-title="">
+        <h2><i class="glyphicon glyphicon-user"></i> パート情報追加</h2>
+    </div>
+    <div class="box-content">
+        <?= $this->Flash->render() ?>
+        <?= $this->Form->create($employee) ?>
+        <fieldset>
+            <legend>店舗情報</legend>
+            <?php
+                echo $this->Form->input('role_id', ['label' => '役割', 'options' => $roles]);
+                echo $this->Form->input('store_id', ['type' => 'hidden', 'value' => $storeId]);
+            ?>
+            <legend>従業員情報</legend>
+            <?php
+                echo $this->Form->input('email', ['label' => 'メールアドレス']);
+                echo $this->Form->input('phone_number', ['label' => '電話番号']);
+                echo $this->Form->input('zip_code', ['label' => '郵便番号']);
+                echo $this->Form->input('address_1', ['label' => '都道府県']);
+                echo $this->Form->input('address_2', ['label' => '市区町村']);
+                echo $this->Form->input('address_3', ['label' => 'その他']);
+                echo $this->Form->input('last_name', ['label' => '苗字']);
+                echo $this->Form->input('first_name', ['label' => '名前']);
+            ?>
+        </fieldset>
+        <p class="center col-md-5">
+            <?= $this->Html->link(__('一覧に戻る'), $previous, ['class' => 'btn btn-default']) ?>
+            <?= $this->Form->button(__('登録する'), ['class' => 'btn btn-primary']) ?>
+        </p>
+        <?= $this->Form->end() ?>
+    </div>
 </div>

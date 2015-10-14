@@ -21,8 +21,8 @@ class EmployeesController extends AppController
     {
         $this->paginate = [
             'contain' => ['Roles', 'Stores'],
-            'conditions' => ['store_id' => $this->UserAuth->store('id')],
-            'limit' => 5,
+            'conditions' => ['store_id' => parent::getCurrentStoreId()],
+            'limit' => 10,
             'order' => [
                 'Employees.id' => 'asc'
             ]
@@ -32,23 +32,7 @@ class EmployeesController extends AppController
     }
 
     /**
-     * View method
-     *
-     * @param string|null $id Employee id.
-     * @return void
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $employee = $this->Employees->get($id, [
-            'contain' => ['Roles', 'Stores']
-        ]);
-        $this->set('employee', $employee);
-        $this->set('_serialize', ['employee']);
-    }
-
-    /**
-     * Add method
+     * 従業員追加画面.
      *
      * @return void Redirects on successful add, renders view otherwise.
      */
@@ -58,7 +42,7 @@ class EmployeesController extends AppController
         if ($this->request->is('post')) {
             $employee = $this->Employees->patchEntity($employee, $this->request->data);
             if ($this->Employees->save($employee)) {
-                $this->Flash->success(__('The employee has been saved.'));
+                $this->Flash->success(__('登録が完了しました'));
                 return $this->redirect(['action' => 'index']);
             } else {
                 $this->Flash->error(__('The employee could not be saved. Please, try again.'));
@@ -66,7 +50,8 @@ class EmployeesController extends AppController
         }
         $roles = $this->Employees->Roles->find('list', ['limit' => 200]);
         $stores = $this->Employees->Stores->find('list', ['limit' => 200]);
-        $this->set(compact('employee', 'roles', 'stores'));
+        $storeId = parent::getCurrentStoreId();
+        $this->set(compact('employee', 'roles', 'stores', 'storeId'));
         $this->set('_serialize', ['employee']);
     }
 
@@ -93,8 +78,7 @@ class EmployeesController extends AppController
         }
         $roles = $this->Employees->Roles->find('list', ['limit' => 200]);
         $stores = $this->Employees->Stores->find('list', ['limit' => 200]);
-        $previous = $this->request->referer();
-        $this->set(compact('employee', 'roles', 'stores', 'previous'));
+        $this->set(compact('employee', 'roles', 'stores'));
         $this->set('_serialize', ['employee']);
     }
 
