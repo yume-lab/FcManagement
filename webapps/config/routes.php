@@ -36,6 +36,8 @@ Router::scope('/', function ($routes) {
 
     $routes->connect('/employee', ['controller' => 'Employees', 'action' => 'index']);
 
+    $routes->connect('/shift', ['controller' => 'ShiftTables', 'action' => 'index']);
+
     $routes->connect('/dashboard', ['controller' => 'Dashboard', 'action' => 'index']);
 
     $routes->fallbacks('DashedRoute');

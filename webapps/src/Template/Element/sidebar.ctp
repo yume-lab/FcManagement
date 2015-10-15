@@ -17,6 +17,13 @@
                     <span> パート管理</span>
                 </a>
             </li>
+            <li class="nav-header">勤怠</li>
+            <li>
+                <a class="ajax-link" href="/shift">
+                    <i class="glyphicon glyphicon-list-alt"></i>
+                    <span> シフト作成</span>
+                </a>
+            </li>
         </ul>
     </div>
 </div>
