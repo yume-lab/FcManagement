@@ -1,4 +1,4 @@
-<?php  ?>
+<?php $this->assign('title', 'シフト作成'); ?>
 
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
