@@ -29,12 +29,15 @@ sudo cp $LOCAL_ROOT/conf/httpd.conf /etc/httpd/conf/httpd.conf
 
 # MySQL
 echo "== start MySQL =="
-sudo yum remove mysql*
-sudo yum -y install http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm
-sudo yum -y install yum-utils
-sudo yum-config-manager --disable mysql56-community
-sudo yum-config-manager --enable mysql57-community-dmr
-sudo yum -y install mysql mysql-devel mysql-server mysql-utilities
+sudo yum -y install mysql-server
+
+sudo mv /etc/my.cnf /etc/my.cnf.back
+sudo cp $LOCAL_ROOT/conf/my.cnf /etc/my.cnf
+
+# MongoDB
+echo "== start MongoDB =="
+sudo cp $LOCAL_ROOT/repo/mongodb.repo /etc/yum.repos.d/mongodb.repo
+sudo yum -y install --enablerepo=mongodb mongodb-org
 
 # インストール確認
 echo "======================"
