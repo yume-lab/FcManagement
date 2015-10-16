@@ -4,23 +4,32 @@
 <script src="http://code.jquery.com/ui/1.11.3/jquery-ui.min.js"></script>
 
 <div class="box-header well" data-original-title="">
-    <h2><i class="glyphicon glyphicon-calendar"></i> シフト表</h2>
-
-    <div class="box-icon">
-        <a href="#" class="btn btn-setting btn-round btn-default"><i
-                class="glyphicon glyphicon-cog"></i></a>
-        <a href="#" class="btn btn-minimize btn-round btn-default"><i
-                class="glyphicon glyphicon-chevron-up"></i></a>
-        <a href="#" class="btn btn-close btn-round btn-default"><i
-                class="glyphicon glyphicon-remove"></i></a>
-    </div>
+    <h2><i class="glyphicon glyphicon-calendar"></i> 従業員一覧</h2>
 </div>
 <div class="box-content">
-
-    <div id="shift-calendar"></div>
-
-    <div class="clearfix"></div>
+    <table class="table table-striped table-bordered bootstrap-datatable responsive">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>氏名</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>てすと</td>
+            <td>1:00</td>
+        </tr>
+        </tbody>
+    </table>
 </div>
+
+<div class="box-header well" data-original-title="">
+    <h2><i class="glyphicon glyphicon-calendar"></i> シフト表</h2>
+</div>
+<div class="box-content">
+    <div id="shift-calendar"></div>
+</div>
+
 
 
 <?php // TODO: 暫定でここに ?>

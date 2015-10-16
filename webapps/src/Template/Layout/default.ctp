@@ -35,19 +35,12 @@
                 </div>
 
                 <div id="content" class="col-lg-10 col-sm-10">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="box-inner">
-                                <?= $this->fetch('content') ?>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="footer" class="col-lg-10 col-sm-10">
-                    <?= $this->element('footer') ?>
+                    <?= $this->fetch('content') ?>
                 </div>
             </div>
+            <hr>
+
+            <?= $this->element('footer') ?>
         </div>
     </div>
 
