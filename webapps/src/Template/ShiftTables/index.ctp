@@ -11,22 +11,21 @@
 
     $(document).ready(function() {
         $('#external-events .people').each(function() {
-
-            // store data so the calendar knows to render an event upon drop
+            // ドラッグされた従業員を一時保存
             $(this).data('events', {
                 title: $.trim($(this).text()), // use the element's text as the event title
+                backgroundColor: $(this).css('background-color')
             });
 
-            // make the event draggable using jQuery UI
             $(this).draggable({
                 zIndex: 999,
-                helper: 'clone',
-                revert: 'invalid',
-                revertDuration: 0  //  original position after the drag
+                revert: true,
+                revertDuration: 0
             });
         });
 
-        $('#shift-calendar').fullCalendar({
+        var calendarSelector = '#shift-calendar';
+        $(calendarSelector).fullCalendar({
             header: {
                 left: 'prev,next today',
                 center: 'title',
@@ -52,44 +51,37 @@
             // 曜日略称
             dayNamesShort: ['日', '月', '火', '水', '木', '金', '土'],
             editable: true,
-            droppable: true, // this allows things to be dropped onto the calendar
-            drop: function(date, allDay) { // this function is called when something is dropped
-
-                // retrieve the dropped element's stored Event Object
-                var originalEventObject = $(this).data('events');
-
-                // we need to copy it, so that multiple events don't have a reference to the same object
-                var copiedEventObject = $.extend({}, originalEventObject);
-
-                // assign it the date that was reported
-                copiedEventObject.start = date;
-                copiedEventObject.allDay = allDay;
-
-                // render the event on the calendar
-                // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
-                $('#shift-calendar').fullCalendar('renderEvent', copiedEventObject, true);
-
-                // is the "remove after drop" checkbox checked?
-                if ($('#drop-remove').is(':checked')) {
-                    // if so, remove the element from the "Draggable Events" list
-                    $(this).remove();
-                }
+            droppable: true,
+            timezone: 'Asia/Tokyo',
+            eventLimit: true,
+            dayClick: function(date, jsEvent, view) {
+                // 日付クリックイベント. クリックされた日の拡大表示をする.
+                var $calendar = $(calendarSelector);
+                $calendar.fullCalendar('gotoDate', date);
+                $calendar.fullCalendar('changeView', 'agendaDay');
 
             },
+            eventClick: function(calEvent, jsEvent, view) {
+                // TODO
+                // イベントクリックイベント. そのイベントの詳細をPopupで表示する.
+                console.log(calEvent);
+                console.log(jsEvent);
+                console.log(view);
+                console.log(calEvent.start)
+            },
+            drop: function(date, allDay) {
+                // 従業員ドロップ時のイベント.
+                var source = $(this).data('events');
+                var newEvent = $.extend({}, source);
+
+                newEvent.start = date;
+                newEvent.allDay = false;
+
+                $(calendarSelector).fullCalendar('renderEvent', newEvent);
+            },
+            // TODO: URLを指定して、シフトデータをAPIで取る
             events: [
-                {
-                    title: 'Lunch',
-                    start: '2015-10-12T12:00:00'
-                },
-                {
-                    title: 'Birthday Party',
-                    start: '2015-10-13T07:00:00'
-                },
-                {
-                    title: 'Click for Google',
-                    url: 'http://google.com/',
-                    start: '2015-10-28'
-                }
+
             ]
         });
     });
@@ -106,8 +98,8 @@
             </div>
 
             <div id="external-events" class="box-content">
-                <div class="people">test</div>
-                <div class="people">test2</div>
+                <div class="people" style="background-color: red;">たなか</div>
+                <div class="people" style="background-color: blue;">さとう</div>
             </div>
 
         </div>
