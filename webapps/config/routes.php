@@ -25,7 +25,7 @@ use Cake\Routing\Router;
  *
  */
 Router::defaultRouteClass('DashedRoute');
-
+Router::extensions(['json', 'xml']);
 Router::scope('/', function ($routes) {
     $routes->connect('/', ['controller' => 'Index', 'action' => 'index']);
 
@@ -37,6 +37,7 @@ Router::scope('/', function ($routes) {
     $routes->connect('/employee', ['controller' => 'Employees', 'action' => 'index']);
 
     $routes->connect('/shift', ['controller' => 'ShiftTables', 'action' => 'index']);
+    $routes->connect('/api/shift', ['controller' => 'ShiftTables', 'action' => 'get']);
 
     $routes->connect('/dashboard', ['controller' => 'Dashboard', 'action' => 'index']);
 

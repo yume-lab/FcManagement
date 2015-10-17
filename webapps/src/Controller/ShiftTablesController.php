@@ -102,4 +102,30 @@ class ShiftTablesController extends AppController
         }
         return $this->redirect(['action' => 'index']);
     }
+
+    /**
+     * シフト初期表示時のAPI.
+     * TODO: スタブ
+     */
+    public function get() {
+        $this->autoRender = false;
+
+        $shift = [
+            [
+                'id' => 1,
+                'title' => 'さとう',
+                'backgroundColor' => '#2fa4e7',
+                'start' => '2015-10-17T09:00:00',
+                'end' => '2015-10-17T13:00:00',
+            ],
+            [
+                'id' => 2,
+                'title' => 'たなか',
+                'backgroundColor' => '#dd5600',
+                'start' => '2015-10-17T12:00:00',
+                'end' => '2015-10-17T16:00:00',
+            ],
+        ];
+        echo json_encode($shift);
+    }
 }
