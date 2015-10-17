@@ -1,29 +1,101 @@
 <?php $this->assign('title', 'シフト作成'); ?>
 
 <?php // TODO: 暫定でここに ?>
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
 <script src="http://code.jquery.com/ui/1.11.3/jquery-ui.min.js"></script>
 
-<style>
 
-    #external-events .fc-event {
-        margin: 10px 0;
-        cursor: pointer;
-    }
-    .fc-event, .fc-event:hover, .ui-widget .fc-event {
-        color: #fff;
-        text-decoration: none;
-    }
-    .fc-event {
-        position: relative;
-        display: block;
-        font-size: .85em;
-        line-height: 1.3;
-        border-radius: 3px;
-        border: 1px solid #3a87ad;
-        background-color: #3a87ad;
-        font-weight: normal;
-    }
-</style>
+
+<?php // TODO: 暫定でここに ?>
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        $('#external-events .people').each(function() {
+
+            // store data so the calendar knows to render an event upon drop
+            $(this).data('events', {
+                title: $.trim($(this).text()), // use the element's text as the event title
+            });
+
+            // make the event draggable using jQuery UI
+            $(this).draggable({
+                zIndex: 999,
+                helper: 'clone',
+                revert: 'invalid',
+                revertDuration: 0  //  original position after the drag
+            });
+        });
+
+        $('#shift-calendar').fullCalendar({
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,agendaWeek,agendaDay'
+            },
+            titleFormat: {
+                month: 'YYYY年M月',
+                week: "YYYY年M月D日",
+                day: "YYYY年M月D日"
+            },
+            buttonText: {
+                today: '今日',
+                month: '月',
+                week: '週',
+                day: '日'
+            },
+            // 月名称
+            monthNames: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+            // 月略称
+            monthNamesShort: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+            // 曜日名称
+            dayNames: ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'],
+            // 曜日略称
+            dayNamesShort: ['日', '月', '火', '水', '木', '金', '土'],
+            editable: true,
+            droppable: true, // this allows things to be dropped onto the calendar
+            drop: function(date, allDay) { // this function is called when something is dropped
+
+                // retrieve the dropped element's stored Event Object
+                var originalEventObject = $(this).data('events');
+
+                // we need to copy it, so that multiple events don't have a reference to the same object
+                var copiedEventObject = $.extend({}, originalEventObject);
+
+                // assign it the date that was reported
+                copiedEventObject.start = date;
+                copiedEventObject.allDay = allDay;
+
+                // render the event on the calendar
+                // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
+                $('#shift-calendar').fullCalendar('renderEvent', copiedEventObject, true);
+
+                // is the "remove after drop" checkbox checked?
+                if ($('#drop-remove').is(':checked')) {
+                    // if so, remove the element from the "Draggable Events" list
+                    $(this).remove();
+                }
+
+            },
+            events: [
+                {
+                    title: 'Lunch',
+                    start: '2015-10-12T12:00:00'
+                },
+                {
+                    title: 'Birthday Party',
+                    start: '2015-10-13T07:00:00'
+                },
+                {
+                    title: 'Click for Google',
+                    url: 'http://google.com/',
+                    start: '2015-10-28'
+                }
+            ]
+        });
+    });
+
+</script>
+
 
 
 <div class="row">
@@ -34,8 +106,8 @@
             </div>
 
             <div id="external-events" class="box-content">
-                <div class="fc-event">test</div>
-                <div class="fc-event">test2</div>
+                <div class="people">test</div>
+                <div class="people">test2</div>
             </div>
 
         </div>
@@ -66,72 +138,3 @@
         </div>
     </div>
 </div>
-
-
-<?php // TODO: 暫定でここに ?>
-<script type="text/javascript">
-
-    $(document).ready(function() {
-        $('#external-events .fc-event').each(function() {
-
-            // store data so the calendar knows to render an event upon drop
-            $(this).data('event', {
-                title: $.trim($(this).text()), // use the element's text as the event title
-                stick: true // maintain when user navigates (see docs on the renderEvent method)
-            });
-
-            // make the event draggable using jQuery UI
-            $(this).draggable({
-                zIndex: 999,
-                revert: true,      // will cause the event to go back to its
-                revertDuration: 0  //  original position after the drag
-            });
-
-        });
-
-        $('#shift-calendar').fullCalendar({
-            header: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'month,agendaWeek,agendaDay'
-            },
-            titleFormat: {
-                month: 'YYYY年M月',
-                week: "YYYY年M月D日",
-                day: "YYYY年M月D日"
-            },
-            buttonText: {
-                today: '今日',
-                month: '月',
-                week: '週',
-                day: '日'
-            },
-            // 月名称
-            monthNames: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
-            // 月略称
-            monthNamesShort: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
-            // 曜日名称
-            dayNames: ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'],
-            // 曜日略称
-            dayNamesShort: ['日', '月', '火', '水', '木', '金', '土'],
-            editable: true,
-            droppable: true, // this allows things to be dropped onto the calendar
-            events: [
-                {
-                    title: 'Lunch',
-                    start: '2015-10-12T12:00:00'
-                },
-                {
-                    title: 'Birthday Party',
-                    start: '2015-10-13T07:00:00'
-                },
-                {
-                    title: 'Click for Google',
-                    url: 'http://google.com/',
-                    start: '2015-10-28'
-                }
-            ]
-        });
-    });
-
-</script>
