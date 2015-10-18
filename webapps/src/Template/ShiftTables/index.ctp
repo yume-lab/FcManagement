@@ -1,15 +1,19 @@
 <?php $this->assign('title', 'シフト作成'); ?>
 
 <?php // TODO: 暫定でここに ?>
-<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
 <script src="http://code.jquery.com/ui/1.11.3/jquery-ui.min.js"></script>
-
-
 
 <?php // TODO: 暫定でここに ?>
 <script type="text/javascript">
 
     $(document).ready(function() {
+        var calendarSelector = '#shift-calendar';
+
+        $('#save').on('click', function() {
+            var events = $(calendarSelector).fullCalendar( 'clientEvents');
+            console.log(events);
+        });
+
         $('#employee-table .fc-event').each(function() {
             // ドラッグされた従業員を一時保存
             $(this).data('event', {
@@ -24,7 +28,6 @@
             });
         });
 
-        var calendarSelector = '#shift-calendar';
         $(calendarSelector).fullCalendar({
             header: {
                 left: 'prev,next today',
@@ -61,7 +64,6 @@
                 var $calendar = $(calendarSelector);
                 $calendar.fullCalendar('gotoDate', date);
                 $calendar.fullCalendar('changeView', 'agendaDay');
-
             },
             eventClick: function(calEvent, jsEvent, view) {
                 // TODO
@@ -90,8 +92,9 @@
     #employee-table .fc-event {
         margin: 10px 0;
         cursor: pointer;
+        border-radius: 3px;
+        background-color: #2fa4e7;
     }
-
 </style>
 
 
@@ -121,6 +124,13 @@
             </div>
 
             <div class="box-content">
+                <div class="box col-md-12">
+                    <a id="save" class="btn btn-info" href="#">
+                        <i class="glyphicon glyphicon-plus icon-white"></i>
+                        保存する
+                    </a>
+                </div>
+
                 <div id="shift-calendar"></div>
             </div>
         </div>
