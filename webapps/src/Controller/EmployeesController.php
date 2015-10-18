@@ -23,8 +23,7 @@ class EmployeesController extends AppController
         $this->paginate = [
             'contain' => ['Roles', 'Stores'],
             'conditions' => [
-                'Employees.store_id' => parent::getCurrentStoreId(),
-                'Employees.is_deleted' => false
+                'Employees.store_id' => parent::getCurrentStoreId()
             ],
             'limit' => Configure::read('Define.List.Count'),
             'order' => [

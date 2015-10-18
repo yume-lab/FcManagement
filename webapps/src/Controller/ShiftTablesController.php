@@ -2,11 +2,13 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 
 /**
  * ShiftTables Controller
  *
  * @property \App\Model\Table\ShiftTablesTable $ShiftTables
+ * @property \App\Model\Table\EmployeesTable $Employees
  */
 class ShiftTablesController extends AppController
 {
@@ -18,8 +20,10 @@ class ShiftTablesController extends AppController
      */
     public function index()
     {
-        $this->set('shiftTables', $this->paginate($this->ShiftTables));
-        $this->set('_serialize', ['shiftTables']);
+
+        $Employees = TableRegistry::get('Employees');
+        $this->set('employees', $Employees->find()->where(['Employees.is_deleted' => false]));
+        $this->set('_serialize', ['employees']);
     }
 
     /**

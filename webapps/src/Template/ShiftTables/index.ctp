@@ -10,9 +10,9 @@
 <script type="text/javascript">
 
     $(document).ready(function() {
-        $('#external-events .people').each(function() {
+        $('#employee-table .fc-event').each(function() {
             // ドラッグされた従業員を一時保存
-            $(this).data('events', {
+            $(this).data('event', {
                 title: $.trim($(this).text()), // use the element's text as the event title
                 backgroundColor: $(this).css('background-color')
             });
@@ -73,7 +73,7 @@
             },
             drop: function(date, allDay) {
                 // 従業員ドロップ時のイベント.
-                var source = $(this).data('events');
+                var source = $(this).data('event');
                 var newEvent = $.extend({}, source);
 
                 newEvent.start = date;
@@ -81,13 +81,18 @@
 
                 $(calendarSelector).fullCalendar('renderEvent', newEvent);
             },
-            // TODO: URLを指定して、シフトデータをAPIで取る
             events: '/api/shift'
         });
     });
 
 </script>
+<style>
+    #employee-table .fc-event {
+        margin: 10px 0;
+        cursor: pointer;
+    }
 
+</style>
 
 
 <div class="row">
@@ -97,9 +102,14 @@
                 <h2><i class="glyphicon glyphicon-calendar"></i> 従業員一覧</h2>
             </div>
 
-            <div id="external-events" class="box-content">
-                <div class="people" style="background-color: red;">たなか</div>
-                <div class="people" style="background-color: blue;">さとう</div>
+            <div id="employee-table" class="box-content">
+                <?php foreach ($employees as $employee): ?>
+                    <div class="fc-event">
+                        <div class="fc-event-inner">
+                            <?= $employee->last_name ?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
             </div>
 
         </div>
