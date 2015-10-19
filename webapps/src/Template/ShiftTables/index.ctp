@@ -10,15 +10,36 @@
         var calendarSelector = '#shift-calendar';
 
         $('#save').on('click', function() {
-            var events = $(calendarSelector).fullCalendar( 'clientEvents');
-            console.log(events);
+            var events = $(calendarSelector).fullCalendar('clientEvents');
+            var current = $(calendarSelector).fullCalendar('getDate');
+            var parameter = {
+                year: current.year(),
+                month: current.month() + 1,
+                shift: events
+            };
+            $.ajax({
+                type: 'POST',
+                url: '/api/shift/update',
+                data: JSON.stringify(parameter),
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function(res, status) {
+                    console.log(res);
+                    console.log(status);
+                },
+                error: function(res, status) {
+                    console.log(res);
+                    console.log(status);
+                }
+            });
         });
 
         $('#employee-table .fc-event').each(function() {
             // ドラッグされた従業員を一時保存
             $(this).data('event', {
                 title: $.trim($(this).text()), // use the element's text as the event title
-                backgroundColor: $(this).css('background-color')
+                backgroundColor: $(this).css('background-color'),
+                id: $(this).data('employee-id')
             });
 
             $(this).draggable({
@@ -96,7 +117,7 @@
 
             <div id="employee-table" class="box-content">
                 <?php foreach ($employees as $employee): ?>
-                    <div class="fc-event">
+                    <div class="fc-event" data-employee-id="<?= $employee->id ?>">
                         <div class="fc-event-inner">
                             <?= $employee->last_name ?>
                         </div>
@@ -114,6 +135,7 @@
 
             <div class="box-content">
                 <div class="box col-md-12">
+                    <?= $this->Flash->render() ?>
                     <a id="save" class="btn btn-info" href="#">
                         <i class="glyphicon glyphicon-plus icon-white"></i>
                         保存する

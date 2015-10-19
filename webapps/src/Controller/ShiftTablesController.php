@@ -132,4 +132,45 @@ class ShiftTablesController extends AppController
         ];
         echo json_encode($shift);
     }
+
+    public function update() {
+        $this->autoRender = false;
+
+        $data = $this->request->data();
+        $useKeys = ['id', 'title', 'backgroundColor', 'start', 'end', 'allDay'];
+
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $year = $data['year'];
+            $month = $data['month'];
+            $shift = $data['shift'];
+            $shiftTable = $this->ShiftTables->find()->where([
+                    'store_id' => parent::getCurrentStoreId(),
+                    'year' => $year,
+                    'month' => $month]
+            )->first();
+            if (empty($shiftTable)) {
+                $this->log('if (empty($shiftTable)) {');
+                $shiftTable = $this->ShiftTables->newEntity();
+            }
+            $record = [
+                'store_id' => parent::getCurrentStoreId(),
+                'year' => $year,
+                'month' => $month,
+                'body' => json_encode($shift),
+                'is_deleted' => false
+            ];
+
+            $shiftTable = $this->ShiftTables->patchEntity($shiftTable, $record);
+            if ($this->ShiftTables->save($shiftTable)) {
+                $this->Flash->success('シフト表を更新しました。');
+            } else {
+                $this->Flash->error('シフト表の更新に失敗しました。');
+            }
+            return $this->redirect(['action' => 'index']);
+        }
+    }
+
+    private function buildShift() {
+
+    }
 }

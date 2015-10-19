@@ -38,6 +38,7 @@ Router::scope('/', function ($routes) {
 
     $routes->connect('/shift', ['controller' => 'ShiftTables', 'action' => 'index']);
     $routes->connect('/api/shift', ['controller' => 'ShiftTables', 'action' => 'get']);
+    $routes->connect('/api/shift/update', ['controller' => 'ShiftTables', 'action' => 'update']);
 
     $routes->connect('/dashboard', ['controller' => 'Dashboard', 'action' => 'index']);
 
