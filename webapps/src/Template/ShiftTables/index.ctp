@@ -41,6 +41,7 @@
             droppable: true,
             timezone: 'Asia/Tokyo',
             eventLimit: true,
+            displayEventEnd: true,
             dayClick: function(date, jsEvent, view) {
                 // 日付クリックイベント. クリックされた日の拡大表示をする.
                 var $calendar = $(calendarSelector);
@@ -57,10 +58,16 @@
             },
             drop: function(date, allDay) {
                 // 従業員ドロップ時のイベント.
+                var DEFAULT_HOUR_RANGE = 2;
+
                 var source = $(this).data('event');
                 var newEvent = $.extend({}, source);
 
-                newEvent.start = date;
+                var start = date;
+                var end = moment(start).add('hours', DEFAULT_HOUR_RANGE).format();
+
+                newEvent.start = start;
+                newEvent.end = end;
                 newEvent.allDay = false;
 
                 $(calendarSelector).fullCalendar('renderEvent', newEvent);
