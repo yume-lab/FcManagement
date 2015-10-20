@@ -65,9 +65,23 @@
             displayEventEnd: true,
             dayClick: function(date, jsEvent, view) {
                 // 日付クリックイベント. クリックされた日の拡大表示をする.
-                var $calendar = $(calendarSelector);
-                $calendar.fullCalendar('gotoDate', date);
-                $calendar.fullCalendar('changeView', 'agendaDay');
+//                var $calendar = $(calendarSelector);
+//                $calendar.fullCalendar('gotoDate', date);
+//                $calendar.fullCalendar('changeView', 'agendaDay');
+                // TODO: シフトなければポップアップ、あれば日付詳細
+                console.log(date);
+                console.log(jsEvent);
+                console.log(view);
+                $(this).popover({
+                    html: true,
+                    placement: 'top',
+                    title: function() {
+                        return 'title';
+                    },
+                    content: function() {
+                        return '<select class="form-control"> <option>test</option></select>';
+                    }
+                });
             },
             eventClick: function(calEvent, jsEvent, view) {
                 // TODO
@@ -76,6 +90,19 @@
                 console.log(jsEvent);
                 console.log(view);
                 console.log(calEvent.start)
+            },
+            viewRender: function(view, element) {
+                if (view.name === 'month') {
+                    var current = $(calendarSelector).fullCalendar('getDate');
+                    var parameter = {
+                        year: current.year(),
+                        month: current.month() + 1
+                    };
+                    $(calendarSelector).fullCalendar({
+                        events: '/api/shift'
+                    });
+                    console.log(parameter);
+                }
             },
             drop: function(date, allDay) {
                 // 従業員ドロップ時のイベント.
@@ -108,26 +135,10 @@
 </style>
 
 
+<a href="#" id="test" style="display: none;" class="btn btn-danger" data-toggle="popover" data-content="And here's some amazing content. It's very engaging. right?" title="A Title">hover for popover</a>
+
 <div class="row">
-    <div class="col-md-2">
-        <div class="box-inner">
-            <div class="box-header well" data-original-title="">
-                <h2><i class="glyphicon glyphicon-calendar"></i> 従業員一覧</h2>
-            </div>
-
-            <div id="employee-table" class="box-content">
-                <?php foreach ($employees as $employee): ?>
-                    <div class="fc-event" data-employee-id="<?= $employee->id ?>">
-                        <div class="fc-event-inner">
-                            <?= $employee->last_name ?>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-
-        </div>
-    </div>
-    <div class="col-md-10">
+    <div class="col-md-12">
         <div class="box-inner">
             <div class="box-header well" data-original-title="">
                 <h2><i class="glyphicon glyphicon-calendar"></i> シフト表</h2>

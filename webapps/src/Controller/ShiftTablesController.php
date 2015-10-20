@@ -109,11 +109,15 @@ class ShiftTablesController extends AppController
 
     /**
      * シフト初期表示時のAPI.
-     * TODO: スタブ
-     * TODO: 次の月のシフトを都度取得する必要があるため、API設計を見直す
+     * 下記のGETパラメータを受け取ります.
+     * start - 取得開始日
+     * end - 取得終了日
      */
     public function get() {
         $this->autoRender = false;
+
+        $query = $this->request->query;
+        $this->log($query);
 
         $shift = [
             [
