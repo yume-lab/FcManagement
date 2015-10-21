@@ -34,6 +34,20 @@
             });
         });
 
+        $(document).on('click', '#register', function() {
+            var date = moment($('#day').val()).format('YYYY-MM-DD');
+            var $employee = $('#sel_employee option:selected');
+            var event = {
+                title: $.trim($employee.text()),
+                id: $('#sel_employee').val(),
+                start: moment(date + ' ' + $('#start option:selected').val()),
+                end: moment(date + ' ' + $('#end option:selected').val()),
+            };
+            console.log(event);
+            $(calendarSelector).fullCalendar('renderEvent', event);
+            return false;
+        });
+
         $('#employee-table .fc-event').each(function() {
             // ドラッグされた従業員を一時保存
             $(this).data('event', {
@@ -72,14 +86,20 @@
                 console.log(date);
                 console.log(jsEvent);
                 console.log(view);
+
+                $('#day').val(date);
                 $(this).popover({
                     html: true,
-                    placement: 'top',
+                    placement: function (context, source) {
+                        var position = $(source).position();
+                        return (position.left > 500) ? 'left' : 'right';
+                    },
+                    container: 'body',
                     title: function() {
-                        return 'title';
+                        return $('#popover-header').html(date.format('YYYY/MM/DD')).html();
                     },
                     content: function() {
-                        return '<select class="form-control"> <option>test</option></select>';
+                        return $('#popover-content').html();
                     }
                 });
             },
@@ -125,17 +145,6 @@
     });
 
 </script>
-<style>
-    #employee-table .fc-event {
-        margin: 10px 0;
-        cursor: pointer;
-        border-radius: 3px;
-        background-color: #2fa4e7;
-    }
-</style>
-
-
-<a href="#" id="test" style="display: none;" class="btn btn-danger" data-toggle="popover" data-content="And here's some amazing content. It's very engaging. right?" title="A Title">hover for popover</a>
 
 <div class="row">
     <div class="col-md-12">
@@ -170,5 +179,48 @@
 
             </div>
         </div>
+    </div>
+</div>
+
+<div id="popover-header" class="hide">
+    <?php // 動的に日付いれる ?>
+</div>
+<div id="popover-content" class="hide col-md-5">
+    <?= $this->Form->input('day', ['type' => 'hidden', 'id' => 'day']) ?>
+
+    <div class="form-group col-md-12 center">
+        <h5 for="employee-id">従業員</h5>
+        <select id="sel_employee" class="form-control">
+            <?php foreach ($employees as $employee): ?>
+                <option value="<?= $employee->id ?>">
+                    <?= h($employee->last_name . ' ' . $employee->first_name) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+
+    <div class="form-group col-md-12 center">
+        <?php $start = ['9:00', '9:30', '10:00', '10:30']; ?>
+        <?php $end = ['9:00', '9:30', '10:00', '10:30']; ?>
+        <h5 for="time">時間</h5>
+        <select id="start" class="form-control">
+            <?php foreach ($start as $time): ?>
+                <option value="<?= $time ?>">
+                    <?= h($time) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+        〜
+        <select id="end" class="form-control">
+            <?php foreach ($end as $time): ?>
+                <option value="<?= $time ?>">
+                    <?= h($time) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+
+    <div class="form-group col-md-12 center">
+        <a href="#" class="btn btn-primary" id="register">登録</a>
     </div>
 </div>

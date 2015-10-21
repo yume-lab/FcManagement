@@ -20,7 +20,6 @@ class ShiftTablesController extends AppController
      */
     public function index()
     {
-
         $Employees = TableRegistry::get('Employees');
         $this->set('employees', $Employees->find()->where(['Employees.is_deleted' => false]));
         $this->set('_serialize', ['employees']);
