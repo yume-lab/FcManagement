@@ -15,43 +15,82 @@
     $document.ready(function() {
         var calendarSelector = '#shift-calendar';
 
-        var showEventPopover = function($target, time, mode) {
-            $.data($body, 'data-time', time);
+        var $popover;
+
+        var destroyPopover = function() {
+            if ($popover) {
+                $popover.popover('destroy');
+            }
+        }
+
+        var showEventPopover = function($target, event, mode) {
+            var current = event.start;
+
+            $.data($body, 'data-time', current);
+            $.data($body, 'data-eventId', event._id);
+
+            destroyPopover();
             $target.popover({
                 html: true,
                 placement: function (context, source) {
                     var position = $(source).position();
-                    return (position.left > 500) ? 'left' : 'right';
+//                    return (position.left > 500) ? 'left' : 'right';
+                    return (position.top < 110) ? 'bottom' : 'top';
                 },
                 container: 'body',
+                trigger: 'click',
                 title: function() {
-                    return $('#popover-header').html(time.format('YYYY/MM/DD')).html();
+                    return $('#popover-header').html(current.format('YYYY/MM/DD')).html();
                 },
                 content: function() {
+                    var $registerButton = $('#register');
+                    var $updateButton = $('#update');
+                    switch (mode) {
+                        case MODE.REGISTER:
+                            $registerButton.show();
+                            $updateButton.hide();
+                            break;
+                        case MODE.UPDATE:
+                            $registerButton.hide();
+                            $updateButton.show();
+                            break;
+                    }
                     return $('#popover-content').html();
                 }
             });
+            $popover = $target.popover('show');
 
-
-            var $registerButton = $('#register');
-            var $updateButton = $('#update');
-
-            switch (mode) {
-                case MODE.REGISTER:
-                    $registerButton.show();
-                    $updateButton.hide();
-                    break;
-                case MODE.UPDATE:
-                    $registerButton.hide();
-                    $updateButton.show();
-                    break;
-            }
+            $('.popover #employees').val((event.employeeId || ''));
+            $('.popover #startTime').val(moment(event.start).format('HH:mm'));
+            $('.popover #endTime').val(moment(event.end).format('HH:mm'));
 
             $('.popover-select').change();
         }
 
-//        $document.on('shown.bs.popover', function () {
-//        }
+        var addNewEvent = function() {
+            var date = moment($.data($body, 'data-time')).format('YYYY-MM-DD');
+            var getTime = function(name) {
+                return moment(date + $.data($body, name), 'YYYY-MM-DDHH:mm');
+            }
+
+            var employeeId = $.data($body, 'data-employeeId');
+            var $employee = $('#employees').find('option').filter(function(row) {
+                return employeeId === $(this).val();
+            });
+            var startTime = getTime('data-startTime');
+            var endTime = getTime('data-endTime');
+
+            var event = {
+                title: $.trim($employee.html()),
+                employeeId: $employee.val(),
+                start: startTime,
+                end: endTime
+            };
+            $(calendarSelector).fullCalendar('renderEvent', event);
+            destroyPopover();
+
+            $.removeData($body);
+        }
 
         $document.on('change', '.popover-select', function() {
             var name = $(this).data('set-name');
@@ -87,30 +126,19 @@
          * シフト登録処理
          */
         $document.on('click', '#register', function() {
-            var date = moment($.data($body, 'data-time')).format('YYYY-MM-DD');
-            var getTime = function(name) {
-                return moment(date + $.data($body, name), 'YYYY-MM-DDHH:mm');
+            addNewEvent();
+            return false;
+        });
+
+        /**
+         * シフト更新処理
+         */
+        $document.on('click', '#update', function() {
+            var eventId = $.data($body, 'data-eventId');
+            if (eventId) {
+                $(calendarSelector).fullCalendar('removeEvents', eventId);
             }
-
-            var employeeId = $.data($body, 'data-employeeId');
-            var $employee = $('#employees').find('option').filter(function(row) {
-                return employeeId === $(this).val();
-            });
-            var startTime = getTime('data-startTime');
-            var endTime = getTime('data-endTime');
-
-            var event = {
-                title: $.trim($employee.html()),
-                employeeId: $employee.val(),
-                start: startTime,
-                end: endTime
-            };
-            console.log(date);
-            console.log(event);
-            $(calendarSelector).fullCalendar('renderEvent', event);
-            $('.fc-day').popover('destroy');
-
-            $.removeData($body);
+            addNewEvent();
             return false;
         });
 
@@ -127,40 +155,39 @@
             timezone: 'Asia/Tokyo',
             eventLimit: 4,
             displayEventEnd: true,
-            dayClick: function(date, jsEvent, view) {
-                var compareFormat = 'YYYYMMDD';
+            firstDay: 1,
+            selectable: true,
+            allDaySlot: false,
+            select: function(start, end, jsEvent, view) {
+                jsEvent.preventDefault();
+                jsEvent.stopPropagation();
 
                 var $calendar = $(calendarSelector);
 
+                var compareFormat = 'YYYYMMDD';
                 var events = $calendar.fullCalendar('clientEvents', function(event) {
-                    var start = moment(event.start).format(compareFormat);
-                    var end = moment(event.end).format(compareFormat);
-                    var now = moment(date).format(compareFormat);
-                    return now == start && now == end;
+                    var eStart = moment(event.start).format(compareFormat);
+                    var now = moment(start).format(compareFormat);
+                    return now == eStart;
                 });
-                if (events.length) {
-                    $('.fc-day').popover('destroy');
-                    $calendar.fullCalendar('gotoDate', date);
+
+                var isDayDetail = (view.name === 'month' && events.length);
+                if (isDayDetail) {
+                    destroyPopover();
+                    $calendar.fullCalendar('gotoDate', start);
                     $calendar.fullCalendar('changeView', 'agendaDay');
                     return;
                 }
 
-                showEventPopover($(this), date, MODE.REGISTER);
+                var event = {
+                    employeeId: '',
+                    start: start,
+                    end: end
+                };
+                showEventPopover($(jsEvent.target), event, MODE.REGISTER);
             },
             eventClick: function(calEvent, jsEvent, view) {
-                // TODO
-                // イベントクリックイベント. そのイベントの詳細をPopupで表示する.
-                showEventPopover($(this), calEvent.start, MODE.UPDATE);
-
-//                $('#employees').filter(function() {
-//                    return $(this).val() == 3;
-//                }).prop('selected', true);
-
-
-                console.log(calEvent);
-                console.log(jsEvent);
-                console.log(view);
-                console.log(calEvent.start)
+                showEventPopover($(this), calEvent, MODE.UPDATE);
             },
             viewRender: function(view, element) {
                 if (view.name === 'month') {
@@ -174,22 +201,6 @@
                     });
                     console.log(parameter);
                 }
-            },
-            drop: function(date, allDay) {
-                // 従業員ドロップ時のイベント.
-                var DEFAULT_HOUR_RANGE = 2;
-
-                var source = $(this).data('event');
-                var newEvent = $.extend({}, source);
-
-                var start = date;
-                var end = moment(start).add('hours', DEFAULT_HOUR_RANGE).format();
-
-                newEvent.start = start;
-                newEvent.end = end;
-                newEvent.allDay = false;
-
-                $(calendarSelector).fullCalendar('renderEvent', newEvent);
             },
             events: '/api/shift'
         });
@@ -219,27 +230,15 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="box col-md-12">
-        <div class="box-inner">
-            <div class="box-header well" data-original-title="">
-                <h2><i class="glyphicon glyphicon-calendar"></i> シフト表プレビュー</h2>
-            </div>
 
-            <div class="box-content">
-
-            </div>
-        </div>
-    </div>
-</div>
-
+<?php // ポップアップ用 ?>
 <div id="popover-header" class="hide">
     <?php // 動的に日付いれる ?>
 </div>
 <div id="popover-content" class="hide col-md-5">
     <div class="form-group col-md-12 center">
         <h5>従業員</h5>
-        <select id="employees" class="form-control popover-select" data-set-name="data-employeeId">
+        <select id="employees" class="form-control popover-select" required="required" data-set-name="data-employeeId">
             <?php foreach ($employees as $employee): ?>
                 <option value="<?= $employee->id ?>">
                     <?= h($employee->last_name) ?>
@@ -249,10 +248,19 @@
     </div>
 
     <div class="form-group col-md-12 center">
-        <?php $start = ['9:00', '9:30', '10:00', '10:30']; ?>
-        <?php $end = ['9:00', '9:30', '10:00', '10:30']; ?>
+        <?php
+        // TODO: サーバーで作る.
+        $times = [];
+        for ($i = 0; $i < 48; $i++) {
+            $time = date("H:i", strtotime("+". $i * 30 ." minute",(3600)));
+            $times[] = $time;
+        }
+        ?>
+
+        <?php $start = $times; ?>
+        <?php $end = $times; ?>
         <h5>時間</h5>
-        <select id="startTime" class="form-control popover-select" data-set-name="data-startTime">
+        <select id="startTime" class="form-control popover-select" required="required" data-set-name="data-startTime">
             <?php foreach ($start as $time): ?>
                 <option value="<?= $time ?>">
                     <?= h($time) ?>
@@ -260,7 +268,7 @@
             <?php endforeach; ?>
         </select>
         〜
-        <select id="endTime" class="form-control popover-select" data-set-name="data-endTime">
+        <select id="endTime" class="form-control popover-select" required="required" data-set-name="data-endTime">
             <?php foreach ($end as $time): ?>
                 <option value="<?= $time ?>">
                     <?= h($time) ?>
