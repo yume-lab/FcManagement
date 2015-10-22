@@ -43,16 +43,17 @@
                     return $('#popover-header').html(current.format('YYYY/MM/DD')).html();
                 },
                 content: function() {
-                    var $registerButton = $('#register');
-                    var $updateButton = $('#update');
+                    var $registerButtonArea = $('#btn-register');
+                    var $updateButtonArea = $('#btn-update');
+                    $registerButtonArea.hide();
+                    $updateButtonArea.hide();
+
                     switch (mode) {
                         case MODE.REGISTER:
-                            $registerButton.show();
-                            $updateButton.hide();
+                            $registerButtonArea.show();
                             break;
                         case MODE.UPDATE:
-                            $registerButton.hide();
-                            $updateButton.show();
+                            $updateButtonArea.show();
                             break;
                     }
                     return $('#popover-content').html();
@@ -88,7 +89,14 @@
             };
             $(calendarSelector).fullCalendar('renderEvent', event);
             destroyPopover();
+            $.removeData($body);
+        }
 
+        var removeEvent = function(eventId) {
+            if (eventId) {
+                $(calendarSelector).fullCalendar('removeEvents', eventId);
+            }
+            destroyPopover();
             $.removeData($body);
         }
 
@@ -135,10 +143,17 @@
          */
         $document.on('click', '#update', function() {
             var eventId = $.data($body, 'data-eventId');
-            if (eventId) {
-                $(calendarSelector).fullCalendar('removeEvents', eventId);
-            }
+            removeEvent(eventId);
             addNewEvent();
+            return false;
+        });
+
+        /**
+         * シフト更新処理
+         */
+        $document.on('click', '#remove', function() {
+            var eventId = $.data($body, 'data-eventId');
+            removeEvent(eventId);
             return false;
         });
 
@@ -238,7 +253,7 @@
 <div id="popover-content" class="hide col-md-5">
     <div class="form-group col-md-12 center">
         <h5>従業員</h5>
-        <select id="employees" class="form-control popover-select" required="required" data-set-name="data-employeeId">
+        <select id="employees" class="form-control popover-select" data-set-name="data-employeeId">
             <?php foreach ($employees as $employee): ?>
                 <option value="<?= $employee->id ?>">
                     <?= h($employee->last_name) ?>
@@ -260,7 +275,7 @@
         <?php $start = $times; ?>
         <?php $end = $times; ?>
         <h5>時間</h5>
-        <select id="startTime" class="form-control popover-select" required="required" data-set-name="data-startTime">
+        <select id="startTime" class="form-control popover-select" data-set-name="data-startTime">
             <?php foreach ($start as $time): ?>
                 <option value="<?= $time ?>">
                     <?= h($time) ?>
@@ -268,7 +283,7 @@
             <?php endforeach; ?>
         </select>
         〜
-        <select id="endTime" class="form-control popover-select" required="required" data-set-name="data-endTime">
+        <select id="endTime" class="form-control popover-select" data-set-name="data-endTime">
             <?php foreach ($end as $time): ?>
                 <option value="<?= $time ?>">
                     <?= h($time) ?>
@@ -277,8 +292,12 @@
         </select>
     </div>
 
-    <div class="form-group col-md-12 center">
+    <div id="btn-register" class="form-group col-md-12 center" style="display: none;">
         <a href="#" class="btn btn-primary" id="register">登録</a>
-        <a href="#" class="btn btn-warning" id="update">更新</a>
+    </div>
+
+    <div id="btn-update" class="form-group col-md-12 center" style="display: none;">
+        <a href="#" class="btn btn-danger" id="remove">削除</a>
+        <a href="#" class="btn btn-success" id="update">更新</a>
     </div>
 </div>
