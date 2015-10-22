@@ -5,11 +5,17 @@
 
 <?php // TODO: 暫定でここに ?>
 <script type="text/javascript">
+    var $document = $(document);
 
-    $(document).ready(function() {
+    $document.ready(function() {
         var calendarSelector = '#shift-calendar';
 
-        $('#save').on('click', function() {
+        $document.on('change', '.popover-select', function() {
+            var setId = $(this).data('set-id');
+            $(setId).val($(this).val());
+        });
+
+        $document.on('click', '#save', function() {
             var events = $(calendarSelector).fullCalendar('clientEvents');
             var current = $(calendarSelector).fullCalendar('getDate');
             var parameter = {
@@ -34,33 +40,32 @@
             });
         });
 
-        $(document).on('click', '#register', function() {
-            var date = moment($('#day').val()).format('YYYY-MM-DD');
-            var $employee = $('#sel_employee option:selected');
+        /**
+         * シフト登録処理
+         */
+        $document.on('click', '#register', function() {
+            var date = moment($('#data-day').val()).format('YYYY-MM-DD');
+            var getTime = function(selector) {
+                return moment(date + $(selector).val(), 'YYYY-MM-DDHH:mm');
+            }
+
+            var employeeId = $('#data-employeeId').val();
+            var $employee = $('#employees').find('option').filter(function(row) {
+                return employeeId === $(this).val();
+            });
+            var startTime = getTime('#data-startTime');
+            var endTime = getTime('#data-endTime');
+
             var event = {
-                title: $.trim($employee.text()),
-                id: $('#sel_employee').val(),
-                start: moment(date + ' ' + $('#start option:selected').val()),
-                end: moment(date + ' ' + $('#end option:selected').val()),
+                title: $.trim($employee.html()),
+                employeeId: $employee.val(),
+                start: startTime,
+                end: endTime
             };
+            console.log(date);
             console.log(event);
             $(calendarSelector).fullCalendar('renderEvent', event);
             return false;
-        });
-
-        $('#employee-table .fc-event').each(function() {
-            // ドラッグされた従業員を一時保存
-            $(this).data('event', {
-                title: $.trim($(this).text()), // use the element's text as the event title
-                backgroundColor: $(this).css('background-color'),
-                id: $(this).data('employee-id')
-            });
-
-            $(this).draggable({
-                zIndex: 999,
-                revert: true,
-                revertDuration: 0
-            });
         });
 
         $(calendarSelector).fullCalendar({
@@ -73,7 +78,6 @@
             // 時間の書式
             timeFormat: 'H(:mm)',
             editable: true,
-            droppable: true,
             timezone: 'Asia/Tokyo',
             eventLimit: true,
             displayEventEnd: true,
@@ -83,11 +87,12 @@
 //                $calendar.fullCalendar('gotoDate', date);
 //                $calendar.fullCalendar('changeView', 'agendaDay');
                 // TODO: シフトなければポップアップ、あれば日付詳細
-                console.log(date);
-                console.log(jsEvent);
-                console.log(view);
+//                console.log(date);
+//                console.log(jsEvent);
+//                console.log(view);
 
-                $('#day').val(date);
+
+                $('#data-day').val(date);
                 $(this).popover({
                     html: true,
                     placement: function (context, source) {
@@ -102,6 +107,7 @@
                         return $('#popover-content').html();
                     }
                 });
+                $('.popover-select').change();
             },
             eventClick: function(calEvent, jsEvent, view) {
                 // TODO
@@ -186,14 +192,17 @@
     <?php // 動的に日付いれる ?>
 </div>
 <div id="popover-content" class="hide col-md-5">
-    <?= $this->Form->input('day', ['type' => 'hidden', 'id' => 'day']) ?>
+    <?= $this->Form->input('day', ['type' => 'hidden', 'id' => 'data-day']) ?>
+    <?= $this->Form->input('employeeId', ['type' => 'hidden', 'id' => 'data-employeeId']) ?>
+    <?= $this->Form->input('startTime', ['type' => 'hidden', 'id' => 'data-startTime']) ?>
+    <?= $this->Form->input('endTime', ['type' => 'hidden', 'id' => 'data-endTime']) ?>
 
     <div class="form-group col-md-12 center">
-        <h5 for="employee-id">従業員</h5>
-        <select id="sel_employee" class="form-control">
+        <h5>従業員</h5>
+        <select id="employees" class="form-control popover-select" data-set-id="#data-employeeId">
             <?php foreach ($employees as $employee): ?>
                 <option value="<?= $employee->id ?>">
-                    <?= h($employee->last_name . ' ' . $employee->first_name) ?>
+                    <?= h($employee->last_name) ?>
                 </option>
             <?php endforeach; ?>
         </select>
@@ -202,8 +211,8 @@
     <div class="form-group col-md-12 center">
         <?php $start = ['9:00', '9:30', '10:00', '10:30']; ?>
         <?php $end = ['9:00', '9:30', '10:00', '10:30']; ?>
-        <h5 for="time">時間</h5>
-        <select id="start" class="form-control">
+        <h5>時間</h5>
+        <select id="startTime" class="form-control popover-select" data-set-id="#data-startTime">
             <?php foreach ($start as $time): ?>
                 <option value="<?= $time ?>">
                     <?= h($time) ?>
@@ -211,7 +220,7 @@
             <?php endforeach; ?>
         </select>
         〜
-        <select id="end" class="form-control">
+        <select id="endTime" class="form-control popover-select" data-set-id="#data-endTime">
             <?php foreach ($end as $time): ?>
                 <option value="<?= $time ?>">
                     <?= h($time) ?>
