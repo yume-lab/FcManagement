@@ -3,7 +3,11 @@
 <?php // TODO: 暫定でここに ?>
 <script src="http://code.jquery.com/ui/1.11.3/jquery-ui.min.js"></script>
 
-<?= $this->Html->script('ShiftTables/index.js') ?>
+
+<?php
+//$this->Html->script('ShiftTables/index.js', ['type' => 'text/javascript'])
+?>
+
 <div class="row">
     <div class="col-md-12">
         <div class="box-inner">
@@ -26,4 +30,6 @@
     </div>
 </div>
 
-<?php echo $this->element('Popover/ShiftTables/edit_shift', ['employees' => $employees]); ?>
+<?= $this->element('Script/ShiftTables/index'); ?>
+
+<?= $this->element('Popover/ShiftTables/input', ['employees' => $employees]); ?>
