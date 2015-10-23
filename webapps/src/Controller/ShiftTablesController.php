@@ -116,25 +116,24 @@ class ShiftTablesController extends AppController
         $this->autoRender = false;
 
         $query = $this->request->query;
-        $this->log($query);
 
-        $shift = [
-            [
-                'id' => 1,
-                'title' => 'さとう',
-                'backgroundColor' => '#2fa4e7',
-                'start' => '2015-10-17T09:00:00',
-                'end' => '2015-10-17T13:00:00',
-            ],
-            [
-                'id' => 2,
-                'title' => 'たなか',
-                'backgroundColor' => '#dd5600',
-                'start' => '2015-10-17T12:00:00',
-                'end' => '2015-10-17T16:00:00',
-            ],
-        ];
-        echo json_encode($shift);
+        $start = $this->getDateConditions($query['start']);
+        $end = $this->getDateConditions($query['end']);
+
+        $shifts = $this->ShiftTables->find()
+            ->where(['store_id' => parent::getCurrentStoreId()])
+            ->where(['year >= ' => $start[0], 'month >= ' => $start[1]])
+            ->where(['year <= ' => $end[0], 'month <= ' => $end[1]])
+            ->all();
+
+        $response = [];
+        foreach ($shifts as $shift) {
+            $data = json_decode($shift->body);
+            $response = array_merge($response, $data);
+        }
+        $this->log($response);
+
+        echo json_encode($response);
     }
 
     public function update() {
@@ -174,7 +173,14 @@ class ShiftTablesController extends AppController
         }
     }
 
-    private function buildShift() {
-
+    /**
+     * シフトを取得する条件を取得します.
+     *
+     * @param $date パラメータの日付
+     * @return array [0] => year, [1] => month の配列
+     */
+    private function getDateConditions($date) {
+        return explode('-', date('Y-m', strtotime($date)));
     }
+
 }

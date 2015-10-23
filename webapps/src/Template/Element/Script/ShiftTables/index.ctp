@@ -207,17 +207,29 @@
                 eventClick: function(calEvent, jsEvent, view) {
                     showEventPopover($(this), calEvent, MODE.UPDATE);
                 },
-                viewRender: function(view, element) {
-                    if (view.name === 'month') {
-                        var current = $(calendarSelector).fullCalendar('getDate');
-                        var parameter = {
-                            year: current.year(),
-                            month: current.month() + 1
-                        };
-                        console.log(parameter);
-                    }
-                },
-                events: '/api/shift'
+                events: function(start, end, timezone, callback) {
+                    $.ajax({
+                        url: '/api/shift',
+                        dataType: 'json',
+                        data: {
+                            start: start.format(),
+                            end: end.format()
+                        },
+                        success: function(shifts) {
+                            var events = [];
+                            $.each(shifts, function(i, shift) {
+                                events.push({
+                                    title: shift.title,
+                                    start: shift.start,
+                                    end: shift.end,
+                                    employeeId: shift.employeeId,
+                                });
+                            });
+                            console.log(events);
+                            callback(events);
+                        }
+                    });
+                }
             });
         });
     })(jQuery);
