@@ -34,11 +34,6 @@ sudo yum -y install mysql-server
 sudo mv /etc/my.cnf /etc/my.cnf.back
 sudo cp $LOCAL_ROOT/conf/my.cnf /etc/my.cnf
 
-# MongoDB
-echo "== start MongoDB =="
-sudo cp $LOCAL_ROOT/repo/mongodb.repo /etc/yum.repos.d/mongodb.repo
-sudo yum -y install --enablerepo=mongodb mongodb-org
-
 # インストール確認
 echo "======================"
 echo "== インストール確認 =="
