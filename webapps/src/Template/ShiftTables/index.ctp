@@ -20,7 +20,7 @@
                     <?= $this->Flash->render() ?>
                     <a id="save" class="btn btn-info" href="#">
                         <i class="glyphicon glyphicon-plus icon-white"></i>
-                        保存する
+                        一時保存
                     </a>
                 </div>
 

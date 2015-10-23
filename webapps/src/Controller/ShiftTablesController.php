@@ -180,7 +180,7 @@ class ShiftTablesController extends AppController
      */
     private function buildBody($data)
     {
-        $useKeys = ['id', 'title', 'employeeId', 'start', 'end'];
+        $useKeys = ['_id', 'title', 'employeeId', 'start', 'end'];
 
         $results = [];
         foreach ($data as $shift) {

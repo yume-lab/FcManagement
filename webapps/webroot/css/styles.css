@@ -1,0 +1,21 @@
+/** 共通スタイル */
+
+#loading {
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    margin: 0;
+    background-color: #f7f7f9;
+    filter: alpha(opacity=65);
+    -moz-opacity: 0.65;
+    -khtml-opacity: 0.65;
+    opacity: 0.65;
+    background-image: url('/ch-assets/img/ajax-loaders/ajax-loader-8.gif');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    display: none;
+}

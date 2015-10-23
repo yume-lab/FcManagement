@@ -16,12 +16,14 @@
     <?= $this->Html->meta('icon') ?>
 
     <?= $this->element('Charisma/header') ?>
+    <?= $this->Html->css('styles.css') ?>
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
     <?= $this->fetch('script') ?>
 </head>
 <body>
+    <div id="loading"></div>
 
     <div id="header">
         <?= $this->element('header') ?>
@@ -45,5 +47,6 @@
     </div>
 
     <?= $this->element('Charisma/footer') ?>
+    <?= $this->element('Script/Common/util') ?>
 </body>
 </html>

@@ -80,7 +80,6 @@ $tempSaveSuccessMessage = 'シフトを一時保存しました';
             var addNewEvent = function() {
                 var date = moment($.data($body, 'data-time')).format('YYYY-MM-DD');
                 var getTime = function(name) {
-//                    return moment(date + ' ' + $.data($body, name), 'YYYY-MM-DD HH:mm');
                     return date + ' ' + $.data($body, name);
                 }
 
@@ -124,6 +123,7 @@ $tempSaveSuccessMessage = 'シフトを一時保存しました';
                     month: current.month() + 1,
                     shift: events
                 };
+                showLoading();
                 $.ajax({
                     type: 'POST',
                     url: '/api/shift/update',
@@ -132,6 +132,7 @@ $tempSaveSuccessMessage = 'シフトを一時保存しました';
                     contentType: 'application/json',
                 }).always(function(jqXHR, textStatus) {
                     console.log(jqXHR, textStatus);
+                    hideLoading();
                     $('#notice').trigger('click');
                 });
             });
@@ -213,6 +214,7 @@ $tempSaveSuccessMessage = 'シフトを一時保存しました';
                     showEventPopover($(this), calEvent, MODE.UPDATE);
                 },
                 events: function(start, end, timezone, callback) {
+                    showLoading();
                     $.ajax({
                         url: '/api/shift',
                         dataType: 'json',
@@ -231,6 +233,7 @@ $tempSaveSuccessMessage = 'シフトを一時保存しました';
                                 });
                             });
                             console.log(events);
+                            hideLoading();
                             callback(events);
                         }
                     });
