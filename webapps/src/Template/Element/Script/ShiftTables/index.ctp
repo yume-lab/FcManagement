@@ -3,7 +3,14 @@
  * TODO: 外部JS化が文字化けして難しかった
  * シフト作成のjavascript.
  */
+
+$tempSaveSuccessMessage = 'シフトを一時保存しました';
 ?>
+
+<?php // 一時保存の完了通知用 ?>
+<button id="notice" class="noty hide"
+        data-noty-options="{&quot;text&quot;:&quot;<?= $tempSaveSuccessMessage ?>&quot;,&quot;layout&quot;:&quot;top&quot;,&quot;type&quot;:&quot;information&quot;}">
+</button>
 
 <script type="text/javascript">
     (function($) {
@@ -73,7 +80,8 @@
             var addNewEvent = function() {
                 var date = moment($.data($body, 'data-time')).format('YYYY-MM-DD');
                 var getTime = function(name) {
-                    return moment(date + $.data($body, name), 'YYYY-MM-DDHH:mm');
+//                    return moment(date + ' ' + $.data($body, name), 'YYYY-MM-DD HH:mm');
+                    return date + ' ' + $.data($body, name);
                 }
 
                 var employeeId = $.data($body, 'data-employeeId');
@@ -89,6 +97,8 @@
                     start: startTime,
                     end: endTime
                 };
+
+                console.log(event);
                 $(calendarSelector).fullCalendar('renderEvent', event);
                 destroyPopover();
                 $.removeData($body);
@@ -120,14 +130,9 @@
                     data: JSON.stringify(parameter),
                     dataType: 'json',
                     contentType: 'application/json',
-                    success: function(res, status) {
-                        console.log(res);
-                        console.log(status);
-                    },
-                    error: function(res, status) {
-                        console.log(res);
-                        console.log(status);
-                    }
+                }).always(function(jqXHR, textStatus) {
+                    console.log(jqXHR, textStatus);
+                    $('#notice').trigger('click');
                 });
             });
 

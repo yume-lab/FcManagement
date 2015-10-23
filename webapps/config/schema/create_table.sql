@@ -92,12 +92,11 @@ CREATE TABLE employees (
 CREATE TABLE shift_tables (
   id INT unsigned NOT NULL AUTO_INCREMENT,
   store_id INT unsigned NOT NULL,
-  year INT(4) unsigned NOT NULL,
-  month INT(2) unsigned NOT NULL,
+  target_ym INT(6) unsigned NOT NULL,
   body TEXT DEFAULT NULL ,
   is_deleted TINYINT(1) NOT NULL DEFAULT 0,
   created datetime NOT NULL,
   updated datetime NOT NULL,
   PRIMARY KEY (id),
-  UNIQUE uni_shift_tables(store_id, year, month)
+  UNIQUE uni_shift_tables(store_id, target_ym)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='シフト表データ' AUTO_INCREMENT=1;

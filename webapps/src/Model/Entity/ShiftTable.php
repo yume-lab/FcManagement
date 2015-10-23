@@ -9,8 +9,7 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property int $store_id
  * @property \App\Model\Entity\Store $store
- * @property int $year
- * @property int $month
+ * @property int $target_ym
  * @property string $body
  * @property bool $is_deleted
  * @property \Cake\I18n\Time $created

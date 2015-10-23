@@ -50,14 +50,9 @@ class ShiftTablesTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->add('year', 'valid', ['rule' => 'numeric'])
-            ->requirePresence('year', 'create')
+            ->add('target_ym', 'valid', ['rule' => 'numeric'])
+            ->requirePresence('target_ym', 'create')
             ->notEmpty('year');
-
-        $validator
-            ->add('month', 'valid', ['rule' => 'numeric'])
-            ->requirePresence('month', 'create')
-            ->notEmpty('month');
 
         $validator
             ->allowEmpty('body');

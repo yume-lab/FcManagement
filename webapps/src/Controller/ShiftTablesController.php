@@ -112,18 +112,20 @@ class ShiftTablesController extends AppController
      * start - 取得開始日
      * end - 取得終了日
      */
-    public function get() {
+    public function get()
+    {
         $this->autoRender = false;
 
         $query = $this->request->query;
+        $this->log($query);
 
-        $start = $this->getDateConditions($query['start']);
-        $end = $this->getDateConditions($query['end']);
+        $start = date('Ym', strtotime($query['start']));
+        $end = date('Ym', strtotime($query['end']));
 
         $shifts = $this->ShiftTables->find()
             ->where(['store_id' => parent::getCurrentStoreId()])
-            ->where(['year >= ' => $start[0], 'month >= ' => $start[1]])
-            ->where(['year <= ' => $end[0], 'month <= ' => $end[1]])
+            ->where(['target_ym >= ' => $start])
+            ->where(['target_ym < ' => $end])
             ->all();
 
         $response = [];
@@ -136,51 +138,59 @@ class ShiftTablesController extends AppController
         echo json_encode($response);
     }
 
-    public function update() {
+    /**
+     * シフトの一時保存を行います.
+     *
+     * @return \Cake\Network\Response|void
+     */
+    public function update()
+    {
         $this->autoRender = false;
 
         $data = $this->request->data();
-        $useKeys = ['id', 'title', 'backgroundColor', 'start', 'end', 'allDay'];
+        $this->log($data);
 
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $year = $data['year'];
-            $month = $data['month'];
+            $targetYm = $data['year'].$data['month'];
             $shift = $data['shift'];
-            $shiftTable = $this->ShiftTables->find()->where([
-                    'store_id' => parent::getCurrentStoreId(),
-                    'year' => $year,
-                    'month' => $month]
-            )->first();
+            $shiftTable = $this->ShiftTables->find()
+                ->where(['store_id' => parent::getCurrentStoreId()])
+                ->where(['target_ym' => $targetYm])
+                ->first();
             if (empty($shiftTable)) {
-                $this->log('if (empty($shiftTable)) {');
                 $shiftTable = $this->ShiftTables->newEntity();
             }
             $record = [
                 'store_id' => parent::getCurrentStoreId(),
-                'year' => $year,
-                'month' => $month,
-                'body' => json_encode($shift),
+                'target_ym' => $targetYm,
+                'body' => json_encode($this->buildBody($shift)),
                 'is_deleted' => false
             ];
 
             $shiftTable = $this->ShiftTables->patchEntity($shiftTable, $record);
-            if ($this->ShiftTables->save($shiftTable)) {
-                $this->Flash->success('シフト表を更新しました。');
-            } else {
-                $this->Flash->error('シフト表の更新に失敗しました。');
-            }
-            return $this->redirect(['action' => 'index']);
+            $isSuccess = ($this->ShiftTables->save($shiftTable));
+            echo json_encode(['success' => $isSuccess]);
         }
     }
 
     /**
-     * シフトを取得する条件を取得します.
-     *
-     * @param $date パラメータの日付
-     * @return array [0] => year, [1] => month の配列
+     * シフトデータを、保存用に整形します.
+     * @param $data パラメータのシフトデータ
+     * @return array 整形した配列
      */
-    private function getDateConditions($date) {
-        return explode('-', date('Y-m', strtotime($date)));
+    private function buildBody($data)
+    {
+        $useKeys = ['id', 'title', 'employeeId', 'start', 'end'];
+
+        $results = [];
+        foreach ($data as $shift) {
+            $tmp = [];
+            foreach ($useKeys as $key) {
+                $tmp[$key] = $shift[$key];
+            }
+            $results[] = $tmp;
+        }
+        return $results;
     }
 
 }
