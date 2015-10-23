@@ -175,26 +175,27 @@
                 firstDay: 1,
                 selectable: true,
                 allDaySlot: false,
-                startParam: 'visStart',
                 select: function(start, end, jsEvent, view) {
                     jsEvent.preventDefault();
                     jsEvent.stopPropagation();
 
                     var $calendar = $(calendarSelector);
 
-                    var compareFormat = 'YYYYMMDD';
-                    var events = $calendar.fullCalendar('clientEvents', function(event) {
-                        var eStart = moment(event.start).format(compareFormat);
-                        var now = moment(start).format(compareFormat);
-                        return now == eStart;
-                    });
-
-                    var isDayDetail = (view.name === 'month' && events.length);
-                    if (isDayDetail) {
-                        destroyPopover();
-                        $calendar.fullCalendar('gotoDate', start);
-                        $calendar.fullCalendar('changeView', 'agendaDay');
-                        return;
+                    if (view.name === 'month') {
+                        // 月表示の場合、シフト登録済みなら日付詳細へ
+                        var compareFormat = 'YYYYMMDD';
+                        var current = start;
+                        var events = $calendar.fullCalendar('clientEvents', function(event) {
+                            var eStart = moment(event.start).format(compareFormat);
+                            var now = moment(current).format(compareFormat);
+                            return now == eStart;
+                        });
+                        if (events.length) {
+                            destroyPopover();
+                            $calendar.fullCalendar('gotoDate', current);
+                            $calendar.fullCalendar('changeView', 'agendaDay');
+                            return;
+                        }
                     }
                     var event = {
                         employeeId: '',
@@ -213,9 +214,6 @@
                             year: current.year(),
                             month: current.month() + 1
                         };
-                        $(calendarSelector).fullCalendar({
-                            events: '/api/shift'
-                        });
                         console.log(parameter);
                     }
                 },
