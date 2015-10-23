@@ -5,7 +5,7 @@
  */
 ?>
 
-<?= $this->Html->css(CHARISMA_CSS.'/bootstrap-cerulean.min.css') ?>
+<?= $this->Html->css(CHARISMA_CSS.'/bootstrap-spacelab.min.css') ?>
 <?= $this->Html->css(CHARISMA_CSS.'/charisma-app.css') ?>
 
 <?= $this->Html->css(CHARISMA_BOWER.'/fullcalendar/dist/fullcalendar.css') ?>
