@@ -100,3 +100,19 @@ CREATE TABLE shift_tables (
   PRIMARY KEY (id),
   UNIQUE uni_shift_tables(store_id, target_ym)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='シフト表データ' AUTO_INCREMENT=1;
+
+-- 確定シフトデータ
+CREATE TABLE fixed_shift_tables (
+  id INT unsigned NOT NULL AUTO_INCREMENT,
+  store_id INT unsigned NOT NULL,
+  target_ym INT(6) unsigned NOT NULL,
+  hash VARCHAR(255) NOT NULL,
+  body TEXT DEFAULT NULL ,
+  is_deleted TINYINT(1) NOT NULL DEFAULT 0,
+  created datetime NOT NULL,
+  updated datetime NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE uni_shift_tables(store_id, target_ym, hash)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='確定シフト表データ' AUTO_INCREMENT=1;
+
+
