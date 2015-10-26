@@ -59,6 +59,7 @@ class ShiftTablesController extends AppController
             ];
 
             $this->log($record);
+            $FixedShiftTables->removeAllByTargetYm($targetYm);
             $shiftTable = $FixedShiftTables->patchEntity($shiftTable, $record);
             if ($FixedShiftTables->save($shiftTable)) {
                 $this->Flash->success('シフト表が作成されました。');

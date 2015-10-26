@@ -81,4 +81,19 @@ class FixedShiftTablesTable extends Table
         $rules->add($rules->existsIn(['store_id'], 'Stores'));
         return $rules;
     }
+
+    /**
+     * 指定された年月のシフトを全て削除します.
+     *
+     * @param $targetYm string 対象年月
+     * @return \Cake\Database\StatementInterface
+     */
+    public function removeAllByTargetYm($targetYm)
+    {
+        return $this->query()
+            ->update()
+            ->set(['is_deleted' => true])
+            ->where(['target_ym' => $targetYm])
+            ->execute();
+    }
 }
