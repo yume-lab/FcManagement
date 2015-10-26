@@ -116,8 +116,15 @@ $tempSaveSuccessMessage = 'シフトを一時保存しました';
             });
 
             $(document).on('click', '#save', function() {
-                var events = $(calendarSelector).fullCalendar('clientEvents');
+//                var events = $(calendarSelector).fullCalendar('clientEvents');
                 var current = $(calendarSelector).fullCalendar('getDate');
+                var events = $(calendarSelector).fullCalendar('clientEvents', function(event) {
+                    var compareFormat = 'YYYYMM';
+                    var startYm = moment(event.start).format(compareFormat);
+                    var endYm = moment(event.end).format(compareFormat);
+                    var ym = moment(current).format(compareFormat);
+                    return (startYm === ym && ym === endYm);
+                });
                 var parameter = {
                     year: current.year(),
                     month: current.month() + 1,
