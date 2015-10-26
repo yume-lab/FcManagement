@@ -37,6 +37,7 @@ class ShiftTablesController extends AppController
 
     /**
      * シフト確定アクション.
+     * シフト確定テーブルにデータを登録する.
      */
     public function fixed()
     {
@@ -44,12 +45,11 @@ class ShiftTablesController extends AppController
         $this->log($data);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $FixedShiftTables = TableRegistry::get('FixedShiftTables');
+            $shiftTable = $FixedShiftTables->newEntity();
 
             $targetYm = $data['fixed_year'].$data['fixed_month'];
             $shift = json_decode($data['fixed_shift']);
             $hash = sha1(ceil(microtime(true)*1000));
-
-            $shiftTable = $FixedShiftTables->newEntity();
             $record = [
                 'store_id' => parent::getCurrentStoreId(),
                 'target_ym' => $targetYm,
@@ -60,7 +60,6 @@ class ShiftTablesController extends AppController
 
             $this->log($record);
             $shiftTable = $FixedShiftTables->patchEntity($shiftTable, $record);
-
             if ($FixedShiftTables->save($shiftTable)) {
                 $this->Flash->success('シフト表が作成されました。');
             } else {
