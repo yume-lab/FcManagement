@@ -2,6 +2,8 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Core\Configure;
+use Cake\Network\Exception\NotFoundException;
 
 /**
  * FixedShiftTables Controller
@@ -12,99 +14,51 @@ class FixedShiftTablesController extends AppController
 {
 
     /**
-     * Index method
+     * 確定シフトの一覧表示
      *
      * @return void
      */
     public function index()
     {
         $this->paginate = [
-            'contain' => ['Stores']
+            'conditions' => [
+                'FixedShiftTables.store_id' => parent::getCurrentStoreId()
+            ],
+            'limit' => Configure::read('Define.List.Count'),
+            'order' => [
+                'FixedShiftTables.id' => 'asc'
+            ]
         ];
         $this->set('fixedShiftTables', $this->paginate($this->FixedShiftTables));
         $this->set('_serialize', ['fixedShiftTables']);
     }
 
     /**
-     * View method
+     * シフト表表示.
+     * このアクションは未ログインでも見れる.
      *
-     * @param string|null $id Fixed Shift Table id.
+     * TODO: ログインしなくても見れるように
+     * TODO: レイアウト整える
+     *
+     * @param string|null $hash シフト表のハッシュ
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
      * @return void
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function view($id = null)
+    public function view($hash = null)
     {
-        $fixedShiftTable = $this->FixedShiftTables->get($id, [
-            'contain' => ['Stores']
-        ]);
-        $this->set('fixedShiftTable', $fixedShiftTable);
-        $this->set('_serialize', ['fixedShiftTable']);
+        parent::removeViewFrame();
+
+        $data = $this->FixedShiftTables->find()
+            ->where(['hash' => $hash])
+            ->where(['is_deleted' => false])
+            ->first();
+
+        if (empty($data)) {
+            throw new NotFoundException();
+        }
+
+        $this->set('data', $data);
+        $this->set('_serialize', ['data']);
     }
 
-    /**
-     * Add method
-     *
-     * @return void Redirects on successful add, renders view otherwise.
-     */
-    public function add()
-    {
-        $fixedShiftTable = $this->FixedShiftTables->newEntity();
-        if ($this->request->is('post')) {
-            $fixedShiftTable = $this->FixedShiftTables->patchEntity($fixedShiftTable, $this->request->data);
-            if ($this->FixedShiftTables->save($fixedShiftTable)) {
-                $this->Flash->success(__('The fixed shift table has been saved.'));
-                return $this->redirect(['action' => 'index']);
-            } else {
-                $this->Flash->error(__('The fixed shift table could not be saved. Please, try again.'));
-            }
-        }
-        $stores = $this->FixedShiftTables->Stores->find('list', ['limit' => 200]);
-        $this->set(compact('fixedShiftTable', 'stores'));
-        $this->set('_serialize', ['fixedShiftTable']);
-    }
-
-    /**
-     * Edit method
-     *
-     * @param string|null $id Fixed Shift Table id.
-     * @return void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
-     */
-    public function edit($id = null)
-    {
-        $fixedShiftTable = $this->FixedShiftTables->get($id, [
-            'contain' => []
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $fixedShiftTable = $this->FixedShiftTables->patchEntity($fixedShiftTable, $this->request->data);
-            if ($this->FixedShiftTables->save($fixedShiftTable)) {
-                $this->Flash->success(__('The fixed shift table has been saved.'));
-                return $this->redirect(['action' => 'index']);
-            } else {
-                $this->Flash->error(__('The fixed shift table could not be saved. Please, try again.'));
-            }
-        }
-        $stores = $this->FixedShiftTables->Stores->find('list', ['limit' => 200]);
-        $this->set(compact('fixedShiftTable', 'stores'));
-        $this->set('_serialize', ['fixedShiftTable']);
-    }
-
-    /**
-     * Delete method
-     *
-     * @param string|null $id Fixed Shift Table id.
-     * @return void Redirects to index.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
-     */
-    public function delete($id = null)
-    {
-        $this->request->allowMethod(['post', 'delete']);
-        $fixedShiftTable = $this->FixedShiftTables->get($id);
-        if ($this->FixedShiftTables->delete($fixedShiftTable)) {
-            $this->Flash->success(__('The fixed shift table has been deleted.'));
-        } else {
-            $this->Flash->error(__('The fixed shift table could not be deleted. Please, try again.'));
-        }
-        return $this->redirect(['action' => 'index']);
-    }
 }

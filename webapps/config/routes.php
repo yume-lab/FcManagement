@@ -31,15 +31,22 @@ Router::scope('/', function ($routes) {
 
     $routes->connect('/pages/*', ['controller' => 'Pages', 'action' => 'display']);
 
+    // 認証系
     $routes->connect('/login', ['controller' => 'Users', 'action' => 'login']);
     $routes->connect('/logout', ['controller' => 'Users', 'action' => 'logout']);
 
+    // パート管理
     $routes->connect('/employee', ['controller' => 'Employees', 'action' => 'index']);
 
+    // シフト作成
     $routes->connect('/shift', ['controller' => 'ShiftTables', 'action' => 'index']);
     $routes->connect('/shift/fixed', ['controller' => 'ShiftTables', 'action' => 'fixed']);
     $routes->connect('/api/shift', ['controller' => 'ShiftTables', 'action' => 'get']);
     $routes->connect('/api/shift/update', ['controller' => 'ShiftTables', 'action' => 'update']);
+
+    // シフト表閲覧
+    $routes->connect('/fixed', ['controller' => 'FixedShiftTables', 'action' => 'index']);
+    $routes->connect('/fixed/view/*', ['controller' => 'FixedShiftTables', 'action' => 'view']);
 
     $routes->connect('/dashboard', ['controller' => 'Dashboard', 'action' => 'index']);
 
