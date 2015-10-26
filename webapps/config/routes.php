@@ -39,7 +39,7 @@ Router::scope('/', function ($routes) {
     $routes->connect('/employee', ['controller' => 'Employees', 'action' => 'index']);
 
     // シフト作成
-    $routes->connect('/shift', ['controller' => 'ShiftTables', 'action' => 'index']);
+    $routes->connect('/shift', ['controller' => 'ShiftTables', 'action' => 'edit']);
     $routes->connect('/shift/fixed', ['controller' => 'ShiftTables', 'action' => 'fixed']);
     $routes->connect('/api/shift', ['controller' => 'ShiftTables', 'action' => 'get']);
     $routes->connect('/api/shift/update', ['controller' => 'ShiftTables', 'action' => 'update']);

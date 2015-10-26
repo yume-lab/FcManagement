@@ -16,11 +16,11 @@ class ShiftTablesController extends AppController
 {
 
     /**
-     * 初期表示
+     * シフト編集画面
      *
      * @return void
      */
-    public function index()
+    public function edit()
     {
         $Employees = TableRegistry::get('Employees');
 
@@ -67,7 +67,7 @@ class ShiftTablesController extends AppController
                 $this->Flash->error('シフト表作成に失敗しました。');
             }
         }
-        return $this->redirect(['action' => 'index']);
+        return $this->redirect(['action' => 'edit']);
     }
 
     /**
