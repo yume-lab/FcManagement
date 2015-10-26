@@ -116,7 +116,6 @@ $tempSaveSuccessMessage = 'シフトを一時保存しました';
             });
 
             $(document).on('click', '#save', function() {
-//                var events = $(calendarSelector).fullCalendar('clientEvents');
                 var current = $(calendarSelector).fullCalendar('getDate');
                 var events = $(calendarSelector).fullCalendar('clientEvents', function(event) {
                     var compareFormat = 'YYYYMM';
@@ -170,6 +169,31 @@ $tempSaveSuccessMessage = 'シフトを一時保存しました';
                 removeEvent(eventId);
                 $.removeData($body);
                 return false;
+            });
+
+            /**
+             * シフト確定処理
+             */
+            $(document).on('click', '#fixed', function() {
+                var current = $(calendarSelector).fullCalendar('getDate');
+                var events = $(calendarSelector).fullCalendar('clientEvents', function(event) {
+                    var compareFormat = 'YYYYMM';
+                    var startYm = moment(event.start).format(compareFormat);
+                    var endYm = moment(event.end).format(compareFormat);
+                    var ym = moment(current).format(compareFormat);
+                    return (startYm === ym && ym === endYm);
+                });
+                var data = {
+                    year: current.year(),
+                    month: current.month() + 1,
+                    shift: JSON.stringify(events)
+                };
+
+                console.log(data);
+                $('#fixed_year').val(data.year);
+                $('#fixed_month').val(data.month);
+                $('#fixed_shift').val(data.shift);
+                $('#fixed_form').submit();
             });
 
             $(calendarSelector).fullCalendar({

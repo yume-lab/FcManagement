@@ -9,6 +9,7 @@ use Cake\ORM\TableRegistry;
  * シフト作成コントローラ
  *
  * @property \App\Model\Table\ShiftTablesTable $ShiftTables
+ * @property \App\Model\Table\FixedShiftTablesTable.php $FixedShiftTables
  * @property \App\Model\Table\EmployeesTable $Employees
  */
 class ShiftTablesController extends AppController
@@ -32,6 +33,41 @@ class ShiftTablesController extends AppController
         $this->set('times', $this->buildSelectableTime($opened, $closed));
         $this->set('employees', $Employees->find()->where(['Employees.is_deleted' => false]));
         $this->set('_serialize', ['employees']);
+    }
+
+    /**
+     * シフト確定アクション.
+     */
+    public function fixed()
+    {
+        $data = $this->request->data();
+        $this->log($data);
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $FixedShiftTables = TableRegistry::get('FixedShiftTables');
+
+            $targetYm = $data['fixed_year'].$data['fixed_month'];
+            $shift = json_decode($data['fixed_shift']);
+            $hash = sha1(ceil(microtime(true)*1000));
+
+            $shiftTable = $FixedShiftTables->newEntity();
+            $record = [
+                'store_id' => parent::getCurrentStoreId(),
+                'target_ym' => $targetYm,
+                'hash' => $hash,
+                'body' => json_encode($this->buildBody($shift)),
+                'is_deleted' => false
+            ];
+
+            $this->log($record);
+            $shiftTable = $FixedShiftTables->patchEntity($shiftTable, $record);
+
+            if ($FixedShiftTables->save($shiftTable)) {
+                $this->Flash->success('シフト表が作成されました。');
+            } else {
+                $this->Flash->error('シフト表作成に失敗しました。');
+            }
+        }
+        return $this->redirect(['action' => 'index']);
     }
 
     /**
@@ -118,6 +154,7 @@ class ShiftTablesController extends AppController
 
         $results = [];
         foreach ($data as $shift) {
+            $shift = (is_object($shift)) ? (array)$shift : $shift;
             $tmp = [];
             foreach ($useKeys as $key) {
                 $tmp[$key] = $shift[$key];

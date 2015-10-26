@@ -12,11 +12,17 @@
             </div>
 
             <div class="box-content">
-                <div class="box col-md-12">
-                    <?= $this->Flash->render() ?>
+                <?= $this->Flash->render() ?>
+                <div class="box col-md-6">
+                </div>
+                <div class="box col-md-6" style="text-align: right;">
                     <a id="save" class="btn btn-info" href="#">
-                        <i class="glyphicon glyphicon-plus icon-white"></i>
+                        <i class="glyphicon glyphicon-pencil icon-white"></i>
                         一時保存
+                    </a>
+                    <a id="fixed" class="btn btn-success" href="#">
+                        <i class="glyphicon glyphicon-ok icon-white"></i>
+                        シフト確定
                     </a>
                 </div>
 
@@ -28,6 +34,13 @@
 
 <input type="hidden" id="opened" value="<?= $opened ?>" />
 <input type="hidden" id="closed" value="<?= $closed ?>" />
+
+<form id="fixed_form" name="fixed_form" method="post" action="/shift/fixed">
+    <input id="fixed_year" name="fixed_year" type="hidden" value="" />
+    <input id="fixed_month" name="fixed_month" type="hidden" value="" />
+    <input id="fixed_shift" name="fixed_shift" type="hidden" value="" />
+</form>
+
 <?= $this->element('Popover/ShiftTables/input', ['employees' => $employees]); ?>
 
 <?= $this->element('Script/ShiftTables/index'); ?>
