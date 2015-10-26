@@ -20,30 +20,19 @@
     </div>
 
     <div class="form-group col-md-12 center">
-        <?php
-        // TODO: サーバーで作る.
-        $times = [];
-        for ($i = 0; $i < 48; $i++) {
-            $time = date("H:i", strtotime("+". $i * 30 ." minute",(3600)));
-            $times[] = $time;
-        }
-        ?>
-
-        <?php $start = $times; ?>
-        <?php $end = $times; ?>
         <h5>時間</h5>
         <select id="startTime" class="form-control popover-select" data-set-name="data-startTime">
-            <?php foreach ($start as $time): ?>
-                <option value="<?= $time ?>">
-                    <?= h($time) ?>
+            <?php foreach ($times as $start): ?>
+                <option value="<?= $start ?>">
+                    <?= h($start) ?>
                 </option>
             <?php endforeach; ?>
         </select>
         〜
         <select id="endTime" class="form-control popover-select" data-set-name="data-endTime">
-            <?php foreach ($end as $time): ?>
-                <option value="<?= $time ?>">
-                    <?= h($time) ?>
+            <?php foreach ($times as $end): ?>
+                <option value="<?= $end ?>">
+                    <?= h($end) ?>
                 </option>
             <?php endforeach; ?>
         </select>

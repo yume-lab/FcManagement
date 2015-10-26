@@ -185,9 +185,10 @@ $tempSaveSuccessMessage = 'シフトを一時保存しました';
                 timezone: 'Asia/Tokyo',
                 eventLimit: 4,
                 displayEventEnd: true,
-                firstDay: 1,
                 selectable: true,
                 allDaySlot: false,
+                minTime: $('#opened').val(),
+                maxTime: $('#closed').val(),
                 select: function(start, end, jsEvent, view) {
                     jsEvent.preventDefault();
                     jsEvent.stopPropagation();

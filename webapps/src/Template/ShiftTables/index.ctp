@@ -4,10 +4,6 @@
 <script src="http://code.jquery.com/ui/1.11.3/jquery-ui.min.js"></script>
 
 
-<?php
-//$this->Html->script('ShiftTables/index.js', ['type' => 'text/javascript'])
-?>
-
 <div class="row">
     <div class="col-md-12">
         <div class="box-inner">
@@ -30,6 +26,8 @@
     </div>
 </div>
 
+<input type="hidden" id="opened" value="<?= $opened ?>" />
+<input type="hidden" id="closed" value="<?= $closed ?>" />
 <?= $this->element('Popover/ShiftTables/input', ['employees' => $employees]); ?>
 
 <?= $this->element('Script/ShiftTables/index'); ?>

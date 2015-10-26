@@ -6,6 +6,7 @@ use Cake\ORM\TableRegistry;
 
 /**
  * ShiftTables Controller
+ * シフト作成コントローラ
  *
  * @property \App\Model\Table\ShiftTablesTable $ShiftTables
  * @property \App\Model\Table\EmployeesTable $Employees
@@ -14,100 +15,29 @@ class ShiftTablesController extends AppController
 {
 
     /**
-     * Index method
+     * 初期表示
      *
      * @return void
      */
     public function index()
     {
         $Employees = TableRegistry::get('Employees');
+        $this->log($this->UserAuth->store());
+
+        $store = $this->UserAuth->store();
+
+        $opened = date('H:i:s', strtotime($store->opened));
+        $closed = date('H:i:s', strtotime($store->closed));
+        $this->set('opened', $opened);
+        $this->set('closed', $closed);
+        $this->set('times', $this->buildSelectableTime($opened, $closed));
         $this->set('employees', $Employees->find()->where(['Employees.is_deleted' => false]));
         $this->set('_serialize', ['employees']);
     }
 
     /**
-     * View method
-     *
-     * @param string|null $id Shift Table id.
-     * @return void
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $shiftTable = $this->ShiftTables->get($id, [
-            'contain' => []
-        ]);
-        $this->set('shiftTable', $shiftTable);
-        $this->set('_serialize', ['shiftTable']);
-    }
-
-    /**
-     * Add method
-     *
-     * @return void Redirects on successful add, renders view otherwise.
-     */
-    public function add()
-    {
-        $shiftTable = $this->ShiftTables->newEntity();
-        if ($this->request->is('post')) {
-            $shiftTable = $this->ShiftTables->patchEntity($shiftTable, $this->request->data);
-            if ($this->ShiftTables->save($shiftTable)) {
-                $this->Flash->success(__('The shift table has been saved.'));
-                return $this->redirect(['action' => 'index']);
-            } else {
-                $this->Flash->error(__('The shift table could not be saved. Please, try again.'));
-            }
-        }
-        $this->set(compact('shiftTable'));
-        $this->set('_serialize', ['shiftTable']);
-    }
-
-    /**
-     * Edit method
-     *
-     * @param string|null $id Shift Table id.
-     * @return void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
-     */
-    public function edit($id = null)
-    {
-        $shiftTable = $this->ShiftTables->get($id, [
-            'contain' => []
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $shiftTable = $this->ShiftTables->patchEntity($shiftTable, $this->request->data);
-            if ($this->ShiftTables->save($shiftTable)) {
-                $this->Flash->success(__('The shift table has been saved.'));
-                return $this->redirect(['action' => 'index']);
-            } else {
-                $this->Flash->error(__('The shift table could not be saved. Please, try again.'));
-            }
-        }
-        $this->set(compact('shiftTable'));
-        $this->set('_serialize', ['shiftTable']);
-    }
-
-    /**
-     * Delete method
-     *
-     * @param string|null $id Shift Table id.
-     * @return void Redirects to index.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
-     */
-    public function delete($id = null)
-    {
-        $this->request->allowMethod(['post', 'delete']);
-        $shiftTable = $this->ShiftTables->get($id);
-        if ($this->ShiftTables->delete($shiftTable)) {
-            $this->Flash->success(__('The shift table has been deleted.'));
-        } else {
-            $this->Flash->error(__('The shift table could not be deleted. Please, try again.'));
-        }
-        return $this->redirect(['action' => 'index']);
-    }
-
-    /**
-     * シフト初期表示時のAPI.
+     * API
+     * シフトデータ取得
      * 下記のGETパラメータを受け取ります.
      * start - 取得開始日
      * end - 取得終了日
@@ -139,7 +69,12 @@ class ShiftTablesController extends AppController
     }
 
     /**
+     * API
      * シフトの一時保存を行います.
+     *
+     * year - 登録する年
+     * month - 登録する月
+     * shift - シフトデータ配列
      *
      * @return \Cake\Network\Response|void
      */
@@ -189,6 +124,30 @@ class ShiftTablesController extends AppController
                 $tmp[$key] = $shift[$key];
             }
             $results[] = $tmp;
+        }
+        return $results;
+    }
+
+    /**
+     * シフト作成時に選択可能な時間帯を配列で構築します.
+     *
+     * @param $opened 営業開始時間
+     * @param $closed 営業終了時間
+     * @return array 選択可能な時間帯の配列
+     */
+    private function buildSelectableTime($opened, $closed)
+    {
+        $begin = date('H', strtotime($opened));
+        $end = date('H', strtotime($closed));
+
+        $results = [];
+        // TODO: カッコ悪い
+        // TODO: 何分刻みかは、店舗設定で動的にできるようにする
+        for ($hour = $begin; $hour <= $end; $hour++) {
+            $results[] = $hour . ':00';
+            if ($hour < $end) {
+                $results[] = $hour . ':30';
+            }
         }
         return $results;
     }
