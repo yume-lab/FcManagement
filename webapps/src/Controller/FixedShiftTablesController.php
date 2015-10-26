@@ -63,7 +63,7 @@ class FixedShiftTablesController extends AppController
         }
 
         $Employees = TableRegistry::get('Employees');
-        $this->set('employees', $Employees->find()->where(['Employees.is_deleted' => false]));
+        $this->set('employees', $Employees->find()->where(['Employees.is_deleted' => false, 'Employees.store_id' => parent::getCurrentStoreId()]));
         $this->set('data', $data);
         $this->set('_serialize', ['data', 'employees']);
     }
