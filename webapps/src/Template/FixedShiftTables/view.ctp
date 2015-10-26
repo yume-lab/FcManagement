@@ -19,7 +19,7 @@
     foreach ($employees as $employee) {
         $tmp = [
             'id' => $employee->id,
-            'title' => $employee->first_name,
+            'title' => $employee->last_name,
         ];
         $resources[] = $tmp;
         unset($tmp);
@@ -32,6 +32,7 @@
     foreach ($shift as $s) {
         $s = (array) $s;
         $s['resourceId'] = $s['employeeId'];
+        unset($s['title']);
         $events[] = $s;
     }
 
@@ -42,7 +43,10 @@
 
     $(function() {
         $('#calendar').fullCalendar({
-            now: '<?= date('Y-m-01', strtotime($data['target_ym'])); ?>',
+            now: '<?= date('Y-m-d', strtotime($data['target_ym'].'01')); ?>',
+            header: {
+                right: false
+            },
             editable: false,
             lang: 'ja',
             timeFormat: 'H(:mm)',

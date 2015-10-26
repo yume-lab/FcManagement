@@ -25,7 +25,8 @@ class FixedShiftTablesController extends AppController
     {
         $this->paginate = [
             'conditions' => [
-                'FixedShiftTables.store_id' => parent::getCurrentStoreId()
+                'FixedShiftTables.store_id' => parent::getCurrentStoreId(),
+                'FixedShiftTables.is_deleted' => false
             ],
             'limit' => Configure::read('Define.List.Count'),
             'order' => [
