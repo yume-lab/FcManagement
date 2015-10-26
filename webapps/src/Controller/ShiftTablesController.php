@@ -22,12 +22,11 @@ class ShiftTablesController extends AppController
     public function index()
     {
         $Employees = TableRegistry::get('Employees');
-        $this->log($this->UserAuth->store());
 
         $store = $this->UserAuth->store();
-
         $opened = date('H:i:s', strtotime($store->opened));
         $closed = date('H:i:s', strtotime($store->closed));
+
         $this->set('opened', $opened);
         $this->set('closed', $closed);
         $this->set('times', $this->buildSelectableTime($opened, $closed));
@@ -110,7 +109,7 @@ class ShiftTablesController extends AppController
 
     /**
      * シフトデータを、保存用に整形します.
-     * @param $data パラメータのシフトデータ
+     * @param $data array パラメータのシフトデータ
      * @return array 整形した配列
      */
     private function buildBody($data)
@@ -131,8 +130,8 @@ class ShiftTablesController extends AppController
     /**
      * シフト作成時に選択可能な時間帯を配列で構築します.
      *
-     * @param $opened 営業開始時間
-     * @param $closed 営業終了時間
+     * @param $opened string 営業開始時間
+     * @param $closed string 営業終了時間
      * @return array 選択可能な時間帯の配列
      */
     private function buildSelectableTime($opened, $closed)
