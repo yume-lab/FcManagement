@@ -3,12 +3,15 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\Core\Configure;
+use Cake\ORM\TableRegistry;
 use Cake\Network\Exception\NotFoundException;
 
 /**
  * FixedShiftTables Controller
+ * 確定シフト閲覧用コントローラ.
  *
  * @property \App\Model\Table\FixedShiftTablesTable $FixedShiftTables
+ * @property \App\Model\Table\EmployeesTable $Employees
  */
 class FixedShiftTablesController extends AppController
 {
@@ -57,8 +60,10 @@ class FixedShiftTablesController extends AppController
             throw new NotFoundException();
         }
 
+        $Employees = TableRegistry::get('Employees');
+        $this->set('employees', $Employees->find()->where(['Employees.is_deleted' => false]));
         $this->set('data', $data);
-        $this->set('_serialize', ['data']);
+        $this->set('_serialize', ['data', 'employees']);
     }
 
 }
