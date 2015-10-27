@@ -146,7 +146,7 @@ class UsersController extends AppController
      */
     public function account()
     {
-        $id = $this->UserAuth->user('user.id');
+        $id = $this->UserAuth->user('id');
         $user = $this->Users->get($id, [
             'contain' => []
         ]);

@@ -2,10 +2,6 @@
 /**
  * ヘッダーエレメント
  */
-
-$login = $userInfo['user'];
-// TODO: 複数店舗できるように
-$store = $userInfo['current'];
 ?>
 
 <div class="navbar navbar-default" role="navigation">
@@ -26,7 +22,7 @@ $store = $userInfo['current'];
         <div class="btn-group pull-right">
             <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                 <i class="glyphicon glyphicon-user"></i>
-                <span class="hidden-sm hidden-xs"> <?= $login['first_name'] ?>さん</span>
+                <span class="hidden-sm hidden-xs"> <?= $userInfo['first_name'] ?>さん</span>
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
@@ -41,7 +37,7 @@ $store = $userInfo['current'];
 
             <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                 <i class="glyphicon glyphicon-tint"></i><span
-                    class="hidden-sm hidden-xs"> <?= $store['name'].'店' ?></span>
+                    class="hidden-sm hidden-xs"> <?= $current['name'].'店' ?></span>
                 <span class="caret"></span>
             </button>
             <!-- TODO: 複数店舗できるように

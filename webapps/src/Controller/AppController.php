@@ -57,8 +57,10 @@ class AppController extends Controller
     {
         parent::beforeFilter($event);
         $userInfo = $this->UserAuth->user();
+        $current = $this->UserAuth->currentStore();
+        $stores = $this->UserAuth->stores();
         $previous = $this->request->referer();
-        $this->set(compact('userInfo', 'previous'));
+        $this->set(compact('userInfo', 'current', 'stores', 'previous'));
         $this->set('_serialize', ['userInfo']);
     }
 
@@ -104,7 +106,7 @@ class AppController extends Controller
      */
     protected function getCurrentStoreId()
     {
-        return $this->UserAuth->store('id');
+        return $this->UserAuth->currentStore('id');
     }
 
 }

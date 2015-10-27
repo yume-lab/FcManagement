@@ -24,7 +24,7 @@ class ShiftTablesController extends AppController
     {
         $Employees = TableRegistry::get('Employees');
 
-        $store = $this->UserAuth->store();
+        $store = $this->UserAuth->currentStore();
         $opened = date('H:i:s', strtotime($store->opened));
         $closed = date('H:i:s', strtotime($store->closed));
 

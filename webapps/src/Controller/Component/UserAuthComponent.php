@@ -20,7 +20,7 @@ class UserAuthComponent extends AuthComponent
     public function setUser(array $user)
     {
         // アソシエーションしてるテーブル情報も取ってくる
-        $stores = TableRegistry::get('UserStores')
+        $data = TableRegistry::get('UserStores')
             ->find()
             ->where(
                 ['user_id' => $user['id']]
@@ -32,16 +32,34 @@ class UserAuthComponent extends AuthComponent
         ;
 
         $this->log($user);
-        $this->log($stores);
+        $this->log($data);
+
+        $stores = [];
+        foreach ($data as $storeInfo) {
+            $stores[] = $storeInfo['store'];
+        }
+
+        // TODO: 動的にできるように
         $current = array_shift($stores);
         $info = [
             'user' => $user,
             'stores' => $stores,
-            'current' => $current['store']
+            'current' => $current
         ];
 
         //$this->log($info);
         parent::setUser($info);
+    }
+
+    /**
+     * 現在ログインしているユーザーの管理店舗を取得します.
+     *
+     * @see \App\Model\Table\StoresTable
+     * @return array|string
+     */
+    public function stores()
+    {
+        return parent::user('stores');
     }
 
     /**
@@ -51,10 +69,23 @@ class UserAuthComponent extends AuthComponent
      * @param $field
      * @return array|string
      */
-    public function store($field = '')
+    public function currentStore($field = '')
     {
         $current = parent::user('current');
         return (empty($field) ? $current : $current[$field]);
+    }
+
+    /**
+     * 現在ログインしているユーザー情報を取得します.
+     *
+     * @see \App\Model\Table\Users
+     * @param $field
+     * @return array|string
+     */
+    public function user($field = '')
+    {
+        $user = parent::user('user');
+        return (empty($field) ? $user : $user[$field]);
     }
 
     /**
