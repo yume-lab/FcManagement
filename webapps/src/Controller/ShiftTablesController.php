@@ -31,7 +31,7 @@ class ShiftTablesController extends AppController
         $this->set('opened', $opened);
         $this->set('closed', $closed);
         $this->set('times', $this->buildSelectableTime($opened, $closed));
-        $this->set('employees', $Employees->find()->where(['Employees.is_deleted' => false]));
+        $this->set('employees', $Employees->find()->where(['Employees.is_deleted' => false, 'Employees.store_id' => parent::getCurrentStoreId()]));
         $this->set('_serialize', ['employees']);
     }
 
