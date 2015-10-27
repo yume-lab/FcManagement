@@ -30,7 +30,7 @@ $store = $userInfo['current'];
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-                <li><a href="/users/account/<?= $login['id'] ?>">マイアカウント</a></li>
+                <li><a href="/users/account">マイアカウント</a></li>
                 <li class="divider"></li>
                 <li><a href="/logout">ログアウト</a></li>
             </ul>

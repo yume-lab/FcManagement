@@ -141,12 +141,12 @@ class UsersController extends AppController
     /**
      * マイアカウント編集.
      *
-     * @param string|null $id User id.
      * @return void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function account($id = null)
+    public function account()
     {
+        $id = $this->UserAuth->user('user.id');
         $user = $this->Users->get($id, [
             'contain' => []
         ]);
@@ -155,7 +155,7 @@ class UsersController extends AppController
             if ($this->Users->save($user)) {
                 $this->Flash->success('アカウント情報を更新しました。');
                 $this->UserAuth->refresh();
-                return $this->redirect('/users/account/'.$id);
+                return $this->redirect('/users/account');
             } else {
                 $this->Flash->error('アカウント情報の更新に失敗しました。');
             }
