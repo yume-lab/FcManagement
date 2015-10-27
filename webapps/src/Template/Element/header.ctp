@@ -3,9 +3,9 @@
  * ヘッダーエレメント
  */
 
-$login = $user['user'];
+$login = $userInfo['user'];
 // TODO: 複数店舗できるように
-$store = $user['current'];
+$store = $userInfo['current'];
 ?>
 
 <div class="navbar navbar-default" role="navigation">
@@ -30,7 +30,8 @@ $store = $user['current'];
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-                <!-- <li class="divider"></li> -->
+                <li><a href="/users/account/<?= $login['id'] ?>">マイアカウント</a></li>
+                <li class="divider"></li>
                 <li><a href="/logout">ログアウト</a></li>
             </ul>
         </div>

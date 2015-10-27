@@ -56,10 +56,10 @@ class AppController extends Controller
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
-        $user = $this->UserAuth->user();
+        $userInfo = $this->UserAuth->user();
         $previous = $this->request->referer();
-        $this->set(compact('user', 'previous'));
-        $this->set('_serialize', ['user']);
+        $this->set(compact('userInfo', 'previous'));
+        $this->set('_serialize', ['userInfo']);
     }
 
     /**

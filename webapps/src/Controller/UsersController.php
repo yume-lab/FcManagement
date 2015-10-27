@@ -136,4 +136,32 @@ class UsersController extends AppController
         $this->Flash->success('ログアウトしました。');
         return $this->redirect($this->UserAuth->logout());
     }
+
+
+    /**
+     * マイアカウント編集.
+     *
+     * @param string|null $id User id.
+     * @return void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     */
+    public function account($id = null)
+    {
+        $user = $this->Users->get($id, [
+            'contain' => []
+        ]);
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $user = $this->Users->patchEntity($user, $this->request->data);
+            if ($this->Users->save($user)) {
+                $this->Flash->success('アカウント情報を更新しました。');
+                $this->UserAuth->refresh();
+                return $this->redirect('/users/account/'.$id);
+            } else {
+                $this->Flash->error('アカウント情報の更新に失敗しました。');
+            }
+        }
+        $this->set(compact('user'));
+        $this->set('_serialize', ['user']);
+        $this->render('edit');
+    }
 }

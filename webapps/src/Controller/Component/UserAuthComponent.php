@@ -56,4 +56,13 @@ class UserAuthComponent extends AuthComponent
         $current = parent::user('current');
         return (empty($field) ? $current : $current[$field]);
     }
+
+    /**
+     * セッション内のユーザー情報を最新にします.
+     */
+    public function refresh()
+    {
+        $user = $this->identify();
+        $this->setUser($user);
+    }
 }
