@@ -240,6 +240,7 @@ $tempSaveSuccessMessage = 'シフトを一時保存しました';
                         start: start,
                         end: end
                     };
+                    console.log(event);
                     showEventPopover($(jsEvent.target), event, MODE.REGISTER);
                 },
                 eventClick: function(calEvent, jsEvent, view) {

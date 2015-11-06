@@ -8,8 +8,6 @@
 <?= $this->Html->script(CHARISMA_BOWER.'/bootstrap/dist/js/bootstrap.min.js') ?>
 <?= $this->Html->script(CHARISMA_JS.'/jquery.cookie.js') ?>
 <?= $this->Html->script(CHARISMA_BOWER.'/moment/min/moment.min.js') ?>
-<?= $this->Html->script(CHARISMA_BOWER.'/fullcalendar/dist/fullcalendar.min.js') ?>
-<?= $this->Html->script(CHARISMA_BOWER.'/fullcalendar/dist/lang-all.js') ?>
 <?= $this->Html->script(CHARISMA_JS.'/jquery.dataTables.min.js') ?>
 <?= $this->Html->script(CHARISMA_BOWER.'/chosen/chosen.jquery.min.js') ?>
 <?= $this->Html->script(CHARISMA_BOWER.'/colorbox/jquery.colorbox-min.js') ?>
@@ -21,4 +19,3 @@
 <?= $this->Html->script(CHARISMA_JS.'/jquery.autogrow-textarea.js') ?>
 <?= $this->Html->script(CHARISMA_JS.'/jquery.uploadify-3.1.min.js') ?>
 <?= $this->Html->script(CHARISMA_JS.'/jquery.history.js') ?>
-<?= $this->Html->script(CHARISMA_JS.'/charisma.js') ?>

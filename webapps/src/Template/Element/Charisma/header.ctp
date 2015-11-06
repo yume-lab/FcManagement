@@ -8,7 +8,6 @@
 <?= $this->Html->css(CHARISMA_CSS.'/bootstrap-spacelab.min.css') ?>
 <?= $this->Html->css(CHARISMA_CSS.'/charisma-app.css') ?>
 
-<?= $this->Html->css(CHARISMA_BOWER.'/fullcalendar/dist/fullcalendar.css') ?>
 <?= $this->Html->css(CHARISMA_BOWER.'/chosen/chosen.min.css') ?>
 <?= $this->Html->css(CHARISMA_BOWER.'/colorbox/example3/colorbox.css') ?>
 <?= $this->Html->css(CHARISMA_BOWER.'/responsive-tables/responsive-tables.css') ?>

@@ -103,6 +103,17 @@ class ShiftTablesController extends AppController
         echo json_encode($response);
     }
 
+
+    /**
+     * TODO: 実装とフロントの修正
+     * API
+     * シフト表に表示する従業員を取得します.
+     */
+    public function getResources()
+    {
+
+    }
+
     /**
      * API
      * シフトの一時保存を行います.
@@ -150,7 +161,8 @@ class ShiftTablesController extends AppController
      */
     private function buildBody($data)
     {
-        $useKeys = ['_id', 'title', 'employeeId', 'start', 'end'];
+        //$useKeys = ['_id', 'title', 'employeeId', 'start', 'end'];
+        $useKeys = ['_id', 'employeeId', 'start', 'end'];
 
         $results = [];
         foreach ($data as $shift) {
