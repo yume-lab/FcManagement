@@ -6,7 +6,6 @@
 <script src='/sc/lib/moment.min.js'></script>
 <script src='/sc/lib/fullcalendar.min.js'></script>
 <script src='/sc/scheduler.min.js'></script>
-
 <?= $this->Html->script(CHARISMA_BOWER.'/fullcalendar/dist/lang-all.js') ?>
 
 <?php
@@ -120,7 +119,6 @@ $tempSaveSuccessMessage = 'シフトを一時保存しました';
 
             var event = {
 //                title: $.trim($employee.html()),
-                title: startTime + ' - ' + endTime,
                 employeeId: $employee.val(),
                 resourceId: $employee.val(),
                 start: startTime,
@@ -145,6 +143,9 @@ $tempSaveSuccessMessage = 'シフトを一時保存しました';
             $.data($body, name, $(this).val());
         });
 
+        /**
+         * 一時保存ボタン
+         */
         $(document).on('click', '#save', function() {
             var current = $(calendarSelector).fullCalendar('getDate');
             console.log(current);
@@ -231,25 +232,38 @@ $tempSaveSuccessMessage = 'シフトを一時保存しました';
             destroyPopover();
         });
 
-        $('#shift-calendar').fullCalendar({
+        $(calendarSelector).fullCalendar({
+            schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
             header: {
                 left: 'prev,next today',
                 center: 'title',
                 right: 'timelineMonth,timelineWeek,timelineDay'
             },
             buttonText: {
-                today:    '今日',
-                month:    '月',
-                week:     '週',
-                day:      '日'
+                today: '今日',
+                month: '月',
+                week: '週',
+                day: '日'
             },
+            slotLabelFormat: {
+                month: [
+                    'YYYY年MM月',
+                    'D ddd'
+                ],
+                week: [
+                    'YYYY年MM月D日',
+                    'H:mm'
+                ],
+                day: [
+                    'H:mm'
+                ]
+            },
+            lang: 'ja',
             minTime: $('#opened').val(),
             maxTime: $('#closed').val(),
-            // 選択可
             selectable: true,
             editable: true,
             timezone: 'Asia/Tokyo',
-            lang: 'ja',
             timeFormat: 'H(:mm)',
             defaultView: 'timelineMonth',
             displayEventEnd: true,
@@ -301,7 +315,7 @@ $tempSaveSuccessMessage = 'シフトを一時保存しました';
                                 start: shift.start,
                                 end: shift.end,
                                 resourceId: shift.employeeId,
-                                employeeId: shift.employeeId,
+                                employeeId: shift.employeeId
                             });
                         });
                         console.log(events);
