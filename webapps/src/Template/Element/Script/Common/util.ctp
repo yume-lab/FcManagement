@@ -30,6 +30,15 @@
                 $(this).parent().addClass('active');
             }
         });
+
+        /**
+         * フェードイン通知
+         */
+        $('.noty').click(function (e) {
+            e.preventDefault();
+            var options = $.parseJSON($(this).attr('data-noty-options'));
+            noty(options);
+        });
     });
 
 
