@@ -43,4 +43,4 @@
 
 <?= $this->element('Popover/ShiftTables/input', ['employees' => $employees]); ?>
 
-<?= $this->element('Script/ShiftTables/index'); ?>
+<?= $this->element('Script/ShiftTables/edit'); ?>
