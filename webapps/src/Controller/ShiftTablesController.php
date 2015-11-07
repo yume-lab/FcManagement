@@ -27,11 +27,15 @@ class ShiftTablesController extends AppController
         $store = $this->UserAuth->currentStore();
         $opened = date('H:i:s', strtotime($store->opened));
         $closed = date('H:i:s', strtotime($store->closed));
+        // TODO: DBもしくは設定ファイルに、シフトと絡む
+        $interval = 15;
+        $times = $this->buildSelectableTime($opened, $closed);
+        $employees = $Employees->find()->where([
+            'Employees.is_deleted' => false,
+            'Employees.store_id' => parent::getCurrentStoreId()
+        ]);
 
-        $this->set('opened', $opened);
-        $this->set('closed', $closed);
-        $this->set('times', $this->buildSelectableTime($opened, $closed));
-        $this->set('employees', $Employees->find()->where(['Employees.is_deleted' => false, 'Employees.store_id' => parent::getCurrentStoreId()]));
+        $this->set(compact('opened', 'closed', 'interval', 'times', 'employees'));
         $this->set('_serialize', ['employees']);
     }
 
@@ -185,17 +189,17 @@ class ShiftTablesController extends AppController
      */
     private function buildSelectableTime($opened, $closed)
     {
-        $begin = date('H', strtotime($opened));
-        $end = date('H', strtotime($closed));
+        // TODO: DBもしくは設定ファイルに、シフトと絡む
+        $interval = 15;
+
+        $begin = strtotime(date('H:i', strtotime($opened)));
+        $end = strtotime(date('H:i', strtotime($closed)));
+        $current = $begin;
 
         $results = [];
-        // TODO: カッコ悪い
-        // TODO: 何分刻みかは、店舗設定で動的にできるようにする
-        for ($hour = $begin; $hour <= $end; $hour++) {
-            $results[] = $hour . ':00';
-            if ($hour < $end) {
-                $results[] = $hour . ':30';
-            }
+        while($current <= $end){
+            $results[] = date('H:i',$current);
+            $current = strtotime("+$interval minutes",$current);
         }
         return $results;
     }

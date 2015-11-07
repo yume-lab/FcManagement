@@ -13,7 +13,7 @@
             <li class="nav-header">管理</li>
             <li>
                 <a class="ajax-link" href="/employees">
-                    <i class="glyphicon glyphicon-home"></i>
+                    <i class="glyphicon glyphicon-user"></i>
                     <span> パート管理</span>
                 </a>
             </li>
@@ -30,6 +30,14 @@
                     <span> 確定シフト一覧</span>
                 </a>
             </li>
+            <li class="nav-header">設定</li>
+            <li>
+                <a class="ajax-link" href="/stores/myself">
+                    <i class="glyphicon glyphicon-home"></i>
+                    <span> 店舗編集</span>
+                </a>
+            </li>
+
         </ul>
     </div>
 </div>

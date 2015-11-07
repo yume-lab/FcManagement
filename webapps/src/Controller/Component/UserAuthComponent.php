@@ -93,7 +93,10 @@ class UserAuthComponent extends AuthComponent
      */
     public function refresh()
     {
-        $user = $this->identify();
+        $userId = $this->user('id');
+        $user = TableRegistry::get('Users')->get($userId, [
+            'contain' => []
+        ]);
         $this->setUser($user);
     }
 }

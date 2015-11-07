@@ -264,6 +264,8 @@ $tempSaveSuccessMessage = 'シフトを一時保存しました';
             lang: 'ja',
             minTime: $('#opened').val(),
             maxTime: $('#closed').val(),
+            slotMinutes: $('#interval').val(),
+            snapMinutes: $('#interval').val(),
             selectable: true,
             editable: true,
             timezone: 'Asia/Tokyo',
@@ -370,6 +372,7 @@ $tempSaveSuccessMessage = 'シフトを一時保存しました';
 
 <input type="hidden" id="opened" value="<?= $opened ?>" />
 <input type="hidden" id="closed" value="<?= $closed ?>" />
+<input type="hidden" id="interval" value="<?= $interval ?>" />
 
 <form id="fixed_form" name="fixed_form" method="post" action="/shift/fixed">
     <input id="fixed_year" name="fixed_year" type="hidden" value="" />

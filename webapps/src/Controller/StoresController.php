@@ -107,4 +107,31 @@ class StoresController extends AppController
         }
         return $this->redirect(['action' => 'index']);
     }
+
+    /**
+     * 現在の店舗編集画面
+     *
+     * @return void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     */
+    public function myself()
+    {
+        // TODO: DBもしくは設定ファイルに、シフトと絡む
+        $interval = 15;
+        $store = $this->Stores->get(parent::getCurrentStoreId(), [
+            'contain' => []
+        ]);
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $store = $this->Stores->patchEntity($store, $this->request->data);
+            if ($this->Stores->save($store)) {
+                $this->Flash->success('店舗情報を更新しました。');
+                $this->UserAuth->refresh();
+                return $this->redirect('/stores/myself');
+            } else {
+                $this->Flash->error('店舗情報の更新に失敗しました。');
+            }
+        }
+        $this->set(compact('store', 'interval'));
+        $this->set('_serialize', ['store']);
+    }
 }
