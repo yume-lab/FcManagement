@@ -237,7 +237,7 @@ $tempSaveSuccessMessage = 'シフトを一時保存しました';
             header: {
                 left: 'prev,next today',
                 center: 'title',
-                right: 'timelineMonth,timelineWeek,timelineDay'
+                right: 'timelineMonth,timelineDay'
             },
             buttonText: {
                 today: '今日',
@@ -245,18 +245,21 @@ $tempSaveSuccessMessage = 'シフトを一時保存しました';
                 week: '週',
                 day: '日'
             },
+            dayClick: function(date, jsEvent, view) {
+                console.log('day');
+            },
             slotLabelFormat: {
                 month: [
-                    'YYYY年MM月',
                     'D ddd'
-                ],
-                week: [
-                    'YYYY年MM月D日',
-                    'H:mm'
                 ],
                 day: [
                     'H:mm'
                 ]
+            },
+            views: {
+                timelineDay: {
+                    titleFormat: 'YYYY年MM月D日 ddd曜日'
+                }
             },
             lang: 'ja',
             minTime: $('#opened').val(),
