@@ -1,12 +1,6 @@
 <?php $this->assign('title', 'シフト作成'); ?>
 
-<?php // TODO: 暫定でここに ?>
-<link href='/sc/lib/fullcalendar.min.css' rel='stylesheet' />
-<link href='/sc/scheduler.min.css' rel='stylesheet' />
-<script src='/sc/lib/moment.min.js'></script>
-<script src='/sc/lib/fullcalendar.min.js'></script>
-<script src='/sc/scheduler.min.js'></script>
-<?= $this->Html->script(CHARISMA_BOWER.'/fullcalendar/dist/lang-all.js') ?>
+<?= $this->element('Calendar/assets'); ?>
 
 <?php
 // TODO: APIにする

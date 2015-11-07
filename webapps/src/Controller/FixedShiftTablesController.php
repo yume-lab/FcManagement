@@ -50,8 +50,7 @@ class FixedShiftTablesController extends AppController
      */
     public function view($hash = null)
     {
-//        parent::removeViewFrame();
-        $this->viewBuilder()->layout('');
+        parent::removeViewFrame();
 
         $data = $this->FixedShiftTables->find()
             ->where(['hash' => $hash])
