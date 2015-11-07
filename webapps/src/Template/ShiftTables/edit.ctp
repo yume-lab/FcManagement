@@ -1,6 +1,6 @@
 <?php $this->assign('title', 'シフト作成'); ?>
 
-<?php // TODO: 暫定でここに ?>
+<?= $this->element('Calendar/assets'); ?>
 
 <?php
 // TODO: APIにする

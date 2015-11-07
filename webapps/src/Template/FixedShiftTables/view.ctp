@@ -1,20 +1,6 @@
-<?php // TODO: とにかく作り直し. ?>
+<?php $this->assign('title', date('Y年m月', strtotime($data['target_ym'])) . 'シフト表' ); ?>
 
-<?php // $this->assign('title', date('Y年m月', strtotime($data['target_ym'])) . 'シフト表' ); ?>
-
-<title><?= date('Y年m月', strtotime($data['target_ym'])) ?></title>
-
-<?= $this->Html->css(CHARISMA_CSS.'/bootstrap-spacelab.min.css') ?>
-<?= $this->Html->css(CHARISMA_CSS.'/charisma-app.css') ?>
-
-<link href='/sc/lib/fullcalendar.min.css' rel='stylesheet' />
-<link href='/sc/lib/fullcalendar.print.css' rel='stylesheet' media='print' />
-<link href='/sc/scheduler.min.css' rel='stylesheet' />
-<script src='/sc/lib/moment.min.js'></script>
-<script src='/sc/lib/jquery.min.js'></script>
-<script src='/sc/lib/fullcalendar.min.js'></script>
-<script src='/sc/scheduler.min.js'></script>
-<?= $this->Html->script(CHARISMA_BOWER.'/fullcalendar/dist/lang-all.js') ?>
+<?= $this->element('Calendar/assets'); ?>
 
 <?php
     $resources = [];
@@ -54,7 +40,7 @@
 <script>
 
     $(function() {
-        $('#calendar').fullCalendar({
+        $('#fix-shift-table').fullCalendar({
             now: '<?= date('Y-m-d', strtotime($data['target_ym'].'01')); ?>',
             header: {
                 right: false
@@ -74,4 +60,4 @@
 
 </script>
 
-<div id='calendar'></div>
+<div id="fix-shift-table"></div>
