@@ -104,4 +104,17 @@ class EmployeesTable extends Table
         $rules->add($rules->existsIn(['store_id'], 'Stores'));
         return $rules;
     }
+
+    /**
+     * 店舗コードから従業員一覧を取得します.
+     * @param $storeId int 店舗コード
+     * @return $this 従業員一覧
+     */
+    public function findByStoreId($storeId)
+    {
+        return $this->find()->where([
+            'Employees.is_deleted' => false,
+            'Employees.store_id' => $storeId]
+        );
+    }
 }

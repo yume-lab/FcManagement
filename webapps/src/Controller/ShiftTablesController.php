@@ -22,18 +22,13 @@ class ShiftTablesController extends AppController
      */
     public function edit()
     {
-        $Employees = TableRegistry::get('Employees');
-
         $store = $this->UserAuth->currentStore();
         $opened = date('H:i:s', strtotime($store->opened));
         $closed = date('H:i:s', strtotime($store->closed));
         // TODO: DBもしくは設定ファイルに、シフトと絡む
         $interval = 15;
         $times = $this->buildSelectableTime($opened, $closed);
-        $employees = $Employees->find()->where([
-            'Employees.is_deleted' => false,
-            'Employees.store_id' => parent::getCurrentStoreId()
-        ]);
+        $employees = TableRegistry::get('Employees')->findByStoreId(parent::getCurrentStoreId());
 
         $this->set(compact('opened', 'closed', 'interval', 'times', 'employees'));
         $this->set('_serialize', ['employees']);

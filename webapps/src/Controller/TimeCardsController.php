@@ -109,4 +109,29 @@ class TimeCardsController extends AppController
         }
         return $this->redirect(['action' => 'index']);
     }
+
+    /**
+     * 勤怠打刻ページの表示処理です.
+     */
+    public function show()
+    {
+        // TODO: 現在のセッションIDを取得
+        // TODO: ログアウトする
+        // TODO: 取得したセッションIDをトークンとしてセッションへ
+        $employees = TableRegistry::get('Employees')->findByStoreId(parent::getCurrentStoreId());
+        $this->set(compact('employees'));
+    }
+
+    /**
+     * TODO: 実装
+     * 勤怠打刻処理を行います.
+     *
+     * TODO: パラメータ
+     * 1. ステータス
+     * 2. トークン（元管理ログイン者のセッションID）
+     */
+    public function write()
+    {
+
+    }
 }
