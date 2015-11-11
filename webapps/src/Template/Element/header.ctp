@@ -54,7 +54,7 @@
         </div>
 
         <ul class="collapse navbar-collapse nav navbar-nav top-menu">
-            <li><a href="#"><i class="glyphicon glyphicon-globe"></i> 出退勤入力を表示</a></li>
+            <li><a href="/time-cards/show"><i class="glyphicon glyphicon-globe"></i> 出退勤入力を表示</a></li>
         </ul>
 
     </div>

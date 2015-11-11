@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 
 /**
  * TimeCards Controller
@@ -115,6 +116,7 @@ class TimeCardsController extends AppController
      */
     public function show()
     {
+        parent::removeViewFrame();
         // TODO: 現在のセッションIDを取得
         // TODO: ログアウトする
         // TODO: 取得したセッションIDをトークンとしてセッションへ
