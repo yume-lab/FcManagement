@@ -1,53 +1,92 @@
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('New Latest Time Card'), ['action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Stores'), ['controller' => 'Stores', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Store'), ['controller' => 'Stores', 'action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Employees'), ['controller' => 'Employees', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Employee'), ['controller' => 'Employees', 'action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Time Card States'), ['controller' => 'TimeCardStates', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Time Card State'), ['controller' => 'TimeCardStates', 'action' => 'add']) ?></li>
-    </ul>
-</nav>
-<div class="latestTimeCards index large-9 medium-8 columns content">
-    <h3><?= __('Latest Time Cards') ?></h3>
-    <table cellpadding="0" cellspacing="0">
-        <thead>
-            <tr>
-                <th><?= $this->Paginator->sort('id') ?></th>
-                <th><?= $this->Paginator->sort('store_id') ?></th>
-                <th><?= $this->Paginator->sort('employee_id') ?></th>
-                <th><?= $this->Paginator->sort('time_card_state_id') ?></th>
-                <th><?= $this->Paginator->sort('created') ?></th>
-                <th><?= $this->Paginator->sort('updated') ?></th>
-                <th class="actions"><?= __('Actions') ?></th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($latestTimeCards as $latestTimeCard): ?>
-            <tr>
-                <td><?= $this->Number->format($latestTimeCard->id) ?></td>
-                <td><?= $latestTimeCard->has('store') ? $this->Html->link($latestTimeCard->store->name, ['controller' => 'Stores', 'action' => 'view', $latestTimeCard->store->id]) : '' ?></td>
-                <td><?= $latestTimeCard->has('employee') ? $this->Html->link($latestTimeCard->employee->name, ['controller' => 'Employees', 'action' => 'view', $latestTimeCard->employee->id]) : '' ?></td>
-                <td><?= $latestTimeCard->has('time_card_state') ? $this->Html->link($latestTimeCard->time_card_state->name, ['controller' => 'TimeCardStates', 'action' => 'view', $latestTimeCard->time_card_state->id]) : '' ?></td>
-                <td><?= h($latestTimeCard->created) ?></td>
-                <td><?= h($latestTimeCard->updated) ?></td>
-                <td class="actions">
-                    <?= $this->Html->link(__('View'), ['action' => 'view', $latestTimeCard->id]) ?>
-                    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $latestTimeCard->id]) ?>
-                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $latestTimeCard->id], ['confirm' => __('Are you sure you want to delete # {0}?', $latestTimeCard->id)]) ?>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-    <div class="paginator">
-        <ul class="pagination">
-            <?= $this->Paginator->prev('< ' . __('previous')) ?>
-            <?= $this->Paginator->numbers() ?>
-            <?= $this->Paginator->next(__('next') . ' >') ?>
-        </ul>
-        <p><?= $this->Paginator->counter() ?></p>
+<?php $this->assign('title', 'タイムカード'); ?>
+
+<div class="row">
+    <div class="box center col-md-6">
+        <div class="alert alert-info">
+            タイムカード
+        </div>
+        <?= $this->Flash->render() ?>
+
+        <div class="box-inner">
+            <div class="box-content">
+                <div class="box-content">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Date registered</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="accordion">
+                            <td><a href="#">Muhammad Usman</a>
+                                <ul class="nav nav-pills nav-stacked" style="display: none;">
+                                    <li><a href="#">Child Menu 1</a></li>
+                                    <li><a href="#">Child Menu 2</a></li>
+                                </ul>
+
+                            </td>
+                            <td class="center">2012/01/01</td>
+                            <td class="center">Member</td>
+                            <td class="center">
+                                <span class="label-success label label-default">Active</span>
+                            </td>
+
+
+                        </tr>
+                        <tr>
+                            <td>White Horse</td>
+                            <td class="center">2012/02/01</td>
+                            <td class="center">Staff</td>
+                            <td class="center">
+                                <span class="label-default label label-danger">Banned</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Sheikh Heera</td>
+                            <td class="center">2012/02/01</td>
+                            <td class="center">Admin</td>
+                            <td class="center">
+                                <span class="label-default label">Inactive</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Saruar</td>
+                            <td class="center">2012/03/01</td>
+                            <td class="center">Member</td>
+                            <td class="center">
+                                <span class="label-warning label label-default">Pending</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Sana Amrin</td>
+                            <td class="center">2012/01/21</td>
+                            <td class="center">Staff</td>
+                            <td class="center">
+                                <span class="label-success label label-default">Active</span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+
+                    <ul class="dashboard-list" style="text-align: left;">
+                        <li class="accordion">
+                            <a href="#">
+                                Usman
+                            </a>
+                            <strong>Since:</strong> 17/05/2014
+                            <strong>Status:</strong> <span class="label-success label label-default">Approved</span>
+                            <ul class="nav nav-pills nav-stacked" style="display: none;">
+                                <li><a href="#">Child Menu 1</a></li>
+                                <li><a href="#">Child Menu 2</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

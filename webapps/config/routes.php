@@ -45,6 +45,10 @@ Router::scope('/', function ($routes) {
     $routes->connect('/fixed', ['controller' => 'FixedShiftTables', 'action' => 'index']);
     $routes->connect('/fixed/view/*', ['controller' => 'FixedShiftTables', 'action' => 'view']);
 
+    // 勤怠打刻
+    $routes->connect('/time-card', ['controller' => 'LatestTimeCards', 'action' => 'index']);
+
+
     $routes->fallbacks('DashedRoute');
 });
 
