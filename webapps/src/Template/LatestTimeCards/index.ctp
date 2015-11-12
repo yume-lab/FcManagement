@@ -1,4 +1,5 @@
 <?php $this->assign('title', 'タイムカード'); ?>
+
 <style>
     #time-card-modal #clock {
         text-align: center;
@@ -98,8 +99,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             var parameter = {
                 employeeId: $('#employee-id').val(),
                 storeId: $('#store-id').val(),
-                alias: $(this).data('alias'),
-                updated: moment().format('YYYY-MM-DD HH:mm:ss')
+                alias: $(this).data('alias')
             };
             console.log(parameter);
             $.ajax({

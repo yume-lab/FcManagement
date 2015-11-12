@@ -14,6 +14,17 @@ class LatestTimeCardsController extends AppController
 {
 
     /**
+     * 初期処理.
+     * @return void
+     */
+    public function initialize() {
+        parent::initialize();
+
+        $this->UserAuth->allow(['write']);
+    }
+
+
+    /**
      * 打刻画面初期表示
      *
      * @return void
@@ -21,20 +32,23 @@ class LatestTimeCardsController extends AppController
     public function index()
     {
         parent::removeViewFrame();
+        $storeId = parent::getCurrentStoreId();
 
         $this->paginate = [
-            'contain' => ['Stores', 'Employees', 'TimeCardStates']
+            'contain' => ['Employees', 'TimeCardStates'],
+            'conditions' => [
+                'LatestTimeCards.store_id' => $storeId
+            ],
         ];
-        $this->set('latestTimeCards', $this->paginate($this->LatestTimeCards));
-        $this->set('_serialize', ['latestTimeCards']);
 
         // TODO: 現在のセッションIDを取得
         // TODO: ログアウトする
         // TODO: 取得したセッションIDをトークンとしてセッションへ
         $employees = TableRegistry::get('Employees')->findByStoreId(parent::getCurrentStoreId());
-        $storeId = parent::getCurrentStoreId();
-        $this->set(compact('employees', 'storeId'));
 
+        $this->set(compact('employees', 'storeId'));
+        $this->set('results', $this->paginate($this->LatestTimeCards));
+        $this->set('_serialize', ['results']);
     }
 
     /**
@@ -62,7 +76,6 @@ class LatestTimeCardsController extends AppController
             $employeeId = $data['employeeId'];
             $storeId = $data['storeId'];
             $alias = $data['alias'];
-            $updated = $data['updated'];
 
             $state = TableRegistry::get('TimeCardStates')->findByAlias($alias)->first();
 
@@ -76,8 +89,7 @@ class LatestTimeCardsController extends AppController
             $record = [
                 'store_id' => $storeId,
                 'employee_id' => $employeeId,
-                'time_card_state_id' => $state->id,
-                'updated' => date('Y-m-d H:i:s', strtotime($updated))
+                'time_card_state_id' => $state->id
             ];
 
             $latestTimeCards = $this->LatestTimeCards->patchEntity($entity, $record);

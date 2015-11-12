@@ -152,3 +152,17 @@ CREATE TABLE time_card_states (
   PRIMARY KEY (id),
   UNIQUE uni_time_card_states(alias)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='勤怠状態マスタ' AUTO_INCREMENT=1;
+
+-- パッチ….
+ALTER TABLE stores CHANGE updated modified datetime NOT NULL;
+ALTER TABLE store_categories CHANGE updated modified datetime NOT NULL;
+ALTER TABLE roles CHANGE updated modified datetime NOT NULL;
+ALTER TABLE users CHANGE updated modified datetime NOT NULL;
+ALTER TABLE user_stores CHANGE updated modified datetime NOT NULL;
+ALTER TABLE employees CHANGE updated modified datetime NOT NULL;
+ALTER TABLE shift_tables CHANGE updated modified datetime NOT NULL;
+ALTER TABLE fixed_shift_tables CHANGE updated modified datetime NOT NULL;
+ALTER TABLE time_card_states CHANGE updated modified datetime NOT NULL;
+ALTER TABLE time_cards CHANGE updated modified datetime NOT NULL;
+ALTER TABLE latest_time_cards CHANGE updated modified datetime NOT NULL;
+
