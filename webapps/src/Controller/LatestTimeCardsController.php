@@ -44,11 +44,21 @@ class LatestTimeCardsController extends AppController
         // TODO: 現在のセッションIDを取得
         // TODO: ログアウトする
         // TODO: 取得したセッションIDをトークンとしてセッションへ
-        $employees = TableRegistry::get('Employees')->findByStoreId(parent::getCurrentStoreId());
+        $employees = TableRegistry::get('Employees')->findByStoreId($storeId);
+        $timeCardStates = TableRegistry::get('TimeCardStates')->find('all');
+        $latestTimeCards = $this->LatestTimeCards->find()->where(['store_id' => $storeId]);
 
-        $this->set(compact('employees', 'storeId'));
-        $this->set('results', $this->paginate($this->LatestTimeCards));
-        $this->set('_serialize', ['results']);
+        $data = [];
+        foreach ($latestTimeCards as $latest) {
+            $data[$latest->employee_id] = $latest;
+        }
+
+        $states = [];
+        foreach ($timeCardStates as $state) {
+            $states[$state->id] = $state;
+        }
+
+        $this->set(compact('employees', 'storeId', 'data', 'states'));
     }
 
     /**

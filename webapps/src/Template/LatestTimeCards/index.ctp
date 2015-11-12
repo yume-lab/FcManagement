@@ -1,8 +1,53 @@
 <?php $this->assign('title', 'タイムカード'); ?>
 
+<?php
+    // TODO: ヘルパーで
+    function getClass($alias) {
+        $class = 'default';
+        switch ($alias) {
+            case '/in':
+                $class = 'success';
+                break;
+            case '/out':
+                $class = 'danger';
+                break;
+            case '/break_in':
+                $class = 'primary';
+                break;
+            case '/break_out':
+                $class = 'warning';
+                break;
+        }
+        return $class;
+    }
+
+    // TODO: ヘルパーで
+    function getIcon($alias) {
+        $icon = '';
+        switch ($alias) {
+            case '/in':
+                $icon = 'glyphicon-arrow-left';
+                break;
+            case '/out':
+                $icon = 'glyphicon-arrow-right';
+                break;
+            case '/break_in':
+                $icon = 'glyphicon-chevron-left';
+                break;
+            case '/break_out':
+                $icon = 'glyphicon-chevron-right';
+                break;
+        }
+        return $icon;
+    }
+?>
+
 <style>
     #time-card-modal #clock {
         text-align: center;
+    }
+    #clock-large {
+        height: 30px;
     }
 </style>
 <div class="row">
@@ -27,15 +72,37 @@
                         </thead>
                         <tbody>
                         <?php foreach ($employees as $employee) :?>
+                            <?php
+                                $info = isset($data[$employee->id]) ? $data[$employee->id] : [];
+                                $hasData = !empty($info);
+                                $state = $hasData ? $states[$info['time_card_state_id']] : [];
+                            ?>
                             <tr>
                                 <td>
-                                    <a href="#" class="link-name" data-id="<?= $employee->id ?>">
+                                    <a href="#" class="link-name"
+                                       data-id="<?= $employee->id ?>"
+                                       data-state="<?= empty($state) ? '' : $state['alias']; ?>">
                                         <?= $employee->last_name.' '.$employee->first_name; ?>
                                     </a>
                                 </td>
-                                <td class="center">2012/01/01</td>
                                 <td class="center">
-                                    <span class="label-success label label-default">Active</span>
+                                    <?= $hasData ? date('Y/m/d', strtotime($info['modified'])) : ''; ?>
+                                </td>
+                                <td class="center">
+                                    <?php // TODO このあたり全体はヘルパーにする ?>
+                                    <?php if (!empty($state)): ?>
+                                        <h4>
+                                            <span class="label label-<?= getClass($state['alias']); ?>">
+                                                <?= trim($state['label']); ?>
+                                            </span>
+                                        </h4>
+                                    <?php else: ?>
+                                        <h4>
+                                            <span class="label label-default">
+                                                未出勤
+                                            </span>
+                                        </h4>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -62,7 +129,17 @@
             <div class="modal-body">
                 <h2 id="clock"></h2>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer center">
+                <?php foreach ($states as $state): ?>
+                    <button class="btn btn-lg col-md-4 center-block
+                                action-button btn-<?= getClass($state['alias']); ?>"
+                            data-alias="<?= $state['alias'] ?>">
+                        <i class="glyphicon <?= getIcon($state['alias']); ?>"></i>
+                         <?= $state['name'] ?>
+                    </button>
+                <?php endforeach; ?>
+
+                <!--
                 <button class="btn btn-lg col-md-4 action-button btn-success" data-alias="/in">
                     <i class="glyphicon glyphicon-arrow-left"></i> 出勤</button>
 
@@ -73,6 +150,7 @@
 
                 <button class="btn btn-lg col-md-4 action-button btn-warning" data-alias="/break_out">
                     <i class="glyphicon glyphicon-chevron-right"></i> 休憩OUT</button>
+                -->
 
             </div>
         </div>
@@ -86,13 +164,29 @@ echo $this->Html->script($base.'/lib/moment.min.js');
 <script type="text/javascript">
     $(function () {
         var $modal = $('#time-card-modal');
+        /**
+         * 名前リンク押下時
+         */
         $('.link-name').on('click', function(e) {
             e.preventDefault();
-            $('#employee-name').html($(this).html()+'さん');
-            $('#employee-id').val($(this).data('id'));
+            $this = $(this);
+            $('#employee-name').html($this.html()+'さん');
+            $('#employee-id').val($this.data('id'));
+
+            var showAlias = getShowButton($this.data('state'));
+            $('.action-button').hide();
+            $('.action-button').each(function() {
+                if ($.inArray($(this).data('alias'), showAlias) >= 0) {
+                    $(this).show();
+                }
+            });
+
             $('#time-card-modal').modal('show');
         });
 
+        /**
+         * ボタン押下時
+         */
         $('.action-button').on('click', function(e) {
             e.preventDefault();
             showLoading();
@@ -124,5 +218,27 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             $modal.find('#clock').html(now.format('HH:mm:ss'));
             $('#clock-large').html(now.format('YYYY年MM月DD日 HH:mm:ss'));
         }, 1000);
+
+        /**
+         * 表示するボタンを返します.
+         * @param alias
+         * @return array
+         */
+        function getShowButton(alias) {
+            var result = [];
+            if (!alias) {
+                result.push('/in');
+            } else if (alias === '/in') {
+                result.push('/out');
+                result.push('/break_in');
+            } else if (alias === '/out') {
+                result.push('/in');
+            } else if (alias === '/break_in') {
+                result.push('/break_out');
+            } else if (alias === '/break_out') {
+                result.push('/out');
+            }
+            return result;
+        }
     });
 </script>

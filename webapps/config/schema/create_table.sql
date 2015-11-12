@@ -146,6 +146,7 @@ CREATE TABLE time_card_states (
   id INT unsigned NOT NULL AUTO_INCREMENT,
   alias VARCHAR(20) NOT NULL,
   name VARCHAR(50) NOT NULL,
+  label VARCHAR(50) NOT NULL,
   is_deleted TINYINT(1) NOT NULL DEFAULT 0,
   created datetime NOT NULL,
   updated datetime NOT NULL,
