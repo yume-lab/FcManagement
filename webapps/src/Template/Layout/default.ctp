@@ -8,6 +8,7 @@
 <html>
 <head>
     <?= $this->Html->charset() ?>
+    <meta name="robots" content="noindex">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="<?= CHARISMA_ROOT ?>/img/favicon.ico">
     <title>
