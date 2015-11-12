@@ -164,6 +164,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
 <script type="text/javascript">
     $(function () {
         var $modal = $('#time-card-modal');
+        var buttonSelector = '.action-button';
         /**
          * 名前リンク押下時
          */
@@ -173,13 +174,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             $('#employee-name').html($this.html()+'さん');
             $('#employee-id').val($this.data('id'));
 
-            var showAlias = getShowButton($this.data('state'));
-            $('.action-button').hide();
-            $('.action-button').each(function() {
-                if ($.inArray($(this).data('alias'), showAlias) >= 0) {
-                    $(this).show();
-                }
-            });
+            switchActionButton($this.data('state'));
 
             $('#time-card-modal').modal('show');
         });
@@ -187,7 +182,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
         /**
          * ボタン押下時
          */
-        $('.action-button').on('click', function(e) {
+        $(buttonSelector).on('click', function(e) {
             e.preventDefault();
             showLoading();
             var parameter = {
@@ -220,25 +215,45 @@ echo $this->Html->script($base.'/lib/moment.min.js');
         }, 1000);
 
         /**
+         * ボタンの表示切り替えを行います.
+         */
+        function switchActionButton(alias) {
+            var showAlias = getShowButton(alias);
+            $(buttonSelector).hide();
+            $(buttonSelector).each(function() {
+                if (0 <= $.inArray($(this).data('alias'), showAlias)) {
+                    $(this).show();
+                }
+            });
+        }
+
+        /**
          * 表示するボタンを返します.
          * @param alias
          * @return array
          */
         function getShowButton(alias) {
-            var result = [];
-            if (!alias) {
-                result.push('/in');
-            } else if (alias === '/in') {
-                result.push('/out');
-                result.push('/break_in');
-            } else if (alias === '/out') {
-                result.push('/in');
-            } else if (alias === '/break_in') {
-                result.push('/break_out');
-            } else if (alias === '/break_out') {
-                result.push('/out');
-            }
-            return result;
+            var matrix = {
+                'default': [
+                    '/in'
+                ],
+                '/in': [
+                    '/out',
+                    '/break_in'
+                ],
+                '/out': [
+                    '/in'
+                ],
+                '/break_in': [
+                    '/break_out'
+                ],
+                '/break_out': [
+                    '/out'
+                ]
+            };
+
+            alias = alias || 'default';
+            return matrix[alias];
         }
     });
 </script>
