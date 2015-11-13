@@ -1,47 +1,3 @@
-
-<?php
-// TODO: ヘルパーで
-function getClass($alias) {
-    $class = 'default';
-    switch ($alias) {
-        case '/in':
-            $class = 'success';
-            break;
-        case '/out':
-            $class = 'danger';
-            break;
-        case '/break_in':
-            $class = 'primary';
-            break;
-        case '/break_out':
-            $class = 'warning';
-            break;
-    }
-    return $class;
-}
-
-// TODO: ヘルパーで
-function getIcon($alias) {
-    $icon = '';
-    switch ($alias) {
-        case '/in':
-            $icon = 'glyphicon-arrow-left';
-            break;
-        case '/out':
-            $icon = 'glyphicon-arrow-right';
-            break;
-        case '/break_in':
-            $icon = 'glyphicon-chevron-left';
-            break;
-        case '/break_out':
-            $icon = 'glyphicon-chevron-right';
-            break;
-    }
-    return $icon;
-}
-?>
-
-
 <table id="employee-list" class="table responsive">
     <thead>
     <tr>
@@ -74,7 +30,7 @@ function getIcon($alias) {
                 <?php // TODO このあたり全体はヘルパーにする ?>
                 <?php if (!empty($state)): ?>
                     <h4>
-                        <span class="label label-<?= getClass($state['alias']); ?>">
+                        <span class="label label-<?= $this->TimeCard->type($state['alias']); ?>">
                             <?= trim($state['label']); ?>
                         </span>
                     </h4>

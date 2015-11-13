@@ -1,47 +1,5 @@
 <?php $this->assign('title', 'タイムカード'); ?>
 
-<?php
-// TODO: ヘルパーで
-function getClass($alias) {
-    $class = 'default';
-    switch ($alias) {
-        case '/in':
-            $class = 'success';
-            break;
-        case '/out':
-            $class = 'danger';
-            break;
-        case '/break_in':
-            $class = 'primary';
-            break;
-        case '/break_out':
-            $class = 'warning';
-            break;
-    }
-    return $class;
-}
-
-// TODO: ヘルパーで
-function getIcon($alias) {
-    $icon = '';
-    switch ($alias) {
-        case '/in':
-            $icon = 'glyphicon-arrow-left';
-            break;
-        case '/out':
-            $icon = 'glyphicon-arrow-right';
-            break;
-        case '/break_in':
-            $icon = 'glyphicon-chevron-left';
-            break;
-        case '/break_out':
-            $icon = 'glyphicon-chevron-right';
-            break;
-    }
-    return $icon;
-}
-?>
-
 <?= $this->element('Notice/show_top', ['message' => '勤怠打刻が完了しました！']); ?>
 
 <style>
@@ -95,9 +53,9 @@ function getIcon($alias) {
             <div class="modal-footer center">
                 <?php foreach ($states as $state): ?>
                     <button class="btn btn-lg col-md-4 center-block
-                                action-button btn-<?= getClass($state['alias']); ?>"
+                                action-button btn-<?= $this->TimeCard->type($state['alias']); ?>"
                             data-alias="<?= $state['alias'] ?>">
-                        <i class="glyphicon <?= getIcon($state['alias']); ?>"></i>
+                        <i class="glyphicon <?= $this->TimeCard->icon($state['alias']); ?>"></i>
                          <?= trim($state['name']); ?>
                     </button>
                 <?php endforeach; ?>

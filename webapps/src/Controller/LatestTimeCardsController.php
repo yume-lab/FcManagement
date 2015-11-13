@@ -16,6 +16,8 @@ use Cake\ORM\TableRegistry;
 class LatestTimeCardsController extends AppController
 {
 
+    public $helpers = ['TimeCard'];
+
     /**
      * 初期処理.
      * @return void
