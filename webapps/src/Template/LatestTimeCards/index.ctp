@@ -49,6 +49,12 @@
     #clock-large {
         height: 30px;
     }
+    #employee-list .employee-row {
+        cursor: pointer;
+    }
+    #employee-list .employee-row:hover {
+        background-color: #f2dede;
+    }
 </style>
 <div class="row">
     <div class="box center col-md-6">
@@ -62,7 +68,7 @@
         <div class="box-inner">
             <div class="box-content">
                 <div class="box-content">
-                    <table class="table responsive">
+                    <table id="employee-list" class="table responsive">
                         <thead>
                         <tr>
                             <th>氏名</th>
@@ -77,11 +83,11 @@
                                 $hasData = !empty($info);
                                 $state = $hasData ? $states[$info['time_card_state_id']] : [];
                             ?>
-                            <tr>
+                            <tr class="employee-row"
+                                data-id="<?= $employee->id ?>"
+                                data-state="<?= empty($state) ? '' : $state['alias']; ?>">
                                 <td>
-                                    <a href="#" class="link-name"
-                                       data-id="<?= $employee->id ?>"
-                                       data-state="<?= empty($state) ? '' : $state['alias']; ?>">
+                                    <a href="#" class="link-name">
                                         <?= $employee->last_name.' '.$employee->first_name; ?>
                                     </a>
                                 </td>
@@ -138,20 +144,6 @@
                          <?= trim($state['name']); ?>
                     </button>
                 <?php endforeach; ?>
-
-                <!--
-                <button class="btn btn-lg col-md-4 action-button btn-success" data-alias="/in">
-                    <i class="glyphicon glyphicon-arrow-left"></i> 出勤</button>
-
-                <button class="btn btn-lg col-md-4 action-button btn-danger" data-alias="/out">
-                    <i class="glyphicon glyphicon-arrow-right"></i> 退勤</button>
-                <button class="btn btn-lg col-md-4 action-button btn-primary" data-alias="/break_in">
-                    <i class="glyphicon glyphicon-chevron-left"></i> 休憩IN</button>
-
-                <button class="btn btn-lg col-md-4 action-button btn-warning" data-alias="/break_out">
-                    <i class="glyphicon glyphicon-chevron-right"></i> 休憩OUT</button>
-                -->
-
             </div>
         </div>
     </div>
@@ -168,10 +160,10 @@ echo $this->Html->script($base.'/lib/moment.min.js');
         /**
          * 名前リンク押下時
          */
-        $('.link-name').on('click', function(e) {
+        $('.employee-row').on('click', function(e) {
             e.preventDefault();
             $this = $(this);
-            $('#employee-name').html($this.html()+'さん');
+            $('#employee-name').html($this.find('.link-name').html()+'さん');
             $('#employee-id').val($this.data('id'));
 
             switchActionButton($this.data('state'));
