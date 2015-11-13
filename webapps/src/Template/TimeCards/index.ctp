@@ -1,4 +1,4 @@
-<?php $this->assign('title', 'パート一覧'); ?>
+<?php $this->assign('title', '勤怠一覧'); ?>
 
 <style>
     #employee-list .employee-row {
@@ -33,9 +33,7 @@
                     </thead>
                     <tbody>
                     <?php foreach ($employees as $employee) :?>
-                        <tr class="employee-row"
-                            data-id="<?= $employee->id ?>"
-                            data-state="<?= empty($state) ? '' : $state['alias']; ?>">
+                        <tr class="employee-row" data-id="<?= $employee->id ?>">
                             <td>
                                 <?= $employee->last_name.' '.$employee->first_name; ?>
                             </td>
@@ -64,17 +62,21 @@
 
 <script type="text/javascript">
     $(function() {
-        // TODO: テスト
-        loadTable();
+        /**
+         * 従業員行クリック時
+         */
+        $(document).on('click', '.employee-row', function(e) {
+            e.preventDefault();
+            loadEmployees($(this).data('id'));
+        });
 
         /**
          * 勤務表の表示
          */
-        function loadTable() {
+        function loadEmployees(employeeId) {
             showLoading();
-            // TODO: テスト
             var parameter = {
-                employeeId: 2,
+                employeeId: employeeId,
                 target_ym: 201511
             };
             console.log(parameter);

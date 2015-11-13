@@ -10,6 +10,10 @@
     }
 ?>
 
+<div>
+    <?= $employee->last_name.' '.$employee->first_name ?>さん
+</div>
+
 <table class="table table-bordered responsive">
     <thead>
     <tr>

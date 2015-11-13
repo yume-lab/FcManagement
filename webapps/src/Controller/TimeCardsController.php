@@ -46,10 +46,29 @@ class TimeCardsController extends AppController
             ->where(['target_ym' => $targetYm])
             ->first();
 
-        $results = json_decode($results->body);
+        $Employees = TableRegistry::get('Employees');
+        $employee = $Employees->get($employeeId);
 
+        $matrix = $this->buildMatrix($results);
+
+        $this->log($matrix);
+        $this->set(compact('matrix', 'employee'));
+    }
+
+    /**
+     * 表示用データの整形を行います.
+     *
+     * @param $record object 勤務表データの取得結果
+     * @return array 表示用配列
+     */
+    private function buildMatrix($record)
+    {
+        if (empty($record)) {
+            return [];
+        }
+        $body = json_decode($record->body);
         $matrix = [];
-        foreach ($results as $day => $data) {
+        foreach ($body as $day => $data) {
             // 日別のループ
             $this->log($day);
             $this->log($data);
@@ -57,17 +76,13 @@ class TimeCardsController extends AppController
             $tmp = [];
             foreach ($data as $d) {
                 // 日の中の種別のループ
-                $this->log('===');
                 $this->log($d);
-
                 $time = date('H:i', strtotime($d->time));
                 $tmp[$d->alias] = $time;
             }
             $matrix[$day] = $tmp;
         }
-
-        $this->log($matrix);
-        $this->set(compact('results', 'matrix'));
+        return $matrix;
     }
 
     /**
