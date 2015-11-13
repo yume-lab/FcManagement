@@ -135,7 +135,7 @@
                                 action-button btn-<?= getClass($state['alias']); ?>"
                             data-alias="<?= $state['alias'] ?>">
                         <i class="glyphicon <?= getIcon($state['alias']); ?>"></i>
-                         <?= $state['name'] ?>
+                         <?= trim($state['name']); ?>
                     </button>
                 <?php endforeach; ?>
 
@@ -222,7 +222,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             $(buttonSelector).hide();
             $(buttonSelector).each(function() {
                 if (0 <= $.inArray($(this).data('alias'), showAlias)) {
-                    $(this).show();
+                    $(this).css('display', 'inline-block');
                 }
             });
         }
