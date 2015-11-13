@@ -2,28 +2,28 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 
 /**
  * TimeCards Controller
  * 勤怠一覧コントローラー.
  *
  * @property \App\Model\Table\TimeCardsTable $TimeCards
+ * @property \App\Model\Table\EmployeesTable $Employees
  */
 class TimeCardsController extends AppController
 {
 
     /**
-     * Index method
+     * 初期表示.
      *
      * @return void
      */
     public function index()
     {
-        $this->paginate = [
-            'contain' => ['Stores', 'Employees']
-        ];
-        $this->set('timeCards', $this->paginate($this->TimeCards));
-        $this->set('_serialize', ['timeCards']);
+        $Employees = TableRegistry::get('Employees');
+        $employees = $Employees->findByStoreId(parent::getCurrentStoreId());
+        $this->set(compact('employees'));
     }
 
     /**

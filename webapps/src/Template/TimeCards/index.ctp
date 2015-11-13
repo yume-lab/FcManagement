@@ -1,53 +1,54 @@
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('New Time Card'), ['action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Stores'), ['controller' => 'Stores', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Store'), ['controller' => 'Stores', 'action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Employees'), ['controller' => 'Employees', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Employee'), ['controller' => 'Employees', 'action' => 'add']) ?></li>
-    </ul>
-</nav>
-<div class="timeCards index large-9 medium-8 columns content">
-    <h3><?= __('Time Cards') ?></h3>
-    <table cellpadding="0" cellspacing="0">
-        <thead>
-            <tr>
-                <th><?= $this->Paginator->sort('id') ?></th>
-                <th><?= $this->Paginator->sort('store_id') ?></th>
-                <th><?= $this->Paginator->sort('employee_id') ?></th>
-                <th><?= $this->Paginator->sort('target_ym') ?></th>
-                <th><?= $this->Paginator->sort('is_deleted') ?></th>
-                <th><?= $this->Paginator->sort('created') ?></th>
-                <th><?= $this->Paginator->sort('updated') ?></th>
-                <th class="actions"><?= __('Actions') ?></th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($timeCards as $timeCard): ?>
-            <tr>
-                <td><?= $this->Number->format($timeCard->id) ?></td>
-                <td><?= $timeCard->has('store') ? $this->Html->link($timeCard->store->name, ['controller' => 'Stores', 'action' => 'view', $timeCard->store->id]) : '' ?></td>
-                <td><?= $timeCard->has('employee') ? $this->Html->link($timeCard->employee->name, ['controller' => 'Employees', 'action' => 'view', $timeCard->employee->id]) : '' ?></td>
-                <td><?= $this->Number->format($timeCard->target_ym) ?></td>
-                <td><?= h($timeCard->is_deleted) ?></td>
-                <td><?= h($timeCard->created) ?></td>
-                <td><?= h($timeCard->updated) ?></td>
-                <td class="actions">
-                    <?= $this->Html->link(__('View'), ['action' => 'view', $timeCard->id]) ?>
-                    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $timeCard->id]) ?>
-                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $timeCard->id], ['confirm' => __('Are you sure you want to delete # {0}?', $timeCard->id)]) ?>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-    <div class="paginator">
-        <ul class="pagination">
-            <?= $this->Paginator->prev('< ' . __('previous')) ?>
-            <?= $this->Paginator->numbers() ?>
-            <?= $this->Paginator->next(__('next') . ' >') ?>
-        </ul>
-        <p><?= $this->Paginator->counter() ?></p>
+<?php $this->assign('title', 'パート一覧'); ?>
+
+<style>
+    #employee-list .employee-row {
+        cursor: pointer;
+    }
+    #employee-list .employee-row:hover {
+        background-color: #f2dede;
+    }
+</style>
+<div class="row">
+    <?php // 従業員エリア ?>
+    <div class="col-md-2">
+        <div class="box-inner">
+            <div class="box-header well" data-original-title="">
+                <h2><i class="glyphicon glyphicon-user"></i> パート一覧</h2>
+            </div>
+            <div class="box-content">
+                <table id="employee-list" class="table responsive">
+                    <thead>
+                    <tr>
+                        <th>氏名</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($employees as $employee) :?>
+                        <tr class="employee-row"
+                            data-id="<?= $employee->id ?>"
+                            data-state="<?= empty($state) ? '' : $state['alias']; ?>">
+                            <td>
+                                <?= $employee->last_name.' '.$employee->first_name; ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <?php // 勤務表エリア ?>
+    <div class="col-md-10">
+        <div class="box-inner">
+            <div class="box-header well" data-original-title="">
+                <h2><i class="glyphicon glyphicon-book"></i> 月別勤務表</h2>
+            </div>
+            <div id="time-table" class="box-content">
+                <p>
+                    左メニューから、従業員の方を選択してください。
+                </p>
+            </div>
+        </div>
     </div>
 </div>
