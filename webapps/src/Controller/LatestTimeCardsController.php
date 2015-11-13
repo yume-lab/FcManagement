@@ -81,6 +81,7 @@ class LatestTimeCardsController extends AppController
         $this->Session->write(self::TOKEN_KEY, $token);
         $this->Session->write(self::STORE_ID_KEY, parent::getCurrentStoreId());
 
+        $this->Flash->error('再度ログインしてください。');
         $this->UserAuth->logout();
 
         $states = $this->getStates();

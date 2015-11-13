@@ -21,7 +21,6 @@
         <div class="alert alert-info">
             タイムカード
         </div>
-        <?= $this->Flash->render() ?>
 
         <h3 id="clock-large"></h3>
 
