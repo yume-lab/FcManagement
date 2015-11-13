@@ -76,4 +76,32 @@ class LatestTimeCardsTable extends Table
         $rules->add($rules->existsIn(['time_card_state_id'], 'TimeCardStates'));
         return $rules;
     }
+
+    /**
+     * 最新打刻情報の書き込みを行います.
+     *
+     * @param $employeeId 従業員ID
+     * @param $storeId 店舗ID
+     * @param $stateId 状態ID
+     * @see TimeCardStatesTable
+     * @return bool|\Cake\Datasource\EntityInterface 処理結果
+     */
+    public function write($employeeId, $storeId, $stateId) {
+        $entity = $this->find()
+            ->where(['store_id' => $storeId])
+            ->where(['employee_id' => $employeeId])
+            ->first();
+        if (empty($entity)) {
+            $entity = $this->newEntity();
+        }
+
+        $record = [
+            'store_id' => $storeId,
+            'employee_id' => $employeeId,
+            'time_card_state_id' => $stateId
+        ];
+
+        $data = $this->patchEntity($entity, $record);
+        return $this->save($data);
+    }
 }

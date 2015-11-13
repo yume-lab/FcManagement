@@ -89,21 +89,7 @@ class LatestTimeCardsController extends AppController
 
             $state = TableRegistry::get('TimeCardStates')->findByAlias($alias)->first();
 
-            $entity = $this->LatestTimeCards->find()
-                ->where(['store_id' => $storeId])
-                ->where(['employee_id' => $employeeId])
-                ->first();
-            if (empty($entity)) {
-                $entity = $this->LatestTimeCards->newEntity();
-            }
-            $record = [
-                'store_id' => $storeId,
-                'employee_id' => $employeeId,
-                'time_card_state_id' => $state->id
-            ];
-
-            $latestTimeCards = $this->LatestTimeCards->patchEntity($entity, $record);
-            $isSuccess = ($this->LatestTimeCards->save($latestTimeCards));
+            $isSuccess = $this->LatestTimeCards->write($employeeId, $storeId, $state->id);
 
             // TODO: time_cardsにも累積で登録
             echo json_encode(['success' => $isSuccess]);
