@@ -37,7 +37,29 @@ class TimeCardsController extends AppController
      */
     public function table()
     {
+        $employeeId = $this->request->query('employeeId');
+        $targetYm = $this->request->query('target_ym');
 
+        $results = $this->TimeCards->find()
+            ->where(['store_id' => parent::getCurrentStoreId()])
+            ->where(['employee_id' => $employeeId])
+            ->where(['target_ym' => $targetYm])
+            ->first();
+
+        $results = json_decode( $results->body);
+        foreach ($results as $day => $data) {
+            // 日別のループ
+            $this->log($day);
+            $this->log($data);
+
+            foreach ($data as $d) {
+                // 日の中の種別のループ
+                $this->log('===');
+                $this->log($d);
+            }
+        }
+
+        $this->set(compact('results'));
     }
 
     /**

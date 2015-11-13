@@ -26,7 +26,8 @@
             ?>
             <tr class="<?= $this->TimeCard->dayClass($dayOfWeek); ?>">
                 <td><?= $day.$this->TimeCard->dayOfWeekString($dayOfWeek); ?></td>
-                <td></td>
+                <td>
+                </td>
                 <td></td>
                 <td></td>
                 <td></td>
