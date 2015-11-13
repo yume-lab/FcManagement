@@ -83,10 +83,11 @@ class LatestTimeCardsTable extends Table
      * @param $employeeId 従業員ID
      * @param $storeId 店舗ID
      * @param $stateId 状態ID
+     * @param $time 打刻時間
      * @see TimeCardStatesTable
      * @return bool|\Cake\Datasource\EntityInterface 処理結果
      */
-    public function write($employeeId, $storeId, $stateId) {
+    public function write($employeeId, $storeId, $stateId, $time) {
         $entity = $this->find()
             ->where(['store_id' => $storeId])
             ->where(['employee_id' => $employeeId])
@@ -98,7 +99,8 @@ class LatestTimeCardsTable extends Table
         $record = [
             'store_id' => $storeId,
             'employee_id' => $employeeId,
-            'time_card_state_id' => $stateId
+            'time_card_state_id' => $stateId,
+            'time' => date('Y-m-d H:i:s', strtotime($time))
         ];
 
         $data = $this->patchEntity($entity, $record);

@@ -83,4 +83,34 @@ class TimeCardsTable extends Table
         $rules->add($rules->existsIn(['employee_id'], 'Employees'));
         return $rules;
     }
+
+    public function write($employeeId, $storeId, $stateId, $time) {
+        $targetYm = date('Ym', strtotime($time));
+
+        $entity = $this->find()
+            ->where(['store_id' => $storeId])
+            ->where(['employee_id' => $employeeId])
+            ->where(['target_ym' => $targetYm])
+            ->first();
+        if (empty($entity)) {
+            $entity = $this->newEntity();
+        }
+        $body = empty($entity->body) ? [] : json_decode($entity->body);
+        $body = (array) $body;
+        $body[] = [
+            'state_id' => $stateId,
+            'time' => date('Y-m-d H:i:s', strtotime($time))
+        ];
+
+        $record = [
+            'store_id' => $storeId,
+            'employee_id' => $employeeId,
+            'target_ym' => $targetYm,
+            'body' => json_encode($body),
+            'is_deleted' => false
+        ];
+
+        $data = $this->patchEntity($entity, $record);
+        return $this->save($data);
+    }
 }

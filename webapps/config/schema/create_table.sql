@@ -135,6 +135,7 @@ CREATE TABLE latest_time_cards (
   store_id INT unsigned NOT NULL,
   employee_id INT unsigned NOT NULL,
   time_card_state_id INT unsigned NOT NULL,
+  time TIMESTAMP NOT NULL,
   created datetime NOT NULL,
   updated datetime NOT NULL,
   PRIMARY KEY (id),

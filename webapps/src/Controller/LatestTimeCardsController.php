@@ -9,6 +9,9 @@ use Cake\ORM\TableRegistry;
  * 従業員の方の勤怠打刻用ページコントローラー
  *
  * @property \App\Model\Table\LatestTimeCardsTable $LatestTimeCards
+ * @property \App\Model\Table\TimeCardStatesTable $TimeCardStates
+ * @property \App\Model\Table\TimeCardsTable $TimeCards
+ * @property \App\Model\Table\EmployeesTable $Employees
  */
 class LatestTimeCardsController extends AppController
 {
@@ -44,8 +47,11 @@ class LatestTimeCardsController extends AppController
         // TODO: 現在のセッションIDを取得
         // TODO: ログアウトする
         // TODO: 取得したセッションIDをトークンとしてセッションへ
-        $employees = TableRegistry::get('Employees')->findByStoreId($storeId);
-        $timeCardStates = TableRegistry::get('TimeCardStates')->find('all');
+        $Employees = TableRegistry::get('Employees');
+        $TimeCardStates = TableRegistry::get('TimeCardStates');
+
+        $employees = $Employees->findByStoreId($storeId);
+        $timeCardStates = $TimeCardStates->find('all');
         $latestTimeCards = $this->LatestTimeCards->find()->where(['store_id' => $storeId]);
 
         $data = [];
@@ -86,12 +92,15 @@ class LatestTimeCardsController extends AppController
             $employeeId = $data['employeeId'];
             $storeId = $data['storeId'];
             $alias = $data['alias'];
+            $time = $data['time'];
 
             $state = TableRegistry::get('TimeCardStates')->findByAlias($alias)->first();
 
-            $isSuccess = $this->LatestTimeCards->write($employeeId, $storeId, $state->id);
+            $TimeCards = TableRegistry::get('TimeCards');
 
-            // TODO: time_cardsにも累積で登録
+            $isSuccess = $this->LatestTimeCards->write($employeeId, $storeId, $state->id, $time)
+                && $TimeCards->write($employeeId, $storeId, $state->id, $time);
+
             echo json_encode(['success' => $isSuccess]);
         }
     }

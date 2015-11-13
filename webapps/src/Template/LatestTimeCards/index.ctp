@@ -93,7 +93,7 @@
                                 </td>
                                 <td class="center">
                                     <h4>
-                                        <?= $hasData ? date('Y/m/d', strtotime($info['modified'])) : ''; ?>
+                                        <?= $hasData ? date('Y/m/d', strtotime($info['time'])) : ''; ?>
                                     </h4>
                                 </td>
                                 <td class="center">
@@ -182,7 +182,8 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             var parameter = {
                 employeeId: $('#employee-id').val(),
                 storeId: $('#store-id').val(),
-                alias: $(this).data('alias')
+                alias: $(this).data('alias'),
+                time: moment().format('YYYY-MM-DD HH:mm:ss')
             };
             console.log(parameter);
             $.ajax({
