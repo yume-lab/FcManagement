@@ -42,6 +42,8 @@
     }
 ?>
 
+<?= $this->element('Notice/show_top', ['message' => '勤怠打刻が完了しました！']); ?>
+
 <style>
     #time-card-modal #clock {
         text-align: center;
@@ -194,6 +196,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
                 contentType: 'application/json',
             }).always(function(jqXHR, textStatus) {
                 console.log(jqXHR, textStatus);
+                switchActionButton(parameter.alias);
                 hideLoading();
                 $('#notice').trigger('click');
             });
