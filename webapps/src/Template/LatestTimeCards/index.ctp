@@ -28,14 +28,14 @@
         <div class="box-inner">
             <div class="box-content">
                 <div id="table-area" class="box-content">
-
+                    <?php // ajaxでロードされます. ?>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<input type="hidden" id="store-id" value="<?= $storeId; ?>"/>
+<input type="hidden" id="token" value="<?= $token; ?>"/>
 
 <?php // TODO: 作りが気に入らない ?>
 <?php // 出勤表示ダイアログ ?>
@@ -59,6 +59,23 @@
     </div>
 </div>
 
+<?php // トークン不正のダイアログ ?>
+<div class="modal fade" id="fail-request-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>不正なアクセスです。</h4>
+            </div>
+            <div class="modal-body">
+                ログインをやり直してください。
+            </div>
+            <div class="modal-footer center">
+                <a href="/" class="btn btn-info">TOPへ</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php
 $base = '/vendor/calendar';
 echo $this->Html->script($base.'/lib/moment.min.js');
@@ -68,7 +85,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
         var $modal = $('#time-card-modal');
         var buttonSelector = '.action-button';
         /**
-         * 名前リンク押下時
+         * 従業員行クリック時
          */
         $(document).on('click', '.employee-row', function(e) {
             e.preventDefault();
@@ -77,8 +94,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             $('#employee-id').val($this.data('id'));
 
             switchActionButton($this.data('state'));
-
-            $('#time-card-modal').modal('show');
+            $modal.modal('show');
         });
 
         /**
@@ -88,8 +104,8 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             e.preventDefault();
             showLoading();
             var parameter = {
+                token: $('#token').val(),
                 employeeId: $('#employee-id').val(),
-                storeId: $('#store-id').val(),
                 alias: $(this).data('alias'),
                 time: moment().format('YYYY-MM-DD HH:mm:ss')
             };
@@ -100,12 +116,17 @@ echo $this->Html->script($base.'/lib/moment.min.js');
                 data: JSON.stringify(parameter),
                 dataType: 'json',
                 contentType: 'application/json',
-            }).always(function(jqXHR, textStatus) {
-                console.log(jqXHR, textStatus);
+            }).done(function( data, textStatus, jqXHR) {
+                console.log(data, jqXHR, textStatus);
                 switchActionButton(parameter.alias);
                 loadTable();
-                hideLoading();
                 $('#notice').trigger('click');
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR, textStatus, errorThrown);
+                showErrorDialog();
+            }).always(function(jqXHR, textStatus) {
+                console.log(jqXHR, textStatus);
+                hideLoading();
             });
 
         });
@@ -119,10 +140,13 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             $('#clock-large').html(now.format('YYYY年MM月DD日 HH:mm:ss'));
         }, 1000);
 
+        /**
+         * 従業員一覧部分を表示します.
+         */
         function loadTable() {
             showLoading();
             var parameter = {
-                storeId: $('#store-id').val(),
+                token: $('#token').val()
             };
             console.log(parameter);
             $.ajax({
@@ -133,6 +157,9 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             }).done(function(data, textStatus, jqXHR ) {
                 console.log(jqXHR, textStatus);
                 $('#table-area').html(data);
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR, textStatus, errorThrown);
+                showErrorDialog();
             }).always(function(jqXHR, textStatus) {
                 console.log(jqXHR, textStatus);
                 hideLoading();
@@ -150,6 +177,14 @@ echo $this->Html->script($base.'/lib/moment.min.js');
                     $(this).css('display', 'inline-block');
                 }
             });
+        }
+
+        /**
+         * 不正ログイン時のダイアログを表示します.
+         */
+        function showErrorDialog() {
+            // 閉じられないようにする.
+            $('#fail-request-modal').modal({backdrop: 'static', keyboard: false});
         }
 
         /**

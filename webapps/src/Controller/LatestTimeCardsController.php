@@ -2,6 +2,8 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Event\Event;
+use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -16,7 +18,32 @@ use Cake\ORM\TableRegistry;
 class LatestTimeCardsController extends AppController
 {
 
+    /**
+     * 使用ヘルパー
+     * @var array
+     */
     public $helpers = ['TimeCard'];
+
+    /**
+     * 店舗ID
+     * @var int
+     */
+    private $storeId;
+
+    /**
+     * セッションキー: 認証トークン
+     */
+    const TOKEN_KEY = 'TimeCard.user.token';
+
+    /**
+     * リクエストで飛んでくるトークンのキー
+     */
+    const REQUEST_TOKEN_KEY = 'token';
+
+    /**
+     * セッションキー: 店舗ID
+     */
+    const STORE_ID_KEY = 'TimeCard.user.storeId';
 
     /**
      * 初期処理.
@@ -25,9 +52,21 @@ class LatestTimeCardsController extends AppController
     public function initialize() {
         parent::initialize();
 
-        $this->UserAuth->allow(['write']);
+        $this->UserAuth->allow(['table', 'write']);
     }
 
+    /**
+     * リクエスト毎の処理.
+     *
+     * @param Event $event
+     * @return void
+     */
+    public function beforeFilter(Event $event)
+    {
+        parent::beforeFilter($event);
+
+        $this->storeId = $this->Session->read(self::STORE_ID_KEY);
+    }
 
     /**
      * 打刻画面初期表示
@@ -37,15 +76,15 @@ class LatestTimeCardsController extends AppController
     public function index()
     {
         parent::removeViewFrame();
-        $storeId = parent::getCurrentStoreId();
 
-        // TODO: 現在のセッションIDを取得
-        // TODO: ログアウトする
-        // TODO: 取得したセッションIDをトークンとしてセッションへ
+        $token = sha1(ceil(microtime(true)*1000));
+        $this->Session->write(self::TOKEN_KEY, $token);
+        $this->Session->write(self::STORE_ID_KEY, parent::getCurrentStoreId());
+
+        $this->UserAuth->logout();
 
         $states = $this->getStates();
-        $this->set(compact('storeId', 'states'));
-
+        $this->set(compact('states', 'token'));
     }
 
     /**
@@ -54,13 +93,14 @@ class LatestTimeCardsController extends AppController
      */
     public function table()
     {
-        $storeId = $this->request->query('storeId');
+        $this->checkToken($this->request->query(self::REQUEST_TOKEN_KEY));
+
         $states = $this->getStates();
 
         $Employees = TableRegistry::get('Employees');
-        $employees = $Employees->findByStoreId($storeId);
+        $employees = $Employees->findByStoreId($this->storeId);
 
-        $latestTimeCards = $this->LatestTimeCards->find()->where(['store_id' => $storeId]);
+        $latestTimeCards = $this->LatestTimeCards->find()->where(['store_id' => $this->storeId]);
         $data = [];
         foreach ($latestTimeCards as $latest) {
             $data[$latest->employee_id] = $latest;
@@ -73,12 +113,6 @@ class LatestTimeCardsController extends AppController
      * API
      * 勤怠打刻処理を行います.
      *
-     * TODO: パラメータ
-     * 1. ステータス
-     * 2. トークン（元管理ログイン者のセッションID）
-     *
-     * TODO: 打刻ステータス更新後、TimeCardsも更新
-     *
      * @return void Redirects on successful edit, renders view otherwise.
      */
     public function write()
@@ -86,13 +120,12 @@ class LatestTimeCardsController extends AppController
         $this->autoRender = false;
 
         $data = $this->request->data();
-        $this->log($data);
 
-        // TODO: トークンチェック
+        $this->log($data);
+        $this->checkToken($data[self::REQUEST_TOKEN_KEY]);
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $employeeId = $data['employeeId'];
-            $storeId = $data['storeId'];
             $alias = $data['alias'];
             $time = $data['time'];
 
@@ -100,8 +133,8 @@ class LatestTimeCardsController extends AppController
 
             $TimeCards = TableRegistry::get('TimeCards');
 
-            $isSuccess = $this->LatestTimeCards->write($employeeId, $storeId, $state->id, $time)
-                && $TimeCards->write($employeeId, $storeId, $state->id, $time);
+            $isSuccess = $this->LatestTimeCards->write($employeeId, $this->storeId, $state->id, $time)
+                && $TimeCards->write($employeeId, $this->storeId, $state->id, $time);
 
             echo json_encode(['success' => $isSuccess]);
         }
@@ -120,6 +153,23 @@ class LatestTimeCardsController extends AppController
             $states[$state->id] = $state;
         }
         return $states;
+    }
+
+    /**
+     * トークンチェックを行います.
+     * @param $token リクエストされたトークン
+     * @return bool 発行時のトークンと同じであればOK
+     * @throws BadRequestException トークンが合わなかった場合
+     */
+    private function checkToken($token)
+    {
+        $this->log($token);
+        $this->log($this->Session->read(self::TOKEN_KEY));
+
+        if ($this->Session->read(self::TOKEN_KEY) == $token) {
+            return true;
+        }
+        throw new BadRequestException();
     }
 
 }
