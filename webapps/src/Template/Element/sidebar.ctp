@@ -17,6 +17,12 @@
                     <span> パート管理</span>
                 </a>
             </li>
+            <li>
+                <a class="ajax-link" href="/time-cards">
+                    <i class="glyphicon glyphicon-book"></i>
+                    <span> 勤怠一覧</span>
+                </a>
+            </li>
             <li class="nav-header">シフト</li>
             <li>
                 <a class="ajax-link" href="/shift">
