@@ -6,6 +6,7 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Cake\ORM\TableRegistry;
 
 /**
  * TimeCards Model
@@ -119,15 +120,20 @@ class TimeCardsTable extends Table
          *  ]
          * }
          */
+        $TimeCardStates = TableRegistry::get('TimeCardStates');
+        $state = $TimeCardStates->get($stateId);
+
         $body = empty($entity->body) ? [] : json_decode($entity->body);
         $body = (array) $body;
         $dayKey = 'day-'.$day;
         if (!isset($body[$dayKey])) {
             $body[$dayKey] = [];
         }
+
         $body[$dayKey] = (array) $body[$dayKey];
-        $body[$dayKey][] =  [
-            'state_id' => $stateId,
+        $body[$dayKey][] = [
+            'state_id' => $state->id,
+            'alias' => $state->alias,
             'time' => date('Y-m-d H:i:s', strtotime($time))
         ];
 

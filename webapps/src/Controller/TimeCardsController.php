@@ -46,20 +46,28 @@ class TimeCardsController extends AppController
             ->where(['target_ym' => $targetYm])
             ->first();
 
-        $results = json_decode( $results->body);
+        $results = json_decode($results->body);
+
+        $matrix = [];
         foreach ($results as $day => $data) {
             // 日別のループ
             $this->log($day);
             $this->log($data);
 
+            $tmp = [];
             foreach ($data as $d) {
                 // 日の中の種別のループ
                 $this->log('===');
                 $this->log($d);
+
+                $time = date('H:i', strtotime($d->time));
+                $tmp[$d->alias] = $time;
             }
+            $matrix[$day] = $tmp;
         }
 
-        $this->set(compact('results'));
+        $this->log($matrix);
+        $this->set(compact('results', 'matrix'));
     }
 
     /**
