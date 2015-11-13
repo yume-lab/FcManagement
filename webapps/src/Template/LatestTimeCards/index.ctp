@@ -87,12 +87,14 @@
                                 data-id="<?= $employee->id ?>"
                                 data-state="<?= empty($state) ? '' : $state['alias']; ?>">
                                 <td>
-                                    <a href="#" class="link-name">
+                                    <h4 class="name">
                                         <?= $employee->last_name.' '.$employee->first_name; ?>
-                                    </a>
+                                    </h4>
                                 </td>
                                 <td class="center">
-                                    <?= $hasData ? date('Y/m/d', strtotime($info['modified'])) : ''; ?>
+                                    <h4>
+                                        <?= $hasData ? date('Y/m/d', strtotime($info['modified'])) : ''; ?>
+                                    </h4>
                                 </td>
                                 <td class="center">
                                     <?php // TODO このあたり全体はヘルパーにする ?>
@@ -163,7 +165,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
         $('.employee-row').on('click', function(e) {
             e.preventDefault();
             $this = $(this);
-            $('#employee-name').html($this.find('.link-name').html()+'さん');
+            $('#employee-name').html($this.find('.name').html()+'さん');
             $('#employee-id').val($this.data('id'));
 
             switchActionButton($this.data('state'));
