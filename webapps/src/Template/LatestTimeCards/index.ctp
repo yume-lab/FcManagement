@@ -1,45 +1,45 @@
 <?php $this->assign('title', 'タイムカード'); ?>
 
 <?php
-    // TODO: ヘルパーで
-    function getClass($alias) {
-        $class = 'default';
-        switch ($alias) {
-            case '/in':
-                $class = 'success';
-                break;
-            case '/out':
-                $class = 'danger';
-                break;
-            case '/break_in':
-                $class = 'primary';
-                break;
-            case '/break_out':
-                $class = 'warning';
-                break;
-        }
-        return $class;
+// TODO: ヘルパーで
+function getClass($alias) {
+    $class = 'default';
+    switch ($alias) {
+        case '/in':
+            $class = 'success';
+            break;
+        case '/out':
+            $class = 'danger';
+            break;
+        case '/break_in':
+            $class = 'primary';
+            break;
+        case '/break_out':
+            $class = 'warning';
+            break;
     }
+    return $class;
+}
 
-    // TODO: ヘルパーで
-    function getIcon($alias) {
-        $icon = '';
-        switch ($alias) {
-            case '/in':
-                $icon = 'glyphicon-arrow-left';
-                break;
-            case '/out':
-                $icon = 'glyphicon-arrow-right';
-                break;
-            case '/break_in':
-                $icon = 'glyphicon-chevron-left';
-                break;
-            case '/break_out':
-                $icon = 'glyphicon-chevron-right';
-                break;
-        }
-        return $icon;
+// TODO: ヘルパーで
+function getIcon($alias) {
+    $icon = '';
+    switch ($alias) {
+        case '/in':
+            $icon = 'glyphicon-arrow-left';
+            break;
+        case '/out':
+            $icon = 'glyphicon-arrow-right';
+            break;
+        case '/break_in':
+            $icon = 'glyphicon-chevron-left';
+            break;
+        case '/break_out':
+            $icon = 'glyphicon-chevron-right';
+            break;
     }
+    return $icon;
+}
 ?>
 
 <?= $this->element('Notice/show_top', ['message' => '勤怠打刻が完了しました！']); ?>
@@ -69,55 +69,8 @@
 
         <div class="box-inner">
             <div class="box-content">
-                <div class="box-content">
-                    <table id="employee-list" class="table responsive">
-                        <thead>
-                        <tr>
-                            <th>氏名</th>
-                            <th>最終出勤日</th>
-                            <th>状態</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <?php foreach ($employees as $employee) :?>
-                            <?php
-                                $info = isset($data[$employee->id]) ? $data[$employee->id] : [];
-                                $hasData = !empty($info);
-                                $state = $hasData ? $states[$info['time_card_state_id']] : [];
-                            ?>
-                            <tr class="employee-row"
-                                data-id="<?= $employee->id ?>"
-                                data-state="<?= empty($state) ? '' : $state['alias']; ?>">
-                                <td>
-                                    <h4 class="name">
-                                        <?= $employee->last_name.' '.$employee->first_name; ?>
-                                    </h4>
-                                </td>
-                                <td class="center">
-                                    <h4>
-                                        <?= $hasData ? date('Y/m/d', strtotime($info['time'])) : ''; ?>
-                                    </h4>
-                                </td>
-                                <td class="center">
-                                    <?php // TODO このあたり全体はヘルパーにする ?>
-                                    <?php if (!empty($state)): ?>
-                                        <h4>
-                                            <span class="label label-<?= getClass($state['alias']); ?>">
-                                                <?= trim($state['label']); ?>
-                                            </span>
-                                        </h4>
-                                    <?php else: ?>
-                                        <h4>
-                                            <span class="label label-default">
-                                                未出勤
-                                            </span>
-                                        </h4>
-                                    <?php endif; ?>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                <div id="table-area" class="box-content">
+
                 </div>
             </div>
         </div>
@@ -164,7 +117,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
         /**
          * 名前リンク押下時
          */
-        $('.employee-row').on('click', function(e) {
+        $(document).on('click', '.employee-row', function(e) {
             e.preventDefault();
             $this = $(this);
             $('#employee-name').html($this.find('.name').html()+'さん');
@@ -178,7 +131,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
         /**
          * ボタン押下時
          */
-        $(buttonSelector).on('click', function(e) {
+        $(document).on('click', buttonSelector, function(e) {
             e.preventDefault();
             showLoading();
             var parameter = {
@@ -197,6 +150,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             }).always(function(jqXHR, textStatus) {
                 console.log(jqXHR, textStatus);
                 switchActionButton(parameter.alias);
+                loadTable();
                 hideLoading();
                 $('#notice').trigger('click');
             });
@@ -211,6 +165,26 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             $modal.find('#clock').html(now.format('HH:mm:ss'));
             $('#clock-large').html(now.format('YYYY年MM月DD日 HH:mm:ss'));
         }, 1000);
+
+        function loadTable() {
+            showLoading();
+            var parameter = {
+                storeId: $('#store-id').val(),
+            };
+            console.log(parameter);
+            $.ajax({
+                type: 'GET',
+                url: '/api/time-card/table',
+                data: parameter,
+                dataType: 'html'
+            }).done(function(data, textStatus, jqXHR ) {
+                console.log(jqXHR, textStatus);
+                $('#table-area').html(data);
+            }).always(function(jqXHR, textStatus) {
+                console.log(jqXHR, textStatus);
+                hideLoading();
+            });
+        }
 
         /**
          * ボタンの表示切り替えを行います.
@@ -253,5 +227,6 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             alias = alias || 'default';
             return matrix[alias];
         }
+        loadTable();
     });
 </script>

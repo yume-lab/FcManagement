@@ -48,6 +48,7 @@ Router::scope('/', function ($routes) {
     // 勤怠打刻
     $routes->connect('/time-card', ['controller' => 'LatestTimeCards', 'action' => 'index']);
     $routes->connect('/api/time-card/write', ['controller' => 'LatestTimeCards', 'action' => 'write']);
+    $routes->connect('/api/time-card/table', ['controller' => 'LatestTimeCards', 'action' => 'table']);
 
 
     $routes->fallbacks('DashedRoute');

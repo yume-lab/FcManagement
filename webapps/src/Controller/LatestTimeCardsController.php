@@ -37,16 +37,31 @@ class LatestTimeCardsController extends AppController
         parent::removeViewFrame();
         $storeId = parent::getCurrentStoreId();
 
-        $this->paginate = [
-            'contain' => ['Employees', 'TimeCardStates'],
-            'conditions' => [
-                'LatestTimeCards.store_id' => $storeId
-            ],
-        ];
-
         // TODO: 現在のセッションIDを取得
         // TODO: ログアウトする
         // TODO: 取得したセッションIDをトークンとしてセッションへ
+
+        $this->set(compact('storeId'));
+
+        $TimeCardStates = TableRegistry::get('TimeCardStates');
+        $timeCardStates = $TimeCardStates->find('all');
+        $states = [];
+        foreach ($timeCardStates as $state) {
+            $states[$state->id] = $state;
+        }
+
+        $this->set(compact('storeId', 'states'));
+
+    }
+
+    /**
+     * 従業員一覧部分を表示します.
+     * このアクションはJSから呼ばれ、レンダリング済のHTMLをJSで組み込んでいる形です.
+     */
+    public function table()
+    {
+        $storeId = $this->request->query('storeId');
+
         $Employees = TableRegistry::get('Employees');
         $TimeCardStates = TableRegistry::get('TimeCardStates');
 
@@ -64,7 +79,7 @@ class LatestTimeCardsController extends AppController
             $states[$state->id] = $state;
         }
 
-        $this->set(compact('employees', 'storeId', 'data', 'states'));
+        $this->set(compact('employees', 'data', 'states'));
     }
 
     /**
