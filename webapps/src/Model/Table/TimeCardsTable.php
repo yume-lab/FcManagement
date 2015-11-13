@@ -84,8 +84,19 @@ class TimeCardsTable extends Table
         return $rules;
     }
 
-    public function write($employeeId, $storeId, $stateId, $time) {
+    /**
+     * 勤務表データへの書き込みを行います
+     *
+     * @param $employeeId 従業員ID
+     * @param $storeId 店舗ID
+     * @param $stateId 状態ID
+     * @param $time 打刻時間
+     * @return bool|\Cake\Datasource\EntityInterface
+     */
+    public function write($employeeId, $storeId, $stateId, $time)
+    {
         $targetYm = date('Ym', strtotime($time));
+        $day = date('d', strtotime($time));
 
         $entity = $this->find()
             ->where(['store_id' => $storeId])
@@ -95,9 +106,27 @@ class TimeCardsTable extends Table
         if (empty($entity)) {
             $entity = $this->newEntity();
         }
+
+        /*
+         * こんな感じの配列を組む
+         * {
+         *  "day-13":[
+         *      {"state_id":3,"time":"2015-11-13 09:29:05"},
+         *      {"state_id":2,"time":"2015-11-13 09:29:16"}
+         *  ],
+         *  "day-15":[
+         *      {"state_id":2,"time":"2015-11-15 12:30:45"}
+         *  ]
+         * }
+         */
         $body = empty($entity->body) ? [] : json_decode($entity->body);
         $body = (array) $body;
-        $body[] = [
+        $dayKey = 'day-'.$day;
+        if (!isset($body[$dayKey])) {
+            $body[$dayKey] = [];
+        }
+        $body[$dayKey] = (array) $body[$dayKey];
+        $body[$dayKey][] =  [
             'state_id' => $stateId,
             'time' => date('Y-m-d H:i:s', strtotime($time))
         ];
