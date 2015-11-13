@@ -12,6 +12,31 @@ use Cake\View\Helper;
 class TimeCardHelper extends Helper {
 
     /**
+     * ステータス状況別のボタンを出力します.
+     *
+     * @see TimeCardStatesTable
+     * @param $state
+     * @return string
+     */
+    public function button($state) {
+        $tagFormat = '
+            <button class="btn btn-lg col-md-4 center-block action-button btn-%s" data-alias="%s">
+                <i class="glyphicon %s"></i> %s
+            </button>
+        ';
+
+        $alias = $state['alias'];
+        $values = [
+            $this->type($alias),
+            $alias,
+            $this->icon($alias),
+            trim(trim($state['name']))
+        ];
+
+        return vsprintf($tagFormat, $values);
+    }
+
+    /**
      * ボタンの種別から、classに指定する色種別を取得します.
      *
      * @see TimeCardStatesTable

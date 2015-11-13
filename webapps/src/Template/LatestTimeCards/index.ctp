@@ -52,12 +52,7 @@
             </div>
             <div class="modal-footer center">
                 <?php foreach ($states as $state): ?>
-                    <button class="btn btn-lg col-md-4 center-block
-                                action-button btn-<?= $this->TimeCard->type($state['alias']); ?>"
-                            data-alias="<?= $state['alias'] ?>">
-                        <i class="glyphicon <?= $this->TimeCard->icon($state['alias']); ?>"></i>
-                         <?= trim($state['name']); ?>
-                    </button>
+                    <?= $this->TimeCard->button($state); ?>
                 <?php endforeach; ?>
             </div>
         </div>
