@@ -12,6 +12,48 @@ use Cake\View\Helper;
 class TimeCardHelper extends Helper {
 
     /**
+     * 曜日定義.
+     * @var array
+     */
+    private static $DAY_OF_WEEK_MAP = [
+        '日', // 0
+        '月', // 1
+        '火', // 2
+        '水', // 3
+        '木', // 4
+        '金', // 5
+        '土'  // 6
+    ];
+
+    /**
+     * 勤務表の曜日別classを取得します.
+     * @param $dayOfWeek
+     * @return string
+     */
+    public function dayClass($dayOfWeek) {
+        $class = '';
+        switch ($dayOfWeek) {
+            case 0:
+                $class = 'sunday';
+                break;
+            case 6:
+                $class = 'saturday';
+                break;
+        }
+        return $class;
+    }
+
+    /**
+     * 曜日を表示します.
+     * @param $dayOfWeek
+     * @return string
+     */
+    public function dayOfWeekString($dayOfWeek) {
+
+        return sprintf('(%s)', self::$DAY_OF_WEEK_MAP[$dayOfWeek]);
+    }
+
+    /**
      * ステータス状況別のボタンを出力します.
      *
      * @see TimeCardStatesTable

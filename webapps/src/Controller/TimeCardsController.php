@@ -15,6 +15,12 @@ class TimeCardsController extends AppController
 {
 
     /**
+     * 使用ヘルパー
+     * @var array
+     */
+    public $helpers = ['TimeCard'];
+
+    /**
      * 初期表示.
      *
      * @return void
@@ -24,6 +30,14 @@ class TimeCardsController extends AppController
         $Employees = TableRegistry::get('Employees');
         $employees = $Employees->findByStoreId(parent::getCurrentStoreId());
         $this->set(compact('employees'));
+    }
+
+    /**
+     * 勤務表テーブルの表示を行います.
+     */
+    public function table()
+    {
+
     }
 
     /**

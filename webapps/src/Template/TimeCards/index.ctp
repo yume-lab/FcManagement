@@ -7,6 +7,15 @@
     #employee-list .employee-row:hover {
         background-color: #f2dede;
     }
+
+    #time-table .sunday {
+        background-color: #f2dede;
+        color: #b94a48;
+    }
+    #time-table .saturday {
+        background-color: #d9edf7;
+        color: #3a87ad;
+    }
 </style>
 <div class="row">
     <?php // 従業員エリア ?>
@@ -52,3 +61,37 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    $(function() {
+        // TODO: テスト
+        loadTable();
+
+        /**
+         * 勤務表の表示
+         */
+        function loadTable() {
+            showLoading();
+            // TODO: テスト
+            var parameter = {
+                employeeId: 1,
+                target_ym: 201511
+            };
+            console.log(parameter);
+            $.ajax({
+                type: 'GET',
+                url: '/time-cards/table',
+                data: parameter,
+                dataType: 'html'
+            }).done(function(data, textStatus, jqXHR ) {
+                console.log(jqXHR, textStatus);
+                $('#time-table').html(data);
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR, textStatus, errorThrown);
+            }).always(function(jqXHR, textStatus) {
+                console.log(jqXHR, textStatus);
+                hideLoading();
+            });
+        }
+    });
+</script>
