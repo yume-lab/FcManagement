@@ -43,15 +43,7 @@ class LatestTimeCardsController extends AppController
         // TODO: ログアウトする
         // TODO: 取得したセッションIDをトークンとしてセッションへ
 
-        $this->set(compact('storeId'));
-
-        $TimeCardStates = TableRegistry::get('TimeCardStates');
-        $timeCardStates = $TimeCardStates->find('all');
-        $states = [];
-        foreach ($timeCardStates as $state) {
-            $states[$state->id] = $state;
-        }
-
+        $states = $this->getStates();
         $this->set(compact('storeId', 'states'));
 
     }
@@ -63,22 +55,15 @@ class LatestTimeCardsController extends AppController
     public function table()
     {
         $storeId = $this->request->query('storeId');
+        $states = $this->getStates();
 
         $Employees = TableRegistry::get('Employees');
-        $TimeCardStates = TableRegistry::get('TimeCardStates');
-
         $employees = $Employees->findByStoreId($storeId);
-        $timeCardStates = $TimeCardStates->find('all');
-        $latestTimeCards = $this->LatestTimeCards->find()->where(['store_id' => $storeId]);
 
+        $latestTimeCards = $this->LatestTimeCards->find()->where(['store_id' => $storeId]);
         $data = [];
         foreach ($latestTimeCards as $latest) {
             $data[$latest->employee_id] = $latest;
-        }
-
-        $states = [];
-        foreach ($timeCardStates as $state) {
-            $states[$state->id] = $state;
         }
 
         $this->set(compact('employees', 'data', 'states'));
@@ -120,6 +105,21 @@ class LatestTimeCardsController extends AppController
 
             echo json_encode(['success' => $isSuccess]);
         }
+    }
+
+    /**
+     * 勤怠状態一覧を取得します.
+     * @return array
+     */
+    private function getStates()
+    {
+        $TimeCardStates = TableRegistry::get('TimeCardStates');
+        $timeCardStates = $TimeCardStates->find('all');
+        $states = [];
+        foreach ($timeCardStates as $state) {
+            $states[$state->id] = $state;
+        }
+        return $states;
     }
 
 }
