@@ -19,3 +19,4 @@
 <?= $this->Html->script(CHARISMA_JS.'/jquery.autogrow-textarea.js') ?>
 <?= $this->Html->script(CHARISMA_JS.'/jquery.uploadify-3.1.min.js') ?>
 <?= $this->Html->script(CHARISMA_JS.'/jquery.history.js') ?>
+<?= $this->Html->script(CHARISMA_JS.'/charisma.js') ?>

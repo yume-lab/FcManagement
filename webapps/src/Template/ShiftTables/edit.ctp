@@ -15,14 +15,10 @@ foreach ($employees as $employee) {
 }
 
 $resources = json_encode($resources);
-
-$tempSaveSuccessMessage = 'シフトを一時保存しました';
 ?>
 
 <?php // 一時保存の完了通知用 ?>
-<button id="notice" class="noty hide"
-        data-noty-options="{&quot;text&quot;:&quot;<?= $tempSaveSuccessMessage ?>&quot;,&quot;layout&quot;:&quot;top&quot;,&quot;type&quot;:&quot;information&quot;}">
-</button>
+<?= $this->element('Notice/show_top', ['message' => 'シフトを一時保存しました']); ?>
 
 <style>
     .fc-timeline-event .fc-content {

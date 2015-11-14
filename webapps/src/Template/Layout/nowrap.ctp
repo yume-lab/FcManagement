@@ -18,12 +18,14 @@
     <?= $this->Html->meta('icon') ?>
 
     <?= $this->element('Charisma/header') ?>
+    <?= $this->Html->css('styles.css') ?>
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
     <?= $this->fetch('script') ?>
 </head>
 <body>
+    <div id="loading"></div>
 
     <div id="contents">
         <div class="ch-container">
@@ -36,5 +38,6 @@
     </div>
 
     <?= $this->element('Charisma/footer') ?>
+    <?= $this->element('Script/Common/util') ?>
 </body>
 </html>

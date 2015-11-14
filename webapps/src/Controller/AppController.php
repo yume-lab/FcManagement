@@ -15,6 +15,11 @@ class AppController extends Controller
 {
 
     /**
+     * @var \Cake\Network\Session
+     */
+    var $Session;
+
+    /**
      * 初期処理.
      * @return void
      */
@@ -45,6 +50,8 @@ class AppController extends Controller
             ],
             'authError' => 'ログインしてください。'
         ]);
+
+        $this->Session = $this->request->session();
     }
 
     /**
@@ -60,6 +67,7 @@ class AppController extends Controller
         $current = $this->UserAuth->currentStore();
         $stores = $this->UserAuth->stores();
         $previous = $this->request->referer();
+
         $this->set(compact('userInfo', 'current', 'stores', 'previous'));
         $this->set('_serialize', ['userInfo']);
     }
@@ -108,5 +116,4 @@ class AppController extends Controller
     {
         return $this->UserAuth->currentStore('id');
     }
-
 }
