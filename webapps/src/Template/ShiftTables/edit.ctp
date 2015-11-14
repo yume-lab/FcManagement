@@ -26,7 +26,6 @@ $resources = json_encode($resources);
     }
 </style>
 
-
 <script>
 
     $(document).ready(function() {
@@ -291,7 +290,7 @@ $resources = json_encode($resources);
             eventClick: function(calEvent, jsEvent, view) {
                 showEventPopover($(this), calEvent, MODE.UPDATE);
             },
-            resourceAreaWidth: '8%',
+            resourceAreaWidth: '12%',
             resourceLabelText: 'パート',
             events: function(start, end, timezone, callback) {
                 showLoading();
