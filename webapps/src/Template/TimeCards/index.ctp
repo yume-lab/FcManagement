@@ -7,6 +7,9 @@
     #employee-list .employee-row:hover {
         background-color: #f2dede;
     }
+    #employee-list .current {
+        background-color: #f2dede;
+    }
 
     #time-table .sunday {
         background-color: #f2dede;
@@ -67,6 +70,8 @@
          */
         $(document).on('click', '.employee-row', function(e) {
             e.preventDefault();
+            $('.employee-row').removeClass('current');
+            $(this).addClass('current');
             loadEmployees($(this).data('id'));
         });
 
