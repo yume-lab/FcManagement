@@ -63,8 +63,14 @@
     </div>
 </div>
 
+<?php
+$base = '/vendor/calendar';
+echo $this->Html->script($base.'/lib/moment.min.js');
+?>
 <script type="text/javascript">
     $(function() {
+        var DATE_FORMAT = 'YYYYMM';
+
         /**
          * 従業員行クリック時
          */
@@ -72,17 +78,24 @@
             e.preventDefault();
             $('.employee-row').removeClass('current');
             $(this).addClass('current');
-            loadEmployees($(this).data('id'));
+            loadEmployees($(this).data('id'), moment().format(DATE_FORMAT));
+        });
+
+        $(document).on('click', '.pagination a', function(e) {
+            var employeeId = $('#employee-list').find('.current').data('id');
+            var target = $(this).data('target');
+            loadEmployees(employeeId, target);
+            return false;
         });
 
         /**
          * 勤務表の表示
          */
-        function loadEmployees(employeeId) {
+        function loadEmployees(employeeId, target) {
             showLoading();
             var parameter = {
                 employeeId: employeeId,
-                target_ym: 201511
+                target_ym: target
             };
             console.log(parameter);
             $.ajax({

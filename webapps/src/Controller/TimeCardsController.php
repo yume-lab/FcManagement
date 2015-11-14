@@ -51,8 +51,14 @@ class TimeCardsController extends AppController
 
         $matrix = $this->buildMatrix($results);
 
+        $target = strtotime($targetYm.'01');
+        $showMonth = date('Y年m月', $target);
+        $current = date('Y-m-d', $target);
+        $next = date('Ym', strtotime(date('Y-m-1', $target). ' +1 month'));
+        $prev = date('Ym', strtotime(date('Y-m-1', $target). ' -1 month'));
+
         $this->log($matrix);
-        $this->set(compact('matrix', 'employee'));
+        $this->set(compact('matrix', 'employee', 'showMonth', 'next', 'prev', 'current'));
     }
 
     /**

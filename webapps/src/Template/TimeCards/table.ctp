@@ -10,9 +10,17 @@
     }
 ?>
 
-<div>
-    <?= $employee->last_name.' '.$employee->first_name ?>さん
-</div>
+<h3 class="center-block">
+    <?= $showMonth ?>
+</h3>
+<ul class="pagination col-md-12">
+    <li id="prev" style="float: left;">
+        <a href="#" data-target="<?= $prev ?>">&lt; 前月</a>
+    </li>
+    <li id="next" style="float: right;">
+        <a href="#" data-target="<?= $next ?>">次月 &gt;</a>
+    </li>
+</ul>
 
 <table class="table table-bordered responsive">
     <thead>
@@ -29,10 +37,9 @@
     <tbody>
 
         <?php
-            $now = date('Y-m-d');
-            $year = date('Y', strtotime($now));
-            $month = date('m', strtotime($now));
-            $end = date('t', strtotime($now));
+            $year = date('Y', strtotime($current));
+            $month = date('m', strtotime($current));
+            $end = date('t', strtotime($current));
         ?>
 
         <?php for ($day = 1; $day <= $end; $day++): ?>
