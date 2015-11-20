@@ -24,6 +24,9 @@ $resources = json_encode($resources);
     .fc-timeline-event .fc-content {
         white-space: pre-line;
     }
+    .fc-timelineMonth-view .fc-cell-text{
+        cursor: pointer;
+    }
 </style>
 
 <script>
@@ -223,6 +226,21 @@ $resources = json_encode($resources);
          */
         $(document).on('click', '.popover-title', function() {
             destroyPopover();
+        });
+
+        /**
+         * 月表示から詳細を見れるように.
+         */
+        $(document).on('click', '.fc-timelineMonth-view .fc-cell-text', function() {
+            var $calendar = $(calendarSelector);
+            var date = $calendar.fullCalendar('getDate');
+            // FIXME: フォーマット変わったらマズイ
+            var day = $(this).text().split(' ')[0];
+            date.date(day);
+
+            console.log(date);
+            $calendar.fullCalendar('gotoDate', date);
+            $calendar.fullCalendar('changeView', 'timelineDay');
         });
 
         /**
