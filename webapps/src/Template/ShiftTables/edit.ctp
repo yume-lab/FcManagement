@@ -24,8 +24,10 @@ $resources = json_encode($resources);
     .fc-timeline-event .fc-content {
         white-space: pre-line;
     }
+    .fc-timelineMonth-view .fc-cell-text{
+        cursor: pointer;
+    }
 </style>
-
 
 <script>
 
@@ -218,10 +220,32 @@ $resources = json_encode($resources);
             $('#fixed_form').submit();
         });
 
+        /**
+         * ポップオーバーのヘッダークリック時.
+         * ポップオーバーの削除.
+         */
         $(document).on('click', '.popover-title', function() {
             destroyPopover();
         });
 
+        /**
+         * 月表示から詳細を見れるように.
+         */
+        $(document).on('click', '.fc-timelineMonth-view .fc-cell-text', function() {
+            var $calendar = $(calendarSelector);
+            var date = $calendar.fullCalendar('getDate');
+            // FIXME: フォーマット変わったらマズイ
+            var day = $(this).text().split(' ')[0];
+            date.date(day);
+
+            console.log(date);
+            $calendar.fullCalendar('gotoDate', date);
+            $calendar.fullCalendar('changeView', 'timelineDay');
+        });
+
+        /**
+         * シフト表エリア表示
+         */
         $(calendarSelector).fullCalendar({
             schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
             header: {
@@ -234,9 +258,6 @@ $resources = json_encode($resources);
                 month: '月',
                 week: '週',
                 day: '日'
-            },
-            dayClick: function(date, jsEvent, view) {
-                console.log('day');
             },
             slotLabelFormat: {
                 month: [
@@ -291,7 +312,7 @@ $resources = json_encode($resources);
             eventClick: function(calEvent, jsEvent, view) {
                 showEventPopover($(this), calEvent, MODE.UPDATE);
             },
-            resourceAreaWidth: '8%',
+            resourceAreaWidth: '12%',
             resourceLabelText: 'パート',
             events: function(start, end, timezone, callback) {
                 showLoading();

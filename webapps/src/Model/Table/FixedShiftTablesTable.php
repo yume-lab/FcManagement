@@ -96,4 +96,27 @@ class FixedShiftTablesTable extends Table
             ->where(['target_ym' => $targetYm])
             ->execute();
     }
+
+    /**
+     * 確定されたシフトデータを挿入します.
+     *
+     * @param $storeId int 店舗ID
+     * @param $targetYm int 対象年月
+     * @param $body array シフトデータ
+     * @return bool|\Cake\Datasource\EntityInterface
+     */
+    public function add($storeId, $targetYm, $body)
+    {
+        $hash = sha1(ceil(microtime(true)*1000));
+        $data = $this->newEntity();
+        $record = [
+            'store_id' => $storeId,
+            'target_ym' => $targetYm,
+            'hash' => $hash,
+            'body' => json_encode($body),
+            'is_deleted' => false
+        ];
+        $entity = $this->patchEntity($data, $record);
+        return $this->save($entity);
+    }
 }
