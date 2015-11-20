@@ -133,23 +133,9 @@ class ShiftTablesController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $targetYm = $data['year'].$data['month'];
             $shift = $data['shift'];
-            $shiftTable = $this->ShiftTables->find()
-                ->where(['store_id' => parent::getCurrentStoreId()])
-                ->where(['target_ym' => $targetYm])
-                ->first();
-            if (empty($shiftTable)) {
-                $shiftTable = $this->ShiftTables->newEntity();
-            }
-            $record = [
-                'store_id' => parent::getCurrentStoreId(),
-                'target_ym' => $targetYm,
-                'body' => json_encode($this->buildBody($shift)),
-                'is_deleted' => false
-            ];
-
-            $shiftTable = $this->ShiftTables->patchEntity($shiftTable, $record);
-            $isSuccess = ($this->ShiftTables->save($shiftTable));
-            echo json_encode(['success' => $isSuccess]);
+            $body = $this->buildBody($shift);
+            $result = $this->ShiftTables->patch(parent::getCurrentStoreId(), $targetYm, $body);
+            echo json_encode(['success' => $result]);
         }
     }
 

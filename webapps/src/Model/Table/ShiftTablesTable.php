@@ -77,4 +77,32 @@ class ShiftTablesTable extends Table
         $rules->add($rules->existsIn(['store_id'], 'Stores'));
         return $rules;
     }
+
+    /**
+     * シフトデータの更新を行います.
+     * もし対象年月にデータが無ければ、新たに追加します.
+     *
+     * @param $storeId int 店舗ID
+     * @param $targetYm int 対象年月
+     * @param $body array シフトデータ
+     * @return bool|\Cake\Datasource\EntityInterface
+     */
+    public function patch($storeId, $targetYm, $body)
+    {
+        $data = $this->find()
+            ->where(['store_id' => $storeId])
+            ->where(['target_ym' => $targetYm])
+            ->first();
+        if (empty($data)) {
+            $data = $this->newEntity();
+        }
+        $record = [
+            'store_id' => $storeId,
+            'target_ym' => $targetYm,
+            'body' => json_encode($body),
+            'is_deleted' => false
+        ];
+        $entity = $this->patchEntity($data, $record);
+        return $this->save($entity);
+    }
 }
