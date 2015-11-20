@@ -217,10 +217,17 @@ $resources = json_encode($resources);
             $('#fixed_form').submit();
         });
 
+        /**
+         * ポップオーバーのヘッダークリック時.
+         * ポップオーバーの削除.
+         */
         $(document).on('click', '.popover-title', function() {
             destroyPopover();
         });
 
+        /**
+         * シフト表エリア表示
+         */
         $(calendarSelector).fullCalendar({
             schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
             header: {
@@ -233,9 +240,6 @@ $resources = json_encode($resources);
                 month: '月',
                 week: '週',
                 day: '日'
-            },
-            dayClick: function(date, jsEvent, view) {
-                console.log('day');
             },
             slotLabelFormat: {
                 month: [
