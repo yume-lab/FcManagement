@@ -43,24 +43,17 @@ class ShiftTablesController extends AppController
         $data = $this->request->data();
         $this->log($data);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $FixedShiftTables = TableRegistry::get('FixedShiftTables');
-            $shiftTable = $FixedShiftTables->newEntity();
-
             $targetYm = $data['fixed_year'].$data['fixed_month'];
             $shift = json_decode($data['fixed_shift']);
-            $hash = sha1(ceil(microtime(true)*1000));
-            $record = [
-                'store_id' => parent::getCurrentStoreId(),
-                'target_ym' => $targetYm,
-                'hash' => $hash,
-                'body' => json_encode($this->buildBody($shift)),
-                'is_deleted' => false
-            ];
+            $storeId = parent::getCurrentStoreId();
 
-            $this->log($record);
+            $FixedShiftTables = TableRegistry::get('FixedShiftTables');
             $FixedShiftTables->removeAllByTargetYm($targetYm);
-            $shiftTable = $FixedShiftTables->patchEntity($shiftTable, $record);
-            if ($FixedShiftTables->save($shiftTable)) {
+
+            $body = $this->buildBody($shift);
+            $result = $this->ShiftTables->patch($storeId, $targetYm, $body)
+                && $FixedShiftTables->add($storeId, $targetYm, $body);
+            if ($result) {
                 $this->Flash->success('シフト表が作成されました。');
             } else {
                 $this->Flash->error('シフト表作成に失敗しました。');
