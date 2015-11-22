@@ -1,15 +1,3 @@
-<?php
-    /**
-     * 時間の差を返します.
-     * @param $start
-     * @param $end
-     * @return 時間の差(1時間単位)
-     */
-    function calcTimeDiff($start, $end) {
-        return (strtotime($end) - strtotime($start)) / (60*60);
-    }
-?>
-
 <h3 class="center-block">
     <?= $showMonth ?>
 </h3>
@@ -54,19 +42,14 @@
                 <?php if ($hasData): ?>
                     <?php
                         $data = $matrix[$key];
-                        $allTime = round(calcTimeDiff($data['/in'], $data['/out']), 1);
-
-                        $hasBreak = isset($data['/break_in']) && isset($data['/break_out']);
-                        $breakAll = $hasBreak
-                            ? round(calcTimeDiff($data['/break_in'], $data['/break_out']), 1)
-                            : 0;
+                        $hasBreak = !empty($data['/break_all']);
                     ?>
                     <td><?= $data['/in'] ?></td>
                     <td><?= $data['/out'] ?></td>
                     <td><?= $hasBreak ? $data['/break_in'] : '' ?></td>
                     <td><?= $hasBreak ? $data['/break_out'] : '' ?></td>
-                    <td><?= $allTime ?></td>
-                    <td><?= $allTime - $breakAll ?></td>
+                    <td><?= $data['/all'] ?></td>
+                    <td><?= $data['/real'] ?></td>
                 <?php else: ?>
                     <td></td>
                     <td></td>

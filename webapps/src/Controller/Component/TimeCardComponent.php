@@ -28,7 +28,7 @@ class TimeCardComponent extends Component
      */
     public function getAll($data) {
         if (isset($data['/in']) && isset($data['/out'])) {
-            return ($this->diff($data['/in'], $data['/out']) / (60*60));
+            return $this->format($this->diff($data['/in'], $data['/out']));
         }
         return 0;
     }
@@ -41,8 +41,8 @@ class TimeCardComponent extends Component
      * @return string 休憩時間
      */
     public function getBreak($data) {
-        if (isset($data['/break_in']) && isset($data['/break_out'])) {
-            return ($this->diff($data['/break_in'], $data['/break_out']) / (60*60));
+        if ($this->hasBreak($data)) {
+            return $this->format($this->diff($data['/break_in'], $data['/break_out']));
         }
         return 0;
     }
@@ -55,7 +55,9 @@ class TimeCardComponent extends Component
      * @return string 実働時間
      */
     public function getReal($data) {
-        return $this->getAll($data) - $this->getBreak($data);
+        $all = $this->diff($data['/in'], $data['/out']);
+        $break = $this->hasBreak($data) ? $this->diff($data['/break_in'], $data['/break_out']) : 0;
+        return $this->format($all - $break);
     }
 
     /**
@@ -66,5 +68,23 @@ class TimeCardComponent extends Component
      */
     public function diff($start, $end) {
         return strtotime($end) - strtotime($start);
+    }
+
+    /**
+     * 休憩の有無を反省します.
+     * @param $data array その日の打刻データ
+     * @return bool 休憩があればtrue
+     */
+    private function hasBreak($data) {
+        return (isset($data['/break_in']) && isset($data['/break_out']));
+    }
+
+    /**
+     * 返却する時間のフォーマットを行います.
+     * @param $time int 時間
+     * @return string H:i形式の時間表記
+     */
+    private function format($time) {
+        return date('H:i', $time);
     }
 }

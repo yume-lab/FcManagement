@@ -10,6 +10,7 @@ use Cake\ORM\TableRegistry;
  *
  * @property \App\Model\Table\TimeCardsTable $TimeCards
  * @property \App\Model\Table\EmployeesTable $Employees
+ * @property \App\Controller\Component\TimeCardComponent $TimeCard
  */
 class TimeCardsController extends AppController
 {
@@ -19,6 +20,13 @@ class TimeCardsController extends AppController
      * @var array
      */
     public $helpers = ['TimeCard'];
+
+    /**
+     * 使用コンポーネント
+     * @var array
+     */
+    public $components = ['TimeCard'];
+
 
     /**
      * 初期表示.
@@ -86,6 +94,11 @@ class TimeCardsController extends AppController
                 $time = date('H:i', strtotime($d->time));
                 $tmp[$d->alias] = $time;
             }
+            $tmp['/all'] = $this->TimeCard->getAll($tmp);
+            $tmp['/break_all'] = $this->TimeCard->getBreak($tmp);
+            $tmp['/real'] = $this->TimeCard->getReal($tmp);
+            $this->log($tmp);
+
             $matrix[$day] = $tmp;
         }
         return $matrix;
