@@ -70,6 +70,19 @@ class TimeCardsController extends AppController
     }
 
     /**
+     * API
+     * 勤怠データの更新処理を行います.
+     * TODO: 実装
+     */
+    public function update()
+    {
+        $data = $this->request->data();
+        $this->log($data);
+
+        echo json_encode(['success' => true]);
+    }
+
+    /**
      * 表示用データの整形を行います.
      *
      * @param $record object 勤務表データの取得結果
@@ -86,22 +99,30 @@ class TimeCardsController extends AppController
             // 日別のループ
             $this->log($day);
             $this->log($data);
-
-            $tmp = [];
-            foreach ($data as $d) {
-                // 日の中の種別のループ
-                $this->log($d);
-                $time = date('H:i', strtotime($d->time));
-                $tmp[$d->alias] = $time;
-            }
-            $tmp['/all'] = $this->TimeCard->getAll($tmp);
-            $tmp['/break_all'] = $this->TimeCard->getBreak($tmp);
-            $tmp['/real'] = $this->TimeCard->getReal($tmp);
-            $this->log($tmp);
-
-            $matrix[$day] = $tmp;
+            $matrix[$day] = $this->buildMatrixForDaily($data);
         }
         return $matrix;
+    }
+
+    /**
+     * 日毎のデータ整形を行います.
+     * @param $daily array 日のデータ
+     * @return array 整形したデータ
+     */
+    private function buildMatrixForDaily($daily)
+    {
+        $results = [];
+        foreach ($daily as $data) {
+            // 日の中の種別のループ
+            $this->log($data);
+            $time = date('H:i', strtotime($data->time));
+            $results[$data->alias] = $time;
+        }
+        $results['/all'] = $this->TimeCard->getAll($results);
+        $results['/break_all'] = $this->TimeCard->getBreak($results);
+        $results['/real'] = $this->TimeCard->getReal($results);
+        $this->log($results);
+        return $results;
     }
 
 }

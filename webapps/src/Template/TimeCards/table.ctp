@@ -47,7 +47,10 @@
                 $key = 'day-'.(($day < 10) ? '0'.$day : $day);
                 $hasData = isset($matrix[$key]);
             ?>
-            <tr class="time-row <?= $this->TimeCard->dayClass($dayOfWeek); ?>" style="height: 47px;">
+            <tr class="time-row <?= $this->TimeCard->dayClass($dayOfWeek); ?>"
+                style="height: 47px;"
+                data-ymd="<?= date('Ymd', $timestamp) ?>">
+
                 <td><?= $day.$this->TimeCard->dayOfWeekString($dayOfWeek); ?></td>
                 <?php if ($hasData): ?>
                     <?php

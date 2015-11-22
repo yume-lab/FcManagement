@@ -125,17 +125,10 @@ echo $this->Html->script($base.'/lib/moment.min.js');
          * 編集の更新クリック時
          */
         $(document).on('click', '.editable-actions .update', function(e) {
-            //  TODO:
-            return false;
-        });
+            var $this = $(this);
+            var $parent = $this.parents('.time-row');
+            var ymd = $parent.data('ymd');
 
-        /**
-         * 入力モード取り消し
-         */
-        $(document).on('click', '#disabled-input a', function(e) {
-            $('.time-label').show();
-            $('.time-input').hide();
-            $(this).hide();
             return false;
         });
 
@@ -151,7 +144,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             console.log(parameter);
             $.ajax({
                 type: 'GET',
-                url: '/time-cards/table',
+                url: '/api/time-cards/table',
                 data: parameter,
                 dataType: 'html'
             }).done(function(data, textStatus, jqXHR ) {

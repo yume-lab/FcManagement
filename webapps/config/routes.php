@@ -50,6 +50,10 @@ Router::scope('/', function ($routes) {
     $routes->connect('/api/time-card/write', ['controller' => 'LatestTimeCards', 'action' => 'write']);
     $routes->connect('/api/time-card/table', ['controller' => 'LatestTimeCards', 'action' => 'table']);
 
+    // 勤怠一覧
+    $routes->connect('/api/time-cards/table', ['controller' => 'TimeCards', 'action' => 'table']);
+    $routes->connect('/api/time-cards/update', ['controller' => 'TimeCards', 'action' => 'update']);
+
 
     $routes->fallbacks('DashedRoute');
 });
