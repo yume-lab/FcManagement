@@ -81,10 +81,61 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             loadEmployees($(this).data('id'), moment().format(DATE_FORMAT));
         });
 
+        /**
+         * 次月、前月クリック時
+         */
         $(document).on('click', '.pagination a', function(e) {
             var employeeId = $('#employee-list').find('.current').data('id');
             var target = $(this).data('target');
             loadEmployees(employeeId, target);
+            return false;
+        });
+
+        /**
+         * 更新クリック時
+         */
+        $(document).on('click', '.editable-button a', function(e) {
+            var $this = $(this);
+            $('.time-label').show();
+            $('.time-input').hide();
+            $('.editable-button').show();
+            $('.editable-actions').hide();
+
+            var $parent = $this.parents('.time-row');
+            $parent.find('.time-label').hide();
+            $parent.find('.time-input').show();
+
+            $parent.find('.editable-button').hide();
+            $parent.find('.editable-actions').show();
+            return false;
+        });
+
+        /**
+         * 編集取消クリック時
+         */
+        $(document).on('click', '.editable-actions .cancel', function(e) {
+            $('.time-label').show();
+            $('.time-input').hide();
+            $('.editable-button').show();
+            $('.editable-actions').hide();
+            return false;
+        });
+
+        /**
+         * 編集の更新クリック時
+         */
+        $(document).on('click', '.editable-actions .update', function(e) {
+            //  TODO:
+            return false;
+        });
+
+        /**
+         * 入力モード取り消し
+         */
+        $(document).on('click', '#disabled-input a', function(e) {
+            $('.time-label').show();
+            $('.time-input').hide();
+            $(this).hide();
             return false;
         });
 

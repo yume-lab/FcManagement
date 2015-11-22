@@ -54,6 +54,26 @@ class TimeCardHelper extends Helper {
     }
 
     /**
+     * 勤怠一覧の編集可能時間エリア
+     * @param $data array 勤怠データ
+     * @param $alias string 状態のエイリアス
+     * @return string タグ
+     */
+    public function editableTime($data, $alias) {
+        $tagFormat = '
+            <span class="time-label">
+                %s
+            </span>
+            <span class="time-input">
+                <input type="time" name="%s" value="%s" />
+            </span>
+        ';
+        $value = $data[$alias];
+        $values = [$value, $alias, $value];
+        return vsprintf($tagFormat, $values);
+    }
+
+    /**
      * 勤怠打刻のステータスラベルを出力します.
      * @param $state 勤怠状態オブジェクト
      * @return string
