@@ -81,6 +81,22 @@ class TimeCardsController extends AppController
         $data = $this->request->data();
         $this->log($data);
 
+        $ymd = $data['target'];
+        $employeeId = $data['employeeId'];
+        $input = $data['data'];
+
+        $entity = $this->TimeCards->find()
+            ->where(['store_id' => parent::getCurrentStoreId()])
+            ->where(['employee_id' => $employeeId])
+            ->where(['target_ym' => date('Ym', strtotime($ymd))])
+            ->first();
+
+        $body = json_decode($entity->body, true);
+
+        $this->log($entity);
+        $this->log($body);
+
+
         echo json_encode(['success' => 'success']);
     }
 
