@@ -135,7 +135,7 @@ class LatestTimeCardsController extends AppController
             $TimeCards = TableRegistry::get('TimeCards');
 
             $isSuccess = $this->LatestTimeCards->write($employeeId, $this->storeId, $state->id, $time)
-                && $TimeCards->write($employeeId, $this->storeId, $state->id, $time);
+                && $TimeCards->write($employeeId, $this->storeId, $state, $time);
 
             echo json_encode(['success' => $isSuccess]);
         }

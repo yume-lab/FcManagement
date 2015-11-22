@@ -88,13 +88,14 @@ class TimeCardsTable extends Table
     /**
      * 勤務表データへの書き込みを行います
      *
-     * @param $employeeId 従業員ID
-     * @param $storeId 店舗ID
-     * @param $stateId 状態ID
-     * @param $time 打刻時間
+     * @param $employeeId int 従業員ID
+     * @param $storeId int 店舗ID
+     * @param $state TimeCardStatesTable 状態マスタ
+     * @param $time string 打刻時間
+     * @see \App\Model\Table\TimeCardStatesTable
      * @return bool|\Cake\Datasource\EntityInterface
      */
-    public function write($employeeId, $storeId, $stateId, $time)
+    public function write($employeeId, $storeId, $state, $time)
     {
         $targetYm = date('Ym', strtotime($time));
         $day = date('d', strtotime($time));
@@ -120,9 +121,6 @@ class TimeCardsTable extends Table
          *  ]
          * }
          */
-        $TimeCardStates = TableRegistry::get('TimeCardStates');
-        $state = $TimeCardStates->get($stateId);
-
         $body = empty($entity->body) ? [] : json_decode($entity->body);
         $body = (array) $body;
         $dayKey = 'day-'.$day;
