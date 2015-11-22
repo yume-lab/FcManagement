@@ -50,7 +50,6 @@
             <tr class="time-row <?= $this->TimeCard->dayClass($dayOfWeek); ?>"
                 style="height: 47px;"
                 data-ymd="<?= date('Ymd', $timestamp) ?>">
-
                 <td><?= $day.$this->TimeCard->dayOfWeekString($dayOfWeek); ?></td>
                 <?php if ($hasData): ?>
                     <?php

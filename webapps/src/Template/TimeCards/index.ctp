@@ -1,5 +1,7 @@
 <?php $this->assign('title', '勤怠一覧'); ?>
 
+<?= $this->element('Notice/show_top', ['message' => '勤怠データを更新しました。']); ?>
+
 <style>
     #employee-list .employee-row {
         cursor: pointer;
@@ -78,7 +80,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             e.preventDefault();
             $('.employee-row').removeClass('current');
             $(this).addClass('current');
-            loadEmployees($(this).data('id'), moment().format(DATE_FORMAT));
+            loadTimeCardTable($(this).data('id'), moment().format(DATE_FORMAT));
         });
 
         /**
@@ -87,7 +89,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
         $(document).on('click', '.pagination a', function(e) {
             var employeeId = $('#employee-list').find('.current').data('id');
             var target = $(this).data('target');
-            loadEmployees(employeeId, target);
+            loadTimeCardTable(employeeId, target);
             return false;
         });
 
@@ -128,6 +130,38 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             var $this = $(this);
             var $parent = $this.parents('.time-row');
             var ymd = $parent.data('ymd');
+            var employeeId = $('#employee-list').find('.current').data('id');
+
+            var data = {
+                '/in' : $parent.find('input[name="/in"]').val(),
+                '/out' : $parent.find('input[name="/out"]').val(),
+                '/break_in' : $parent.find('input[name="/break_in"]').val(),
+                '/break_out' : $parent.find('input[name="/break_out"]').val()
+            };
+            var parameter = {
+                target: ymd,
+                employeeId: employeeId,
+                data: data
+            };
+            console.log(parameter);
+
+            showLoading();
+            $.ajax({
+                type: 'POST',
+                url: '/api/time-cards/update',
+                data: JSON.stringify(parameter),
+                dataType: 'json',
+                contentType: 'application/json'
+            }).done(function( data, textStatus, jqXHR) {
+                console.log(data, jqXHR, textStatus);
+                loadTimeCardTable(employeeId, moment().format(DATE_FORMAT));
+                $('#notice').trigger('click');
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR, textStatus, errorThrown);
+            }).always(function(jqXHR, textStatus) {
+                console.log(jqXHR, textStatus);
+                hideLoading();
+            });
 
             return false;
         });
@@ -135,7 +169,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
         /**
          * 勤務表の表示
          */
-        function loadEmployees(employeeId, target) {
+        function loadTimeCardTable(employeeId, target) {
             showLoading();
             var parameter = {
                 employeeId: employeeId,

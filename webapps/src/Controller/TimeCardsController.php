@@ -76,10 +76,12 @@ class TimeCardsController extends AppController
      */
     public function update()
     {
+        $this->autoRender = false;
+
         $data = $this->request->data();
         $this->log($data);
 
-        echo json_encode(['success' => true]);
+        echo json_encode(['success' => 'success']);
     }
 
     /**
