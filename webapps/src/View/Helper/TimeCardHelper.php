@@ -54,6 +54,27 @@ class TimeCardHelper extends Helper {
     }
 
     /**
+     * 勤怠打刻のステータスラベルを出力します.
+     * @param $state 勤怠状態オブジェクト
+     * @return string
+     */
+    public function status($state) {
+        $tagFormat = '
+            <h4>
+                <span class="label label-%s">
+                    %s
+                </span>
+            </h4>
+        ';
+
+        $values = empty($state)
+            ? ['default', '未出勤']
+            : [$this->type($state['alias']), trim($state['label'])];
+
+        return vsprintf($tagFormat, $values);
+    }
+
+    /**
      * ステータス状況別のボタンを出力します.
      *
      * @see TimeCardStatesTable

@@ -21,6 +21,9 @@
         <div class="alert alert-info">
             タイムカード
         </div>
+        <div class="alert alert-success">
+            ご自身のお名前を探して、クリックしてください。
+        </div>
 
         <h3 id="clock-large"></h3>
 

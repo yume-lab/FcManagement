@@ -27,20 +27,7 @@
                 </h4>
             </td>
             <td class="center">
-                <?php // TODO このあたり全体はヘルパーにする ?>
-                <?php if (!empty($state)): ?>
-                    <h4>
-                        <span class="label label-<?= $this->TimeCard->type($state['alias']); ?>">
-                            <?= trim($state['label']); ?>
-                        </span>
-                    </h4>
-                <?php else: ?>
-                    <h4>
-                        <span class="label label-default">
-                            未出勤
-                        </span>
-                    </h4>
-                <?php endif; ?>
+                <?= $this->TimeCard->status($state); ?>
             </td>
         </tr>
     <?php endforeach; ?>
