@@ -79,6 +79,9 @@ class LatestTimeCardsController extends AppController
     {
         parent::beforeFilter($event);
 
+        // 保持は1ヶ月
+        $this->Cookie->configKey('TimeCard', 'expires', '+1 months');
+
         $this->storeId = $this->Cookie->read(self::STORE_ID_KEY);
         $this->token = $this->Cookie->read(self::TOKEN_KEY);
     }
@@ -113,6 +116,7 @@ class LatestTimeCardsController extends AppController
 
         $states = $this->getStates();
 
+        /** @var \App\Model\Table\EmployeesTable $Employees */
         $Employees = TableRegistry::get('Employees');
         $employees = $Employees->findByStoreId($this->storeId);
 
