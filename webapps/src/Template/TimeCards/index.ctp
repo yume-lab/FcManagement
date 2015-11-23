@@ -133,10 +133,10 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             var employeeId = $('#employee-list').find('.current').data('id');
 
             var data = {
-                '/in' : $parent.find('input[name="/in"]').val(),
-                '/out' : $parent.find('input[name="/out"]').val(),
-                '/break_in' : $parent.find('input[name="/break_in"]').val(),
-                '/break_out' : $parent.find('input[name="/break_out"]').val()
+                '/in' : $parent.find('select[name="/in"]').val(),
+                '/out' : $parent.find('select[name="/out"]').val(),
+                '/break_in' : $parent.find('select[name="/break_in"]').val(),
+                '/break_out' : $parent.find('select[name="/break_out"]').val()
             };
             var parameter = {
                 target: ymd,

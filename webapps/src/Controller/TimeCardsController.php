@@ -74,8 +74,7 @@ class TimeCardsController extends AppController
 
     /**
      * API
-     * 勤怠データの更新処理を行います.
-     * TODO: 実装
+     * 1日分の勤怠データ更新処理を行います.
      */
     public function update()
     {
@@ -88,19 +87,8 @@ class TimeCardsController extends AppController
         $employeeId = $data['employeeId'];
         $input = $data['data'];
 
-        $entity = $this->TimeCards->find()
-            ->where(['store_id' => parent::getCurrentStoreId()])
-            ->where(['employee_id' => $employeeId])
-            ->where(['target_ym' => date('Ym', strtotime($ymd))])
-            ->first();
-
-        $body = json_decode($entity->body, true);
-
-        $this->log($entity);
-        $this->log($body);
-
-
-        echo json_encode(['success' => 'success']);
+        $result = $this->TimeCards->patch(parent::getCurrentStoreId(), $employeeId, $ymd, $input);
+        echo json_encode(['success' => $result]);
     }
 
     /**
@@ -114,7 +102,7 @@ class TimeCardsController extends AppController
         if (empty($record)) {
             return [];
         }
-        $body = json_decode($record->body);
+        $body = json_decode($record->body, true);
         $matrix = [];
         foreach ($body as $day => $data) {
             // 日別のループ
@@ -136,8 +124,8 @@ class TimeCardsController extends AppController
         foreach ($daily as $data) {
             // 日の中の種別のループ
             $this->log($data);
-            $time = date('H:i', strtotime($data->time));
-            $results[$data->alias] = $time;
+            $time = date('H:i', strtotime($data['time']));
+            $results[$data['alias']] = $time;
         }
         $results['/all'] = $this->TimeCard->getAll($results);
         $results['/break_all'] = $this->TimeCard->getBreak($results);

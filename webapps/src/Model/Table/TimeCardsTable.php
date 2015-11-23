@@ -121,6 +121,7 @@ class TimeCardsTable extends Table
          *  ]
          * }
          */
+        // TODO: リファクタリング. json_decode(array, true)でうまくやれる
         $body = empty($entity->body) ? [] : json_decode($entity->body);
         $body = (array) $body;
         $dayKey = 'day-'.$day;
@@ -145,5 +146,68 @@ class TimeCardsTable extends Table
 
         $data = $this->patchEntity($entity, $record);
         return $this->save($data);
+    }
+
+    /**
+     * 勤怠データの更新を行います.
+     * @param $storeId int 店舗ID
+     * @param $employeeId int 従業員ID
+     * @param $date string 日付(Ymd)
+     * @param $patch array 更新データ
+     * @return bool|\Cake\Datasource\EntityInterface
+     */
+    public function patch($storeId, $employeeId, $date, $patch)
+    {
+        $time = strtotime($date);
+
+        $entity = $this->find()
+            ->where(['store_id' => $storeId])
+            ->where(['employee_id' => $employeeId])
+            ->where(['target_ym' => date('Ym', $time)])
+            ->first();
+
+        $body = json_decode($entity->body, true);
+        $day = $this->buildDayIndex(date('d', $time));
+        $target = $body[$day];
+
+        foreach ($target as $index => $data) {
+            $target[$index] = $this->patchDailyData($data, $patch, date('Y-m-d', $time));
+        }
+        $body[$day] = $target;
+
+        $data = $this->patchEntity($entity, [
+            'body' => json_encode($body),
+        ]);
+
+        return $this->save($data);
+    }
+
+    /**
+     * 更新データ構築処理を行います.
+     * @param $data array 現在のデータ
+     * @param $patch array 更新後データ
+     * @param $ymd string 日付(Ymd)
+     * @return array 更新後データ
+     */
+    private function patchDailyData($data, $patch, $ymd)
+    {
+        $result = $data;
+        foreach ($patch as $alias => $time) {
+            if ($result['alias'] == $alias) {
+                $result['time'] = $ymd . ' ' . $time;
+                break;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * bodyに入るJSONのキーを生成します.
+     * @param $day int|string 日付
+     * @return string キー文字列
+     */
+    private function buildDayIndex($day)
+    {
+        return 'day-' . $day;
     }
 }
