@@ -38,7 +38,11 @@ class ShiftTablesController extends AppController
         // TODO: DBもしくは設定ファイルに、シフトと絡む
         $interval = 15;
         $times = $this->TimeCard->buildTimes($store);
-        $employees = TableRegistry::get('Employees')->findByStoreId(parent::getCurrentStoreId());
+
+        /** @var \App\Model\Table\EmployeesTable $Employees */
+        $Employees = TableRegistry::get('Employees');
+        $employees = $Employees->findByStoreId(parent::getCurrentStoreId());
+
         $opened = date('H:i:s', strtotime($store->opened));
         $closed = date('H:i:s', strtotime($store->closed));
 
@@ -59,6 +63,7 @@ class ShiftTablesController extends AppController
             $shift = json_decode($data['fixed_shift']);
             $storeId = parent::getCurrentStoreId();
 
+            /** @var \App\Model\Table\FixedShiftTablesTable $FixedShiftTables */
             $FixedShiftTables = TableRegistry::get('FixedShiftTables');
             $FixedShiftTables->removeAllByTargetYm($targetYm);
 

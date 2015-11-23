@@ -35,6 +35,7 @@ class TimeCardsController extends AppController
      */
     public function index()
     {
+        /** @var \App\Model\Table\EmployeesTable $Employees */
         $Employees = TableRegistry::get('Employees');
         $employees = $Employees->findByStoreId(parent::getCurrentStoreId());
         $this->set(compact('employees'));
@@ -54,6 +55,7 @@ class TimeCardsController extends AppController
             ->where(['target_ym' => $targetYm])
             ->first();
 
+        /** @var \App\Model\Table\EmployeesTable $Employees */
         $Employees = TableRegistry::get('Employees');
         $employee = $Employees->get($employeeId);
 

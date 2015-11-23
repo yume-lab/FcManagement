@@ -149,8 +149,11 @@ class LatestTimeCardsController extends AppController
             $alias = $data['alias'];
             $time = $data['time'];
 
-            $state = TableRegistry::get('TimeCardStates')->findByAlias($alias)->first();
+            /** @var \App\Model\Table\TimeCardStatesTable $TimeCardStates */
+            $TimeCardStates = TableRegistry::get('TimeCardStates');
+            $state = $TimeCardStates->findByAlias($alias)->first();
 
+            /** @var \App\Model\Table\TimeCardsTable $TimeCards */
             $TimeCards = TableRegistry::get('TimeCards');
 
             $isSuccess = $this->LatestTimeCards->write($employeeId, $this->storeId, $state->id, $time)
@@ -166,6 +169,7 @@ class LatestTimeCardsController extends AppController
      */
     private function getStates()
     {
+        /** @var \App\Model\Table\TimeCardStatesTable $TimeCardStates */
         $TimeCardStates = TableRegistry::get('TimeCardStates');
         $timeCardStates = $TimeCardStates->find('all');
         $states = [];

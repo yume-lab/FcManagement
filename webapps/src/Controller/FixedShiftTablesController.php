@@ -60,7 +60,9 @@ class FixedShiftTablesController extends AppController
         if (empty($data)) {
             throw new NotFoundException();
         }
-        $employees = TableRegistry::get('Employees')->findByStoreId(parent::getCurrentStoreId());
+        /** @var \App\Model\Table\EmployeesTable $Employees */
+        $Employees = TableRegistry::get('Employees');
+        $employees = $Employees->findByStoreId(parent::getCurrentStoreId());
         $this->set(compact('data', 'employees'));
         $this->set('_serialize', ['data', 'employees']);
     }
