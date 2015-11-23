@@ -1,12 +1,10 @@
-<?php $this->assign('title', 'パート追加'); ?>
-
-<?php $this->assign('title', 'パート編集'); ?>
+<?php $this->assign('title', '従業員追加'); ?>
 
 <div class="row">
     <div class="col-md-12">
         <div class="box-inner">
             <div class="box-header well" data-original-title="">
-                <h2><i class="glyphicon glyphicon-user"></i> パート情報追加</h2>
+                <h2><i class="glyphicon glyphicon-user"></i> 従業員情報追加</h2>
             </div>
             <div class="box-content">
                 <?= $this->Flash->render() ?>

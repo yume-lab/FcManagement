@@ -4,7 +4,7 @@
     <div class="col-md-12">
         <div class="box-inner">
             <div class="box-header well" data-original-title="">
-                <h2><i class="glyphicon glyphicon-user"></i> パート一覧</h2>
+                <h2><i class="glyphicon glyphicon-user"></i> 従業員一覧</h2>
             </div>
             <div class="box-content">
                 <?= $this->Flash->render() ?>
