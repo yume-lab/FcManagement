@@ -51,7 +51,7 @@
             defaultView: 'timelineMonth',
             displayEventEnd: true,
             resourceAreaWidth: '8%',
-            resourceLabelText: 'パート',
+            resourceLabelText: '従業員',
             resources: <?= $resources ?>,
             events: <?= $events ?>
         });

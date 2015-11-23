@@ -14,7 +14,7 @@
             <li>
                 <a class="ajax-link" href="/employees">
                     <i class="glyphicon glyphicon-user"></i>
-                    <span> パート管理</span>
+                    <span> 従業員管理</span>
                 </a>
             </li>
             <li>

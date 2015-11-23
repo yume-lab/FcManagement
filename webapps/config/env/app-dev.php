@@ -49,7 +49,7 @@ return [
             'encoding' => 'utf8',
             'timezone' => 'UTC',
             'cacheMetadata' => true,
-            'log' => false,
+            'log' => true,
             'quoteIdentifiers' => false,
         ],
 
@@ -68,7 +68,7 @@ return [
             'timezone' => 'UTC',
             'cacheMetadata' => true,
             'quoteIdentifiers' => false,
-            'log' => false,
+            'log' => true,
         ],
     ],
 ];

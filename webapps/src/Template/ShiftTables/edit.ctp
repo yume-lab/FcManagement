@@ -313,7 +313,7 @@ $resources = json_encode($resources);
                 showEventPopover($(this), calEvent, MODE.UPDATE);
             },
             resourceAreaWidth: '12%',
-            resourceLabelText: 'パート',
+            resourceLabelText: '従業員',
             events: function(start, end, timezone, callback) {
                 showLoading();
                 $.ajax({
