@@ -52,7 +52,7 @@
 
                 <p class="center col-md-5">
                     <?= $this->Html->link(__('一覧に戻る'), $previous, ['class' => 'btn btn-default']) ?>
-                    <?= $this->Form->button(__('登録する'), ['class' => 'btn btn-primary']) ?>
+                    <?= $this->Form->button(__('登録する'), ['class' => 'btn btn-info']) ?>
                 </p>
                 <?= $this->Form->end() ?>
             </div>
