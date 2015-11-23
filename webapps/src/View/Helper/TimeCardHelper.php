@@ -55,22 +55,41 @@ class TimeCardHelper extends Helper {
 
     /**
      * 勤怠一覧の編集可能時間エリア
+     * @param $times array 選択可能時間 Componentで構築したもの.
      * @param $data array 勤怠データ
      * @param $alias string 状態のエイリアス
      * @return string タグ
      */
-    public function editableTime($data, $alias) {
+    public function editableTime($times, $data, $alias) {
         $tagFormat = '
             <span class="time-label">
                 %s
             </span>
             <span class="time-input">
-                <input type="time" name="%s" value="%s" />
+                <select name="%s" class="form-control" style="height: 30px; width: auto;">
+                    %s
+                </select>
             </span>
         ';
         $value = $data[$alias];
-        $values = [$value, $alias, $value];
+        $values = [$value, $alias, $this->buildTimeOptions($times, $value)];
         return vsprintf($tagFormat, $values);
+    }
+
+    /**
+     * 選択時間のoption要素を構築します.
+     * @param $times array 時間配列
+     * @param string $value 現在の値. options
+     * @return string <option>タグ
+     */
+    public function buildTimeOptions($times, $value = '') {
+        $tagFormat = '<option value="%s" %s>%s</option>';
+        $optionTag = '';
+        foreach ($times as $time) {
+            $selected = ($time == $value) ? 'selected' : '';
+            $optionTag .= vsprintf($tagFormat, [$time, $selected, $time]);
+        }
+        return $optionTag;
     }
 
     /**

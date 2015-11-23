@@ -22,19 +22,11 @@
     <div class="form-group col-md-12 center">
         <h5>時間</h5>
         <select id="startTime" class="form-control popover-select" data-set-name="data-startTime">
-            <?php foreach ($times as $start): ?>
-                <option value="<?= $start ?>">
-                    <?= h($start) ?>
-                </option>
-            <?php endforeach; ?>
+            <?= $this->TimeCard->buildTimeOptions($times); ?>
         </select>
         〜
         <select id="endTime" class="form-control popover-select" data-set-name="data-endTime">
-            <?php foreach ($times as $end): ?>
-                <option value="<?= $end ?>">
-                    <?= h($end) ?>
-                </option>
-            <?php endforeach; ?>
+            <?= $this->TimeCard->buildTimeOptions($times); ?>
         </select>
     </div>
 

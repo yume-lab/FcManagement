@@ -57,19 +57,19 @@
                         $hasBreak = !empty($data['/break_all']);
                     ?>
                     <td>
-                        <?= $this->TimeCard->editableTime($data, '/in'); ?>
+                        <?= $this->TimeCard->editableTime($times, $data, '/in'); ?>
                     </td>
                     <td>
-                        <?= $this->TimeCard->editableTime($data, '/out'); ?>
+                        <?= $this->TimeCard->editableTime($times, $data, '/out'); ?>
                     </td>
                     <td>
                         <?php if ($hasBreak): ?>
-                            <?= $this->TimeCard->editableTime($data, '/break_in'); ?>
+                            <?= $this->TimeCard->editableTime($times, $data, '/break_in'); ?>
                         <?php endif; ?>
                     </td>
                     <td>
                         <?php if ($hasBreak): ?>
-                            <?= $this->TimeCard->editableTime($data, '/break_out'); ?>
+                            <?= $this->TimeCard->editableTime($times, $data, '/break_out'); ?>
                         <?php endif; ?>
                     </td>
                     <td>
@@ -79,6 +79,7 @@
                         <?= $data['/real'] ?>
                     </td>
                     <td>
+                        <?php // 編集ボタンを押したら、更新部分が表示されます. ?>
                         <span class="editable-button">
                             <a class="btn btn-primary btn-sm" href="#">
                                 <i class="glyphicon glyphicon-edit icon-white"></i>

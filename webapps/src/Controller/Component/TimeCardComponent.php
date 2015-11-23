@@ -61,6 +61,29 @@ class TimeCardComponent extends Component
     }
 
     /**
+     * 選択可能時間の配列を取得します.
+     * 店舗の営業時間に合わせた配列です.
+     *
+     * @see \App\Model\Table\StoresTable
+     * @param $store \App\Model\Table\StoresTable 店舗情報
+     * TODO: デフォルト値. DBもしくは設定ファイルに、シフトと絡む
+     * @param $interval int 時間の区切り.
+     * @return array 選択可能な時間帯の配列
+     */
+    public function buildTimes($store, $interval = 15) {
+        $begin = strtotime(date('H:i', strtotime($store->opened)));
+        $end = strtotime(date('H:i', strtotime($store->closed)));
+        $current = $begin;
+
+        $results = [];
+        while($current <= $end){
+            $results[] = date('H:i',$current);
+            $current = strtotime("+$interval minutes",$current);
+        }
+        return $results;
+    }
+
+    /**
      * 時間の差を計算します.
      * @param $start string 開始時間
      * @param $end string 終了時間
