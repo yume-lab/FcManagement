@@ -168,3 +168,32 @@ ALTER TABLE time_card_states CHANGE updated modified datetime NOT NULL;
 ALTER TABLE time_cards CHANGE updated modified datetime NOT NULL;
 ALTER TABLE latest_time_cards CHANGE updated modified datetime NOT NULL;
 
+-- 時給マスタ
+-- TODO: 時給変動を管理するマスタにしたい
+/*
+CREATE TABLE salaries (
+  id INT unsigned NOT NULL AUTO_INCREMENT,
+  store_id INT unsigned NOT NULL,
+  start_time TIME NOT NULL,
+  end_time TIME NOT NULL,
+  amount SMALLINT unsigned NOT NULL,
+  is_deleted TINYINT(1) NOT NULL DEFAULT 0,
+  created datetime NOT NULL,
+  updated datetime NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE uni_salaries(store_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='勤怠状態マスタ' AUTO_INCREMENT=1;
+*/
+
+-- 基本時給管理
+CREATE TABLE employee_salaries (
+  id INT unsigned NOT NULL AUTO_INCREMENT,
+  store_id INT unsigned NOT NULL,
+  employee_id INT unsigned NOT NULL,
+  amount SMALLINT unsigned NOT NULL,
+  is_deleted TINYINT(1) NOT NULL DEFAULT 0,
+  created datetime NOT NULL,
+  updated datetime NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE uni_employee_salaries(store_id, employee_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='従業員時給マスタ' AUTO_INCREMENT=1;
