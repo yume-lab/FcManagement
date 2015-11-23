@@ -80,10 +80,10 @@ class LatestTimeCardsTable extends Table
     /**
      * 最新打刻情報の書き込みを行います.
      *
-     * @param $employeeId 従業員ID
-     * @param $storeId 店舗ID
-     * @param $stateId 状態ID
-     * @param $time 打刻時間
+     * @param $employeeId int 従業員ID
+     * @param $storeId int 店舗ID
+     * @param $stateId int 状態ID
+     * @param $time string 打刻時間
      * @see TimeCardStatesTable
      * @return bool|\Cake\Datasource\EntityInterface 処理結果
      */

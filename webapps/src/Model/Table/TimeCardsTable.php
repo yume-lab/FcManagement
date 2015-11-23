@@ -150,6 +150,8 @@ class TimeCardsTable extends Table
 
     /**
      * 勤怠データの更新を行います.
+     * その日の勤怠データ項目は全てリクエストされてくるので、基本上書きでいきます.
+     *
      * @param $storeId int 店舗ID
      * @param $employeeId int 従業員ID
      * @param $date string 日付(Ymd)
@@ -158,47 +160,33 @@ class TimeCardsTable extends Table
      */
     public function patch($storeId, $employeeId, $date, $patch)
     {
-        $time = strtotime($date);
-
         $entity = $this->find()
             ->where(['store_id' => $storeId])
             ->where(['employee_id' => $employeeId])
-            ->where(['target_ym' => date('Ym', $time)])
+            ->where(['target_ym' => date('Ym', strtotime($date))])
             ->first();
 
         $body = json_decode($entity->body, true);
-        $day = $this->buildDayIndex(date('d', $time));
-        $target = $body[$day];
+        $day = $this->buildDayIndex(date('d', strtotime($date)));
+        unset($body[$day]);
 
-        foreach ($target as $index => $data) {
-            $target[$index] = $this->patchDailyData($data, $patch, date('Y-m-d', $time));
+        $records = [];
+        foreach ($patch as $alias => $time) {
+            /** @var \App\Model\Table\TimeCardStatesTable $TimeCardStates */
+            $TimeCardStates = TableRegistry::get('TimeCardStates');
+            $state = $TimeCardStates->findByAlias($alias)->first();
+            $records[] = [
+                'state_id' => $state->id,
+                'alias' => $state->alias,
+                'time' => date('Y-m-d', strtotime($date)) . ' ' . $time
+            ];
         }
-        $body[$day] = $target;
-
+        $body[$day] = $records;
         $data = $this->patchEntity($entity, [
             'body' => json_encode($body),
         ]);
 
         return $this->save($data);
-    }
-
-    /**
-     * 更新データ構築処理を行います.
-     * @param $data array 現在のデータ
-     * @param $patch array 更新後データ
-     * @param $ymd string 日付(Ymd)
-     * @return array 更新後データ
-     */
-    private function patchDailyData($data, $patch, $ymd)
-    {
-        $result = $data;
-        foreach ($patch as $alias => $time) {
-            if ($result['alias'] == $alias) {
-                $result['time'] = $ymd . ' ' . $time;
-                break;
-            }
-        }
-        return $result;
     }
 
     /**
