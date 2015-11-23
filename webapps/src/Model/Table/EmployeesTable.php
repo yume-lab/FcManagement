@@ -55,31 +55,6 @@ class EmployeesTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->add('email', 'valid', ['rule' => 'email'])
-            ->requirePresence('email', 'create')
-            ->notEmpty('email');
-
-        $validator
-            ->requirePresence('phone_number', 'create')
-            ->notEmpty('phone_number');
-
-        $validator
-            ->requirePresence('zip_code', 'create')
-            ->notEmpty('zip_code');
-
-        $validator
-            ->requirePresence('address_1', 'create')
-            ->notEmpty('address_1');
-
-        $validator
-            ->requirePresence('address_2', 'create')
-            ->notEmpty('address_2');
-
-        $validator
-            ->requirePresence('address_3', 'create')
-            ->notEmpty('address_3');
-
-        $validator
             ->requirePresence('first_name', 'create')
             ->notEmpty('first_name');
 

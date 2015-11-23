@@ -28,8 +28,6 @@
                             echo $this->Form->input('role_id', ['label' => '役割', 'options' => $roles]);
                             echo $this->Form->input('store_id', [
                                 'label' => '所属店舗', 'options' => $stores, 'disabled' => 'disabled']);
-                        ?>
-                        <?php
                             echo $this->Form->input('last_name', ['label' => '苗字']);
                             echo $this->Form->input('first_name', ['label' => '名前']);
                         ?>
@@ -52,6 +50,7 @@
                 </div>
 
                 <p class="center col-md-5">
+                    <?= $this->Html->link(__('一覧に戻る'), $previous, ['class' => 'btn btn-default']) ?>
                     <?= $this->Form->button(__('更新する'), ['class' => 'btn btn-primary']) ?>
                 </p>
                 <?= $this->Form->end() ?>
