@@ -10,6 +10,7 @@ use Cake\ORM\TableRegistry;
  *
  * @property \App\Model\Table\TimeCardsTable $TimeCards
  * @property \App\Model\Table\EmployeesTable $Employees
+ * @property \App\Controller\Component\TimeCardComponent $TimeCard
  */
 class TimeCardsController extends AppController
 {
@@ -21,12 +22,20 @@ class TimeCardsController extends AppController
     public $helpers = ['TimeCard'];
 
     /**
+     * 使用コンポーネント
+     * @var array
+     */
+    public $components = ['TimeCard'];
+
+
+    /**
      * 初期表示.
      *
      * @return void
      */
     public function index()
     {
+        /** @var \App\Model\Table\EmployeesTable $Employees */
         $Employees = TableRegistry::get('Employees');
         $employees = $Employees->findByStoreId(parent::getCurrentStoreId());
         $this->set(compact('employees'));
@@ -46,6 +55,7 @@ class TimeCardsController extends AppController
             ->where(['target_ym' => $targetYm])
             ->first();
 
+        /** @var \App\Model\Table\EmployeesTable $Employees */
         $Employees = TableRegistry::get('Employees');
         $employee = $Employees->get($employeeId);
 
@@ -57,8 +67,30 @@ class TimeCardsController extends AppController
         $next = date('Ym', strtotime(date('Y-m-1', $target). ' +1 month'));
         $prev = date('Ym', strtotime(date('Y-m-1', $target). ' -1 month'));
 
+        // 編集は1分単位で
+        $times = $this->TimeCard->buildTimes($this->UserAuth->currentStore(), 1);
+
         $this->log($matrix);
-        $this->set(compact('matrix', 'employee', 'showMonth', 'next', 'prev', 'current'));
+        $this->set(compact('matrix', 'employee', 'showMonth', 'next', 'prev', 'current', 'times'));
+    }
+
+    /**
+     * API
+     * 1日分の勤怠データ更新処理を行います.
+     */
+    public function update()
+    {
+        $this->autoRender = false;
+
+        $data = $this->request->data();
+        $this->log($data);
+
+        $ymd = $data['target'];
+        $employeeId = $data['employeeId'];
+        $input = $data['data'];
+
+        $result = $this->TimeCards->patch(parent::getCurrentStoreId(), $employeeId, $ymd, $input);
+        echo json_encode(['success' => $result]);
     }
 
     /**
@@ -72,23 +104,36 @@ class TimeCardsController extends AppController
         if (empty($record)) {
             return [];
         }
-        $body = json_decode($record->body);
+        $body = json_decode($record->body, true);
         $matrix = [];
         foreach ($body as $day => $data) {
             // 日別のループ
             $this->log($day);
             $this->log($data);
-
-            $tmp = [];
-            foreach ($data as $d) {
-                // 日の中の種別のループ
-                $this->log($d);
-                $time = date('H:i', strtotime($d->time));
-                $tmp[$d->alias] = $time;
-            }
-            $matrix[$day] = $tmp;
+            $matrix[$day] = $this->buildMatrixForDaily($data);
         }
         return $matrix;
+    }
+
+    /**
+     * 日毎のデータ整形を行います.
+     * @param $daily array 日のデータ
+     * @return array 整形したデータ
+     */
+    private function buildMatrixForDaily($daily)
+    {
+        $results = [];
+        foreach ($daily as $data) {
+            // 日の中の種別のループ
+            $this->log($data);
+            $time = date('H:i', strtotime($data['time']));
+            $results[$data['alias']] = $time;
+        }
+        $results['/all'] = $this->TimeCard->getAll($results);
+        $results['/break_all'] = $this->TimeCard->getBreak($results);
+        $results['/real'] = $this->TimeCard->getReal($results);
+        $this->log($results);
+        return $results;
     }
 
 }

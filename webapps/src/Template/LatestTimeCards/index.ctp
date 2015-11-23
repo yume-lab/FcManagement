@@ -18,8 +18,13 @@
 </style>
 <div class="row">
     <div class="box center col-md-6">
+        <div style="text-align: right;">
+            <a href="/">管理画面に戻る</a>
+        </div>
+
         <div class="alert alert-info">
-            タイムカード
+            タイムカード<br/>
+            ご自身のお名前を探して、クリックしてください。
         </div>
 
         <h3 id="clock-large"></h3>
@@ -69,7 +74,7 @@
                 ログインをやり直してください。
             </div>
             <div class="modal-footer center">
-                <a href="/" class="btn btn-info">TOPへ</a>
+                <a href="/" class="btn btn-warning">TOPへ</a>
             </div>
         </div>
     </div>

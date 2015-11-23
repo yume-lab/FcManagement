@@ -11,9 +11,21 @@ use Cake\ORM\TableRegistry;
  * @property \App\Model\Table\ShiftTablesTable $ShiftTables
  * @property \App\Model\Table\FixedShiftTablesTable.php $FixedShiftTables
  * @property \App\Model\Table\EmployeesTable $Employees
+ * @property \App\Controller\Component\TimeCardComponent $TimeCard
  */
 class ShiftTablesController extends AppController
 {
+    /**
+     * 使用ヘルパー
+     * @var array
+     */
+    public $helpers = ['TimeCard'];
+
+    /**
+     * 使用コンポーネント
+     * @var array
+     */
+    public $components = ['TimeCard'];
 
     /**
      * シフト編集画面
@@ -23,12 +35,16 @@ class ShiftTablesController extends AppController
     public function edit()
     {
         $store = $this->UserAuth->currentStore();
-        $opened = date('H:i:s', strtotime($store->opened));
-        $closed = date('H:i:s', strtotime($store->closed));
         // TODO: DBもしくは設定ファイルに、シフトと絡む
         $interval = 15;
-        $times = $this->buildSelectableTime($opened, $closed);
-        $employees = TableRegistry::get('Employees')->findByStoreId(parent::getCurrentStoreId());
+        $times = $this->TimeCard->buildTimes($store);
+
+        /** @var \App\Model\Table\EmployeesTable $Employees */
+        $Employees = TableRegistry::get('Employees');
+        $employees = $Employees->findByStoreId(parent::getCurrentStoreId());
+
+        $opened = date('H:i:s', strtotime($store->opened));
+        $closed = date('H:i:s', strtotime($store->closed));
 
         $this->set(compact('opened', 'closed', 'interval', 'times', 'employees'));
         $this->set('_serialize', ['employees']);
@@ -47,6 +63,7 @@ class ShiftTablesController extends AppController
             $shift = json_decode($data['fixed_shift']);
             $storeId = parent::getCurrentStoreId();
 
+            /** @var \App\Model\Table\FixedShiftTablesTable $FixedShiftTables */
             $FixedShiftTables = TableRegistry::get('FixedShiftTables');
             $FixedShiftTables->removeAllByTargetYm($targetYm);
 
@@ -150,30 +167,6 @@ class ShiftTablesController extends AppController
                 $tmp[$key] = $shift[$key];
             }
             $results[] = $tmp;
-        }
-        return $results;
-    }
-
-    /**
-     * シフト作成時に選択可能な時間帯を配列で構築します.
-     *
-     * @param $opened string 営業開始時間
-     * @param $closed string 営業終了時間
-     * @return array 選択可能な時間帯の配列
-     */
-    private function buildSelectableTime($opened, $closed)
-    {
-        // TODO: DBもしくは設定ファイルに、シフトと絡む
-        $interval = 15;
-
-        $begin = strtotime(date('H:i', strtotime($opened)));
-        $end = strtotime(date('H:i', strtotime($closed)));
-        $current = $begin;
-
-        $results = [];
-        while($current <= $end){
-            $results[] = date('H:i',$current);
-            $current = strtotime("+$interval minutes",$current);
         }
         return $results;
     }

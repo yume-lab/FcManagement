@@ -54,6 +54,66 @@ class TimeCardHelper extends Helper {
     }
 
     /**
+     * 勤怠一覧の編集可能時間エリア
+     * @param $times array 選択可能時間 Componentで構築したもの.
+     * @param $data array 勤怠データ
+     * @param $alias string 状態のエイリアス
+     * @return string タグ
+     */
+    public function editableTime($times, $data, $alias) {
+        $tagFormat = '
+            <span class="time-label">
+                %s
+            </span>
+            <span class="time-input">
+                <select name="%s" class="form-control" style="height: 30px; width: auto;">
+                    %s
+                </select>
+            </span>
+        ';
+        $value = $data[$alias];
+        $values = [$value, $alias, $this->buildTimeOptions($times, $value)];
+        return vsprintf($tagFormat, $values);
+    }
+
+    /**
+     * 選択時間のoption要素を構築します.
+     * @param $times array 時間配列
+     * @param string $value 現在の値. options
+     * @return string <option>タグ
+     */
+    public function buildTimeOptions($times, $value = '') {
+        $tagFormat = '<option value="%s" %s>%s</option>';
+        $optionTag = '';
+        foreach ($times as $time) {
+            $selected = ($time == $value) ? 'selected' : '';
+            $optionTag .= vsprintf($tagFormat, [$time, $selected, $time]);
+        }
+        return $optionTag;
+    }
+
+    /**
+     * 勤怠打刻のステータスラベルを出力します.
+     * @param $state 勤怠状態オブジェクト
+     * @return string
+     */
+    public function status($state) {
+        $tagFormat = '
+            <h4>
+                <span class="label label-%s">
+                    %s
+                </span>
+            </h4>
+        ';
+
+        $values = empty($state)
+            ? ['default', '未出勤']
+            : [$this->type($state['alias']), trim($state['label'])];
+
+        return vsprintf($tagFormat, $values);
+    }
+
+    /**
      * ステータス状況別のボタンを出力します.
      *
      * @see TimeCardStatesTable

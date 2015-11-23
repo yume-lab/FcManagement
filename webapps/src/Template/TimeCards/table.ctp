@@ -1,14 +1,11 @@
-<?php
-    /**
-     * 時間の差を返します.
-     * @param $start
-     * @param $end
-     * @return 時間の差(1時間単位)
-     */
-    function calcTimeDiff($start, $end) {
-        return (strtotime($end) - strtotime($start)) / (60*60);
+<style>
+    .time-input {
+        display: none;
     }
-?>
+    .time-input input {
+        height: 30px;
+    }
+</style>
 
 <h3 class="center-block">
     <?= $showMonth ?>
@@ -32,6 +29,7 @@
         <th>休憩終了</th>
         <th>総労働時間</th>
         <th>実労働時間</th>
+        <th>操作</th>
     </tr>
     </thead>
     <tbody>
@@ -49,25 +47,58 @@
                 $key = 'day-'.(($day < 10) ? '0'.$day : $day);
                 $hasData = isset($matrix[$key]);
             ?>
-            <tr class="<?= $this->TimeCard->dayClass($dayOfWeek); ?>">
+            <tr class="time-row <?= $this->TimeCard->dayClass($dayOfWeek); ?>"
+                style="height: 47px;"
+                data-ymd="<?= date('Ymd', $timestamp) ?>">
                 <td><?= $day.$this->TimeCard->dayOfWeekString($dayOfWeek); ?></td>
                 <?php if ($hasData): ?>
                     <?php
                         $data = $matrix[$key];
-                        $allTime = round(calcTimeDiff($data['/in'], $data['/out']), 1);
-
-                        $hasBreak = isset($data['/break_in']) && isset($data['/break_out']);
-                        $breakAll = $hasBreak
-                            ? round(calcTimeDiff($data['/break_in'], $data['/break_out']), 1)
-                            : 0;
+                        $hasBreak = !empty($data['/break_all']);
                     ?>
-                    <td><?= $data['/in'] ?></td>
-                    <td><?= $data['/out'] ?></td>
-                    <td><?= $hasBreak ? $data['/break_in'] : '' ?></td>
-                    <td><?= $hasBreak ? $data['/break_out'] : '' ?></td>
-                    <td><?= $allTime ?></td>
-                    <td><?= $allTime - $breakAll ?></td>
+                    <td>
+                        <?= $this->TimeCard->editableTime($times, $data, '/in'); ?>
+                    </td>
+                    <td>
+                        <?= $this->TimeCard->editableTime($times, $data, '/out'); ?>
+                    </td>
+                    <td>
+                        <?php if ($hasBreak): ?>
+                            <?= $this->TimeCard->editableTime($times, $data, '/break_in'); ?>
+                        <?php endif; ?>
+                    </td>
+                    <td>
+                        <?php if ($hasBreak): ?>
+                            <?= $this->TimeCard->editableTime($times, $data, '/break_out'); ?>
+                        <?php endif; ?>
+                    </td>
+                    <td>
+                        <?= $data['/all'] ?>
+                    </td>
+                    <td>
+                        <?= $data['/real'] ?>
+                    </td>
+                    <td>
+                        <?php // 編集ボタンを押したら、更新部分が表示されます. ?>
+                        <span class="editable-button">
+                            <a class="btn btn-primary btn-sm" href="#">
+                                <i class="glyphicon glyphicon-edit icon-white"></i>
+                                編集
+                            </a>
+                        </span>
+                        <span class="editable-actions" style="display: none;">
+                            <a class="btn btn-info btn-sm update" href="#">
+                                <i class="glyphicon glyphicon-edit icon-white"></i>
+                                更新
+                            </a>
+                            <a class="btn btn-danger btn-sm cancel" href="#">
+                                <i class="glyphicon glyphicon-trash icon-white"></i>
+                                取消
+                            </a>
+                        </span>
+                    </td>
                 <?php else: ?>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>

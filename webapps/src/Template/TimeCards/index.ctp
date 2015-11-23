@@ -1,5 +1,7 @@
 <?php $this->assign('title', '勤怠一覧'); ?>
 
+<?= $this->element('Notice/show_top', ['message' => '勤怠データを更新しました。']); ?>
+
 <style>
     #employee-list .employee-row {
         cursor: pointer;
@@ -78,20 +80,96 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             e.preventDefault();
             $('.employee-row').removeClass('current');
             $(this).addClass('current');
-            loadEmployees($(this).data('id'), moment().format(DATE_FORMAT));
+            loadTimeCardTable($(this).data('id'), moment().format(DATE_FORMAT));
         });
 
+        /**
+         * 次月、前月クリック時
+         */
         $(document).on('click', '.pagination a', function(e) {
             var employeeId = $('#employee-list').find('.current').data('id');
             var target = $(this).data('target');
-            loadEmployees(employeeId, target);
+            loadTimeCardTable(employeeId, target);
+            return false;
+        });
+
+        /**
+         * 更新クリック時
+         */
+        $(document).on('click', '.editable-button a', function(e) {
+            var $this = $(this);
+            $('.time-label').show();
+            $('.time-input').hide();
+            $('.editable-button').show();
+            $('.editable-actions').hide();
+
+            var $parent = $this.parents('.time-row');
+            $parent.find('.time-label').hide();
+            $parent.find('.time-input').show();
+
+            $parent.find('.editable-button').hide();
+            $parent.find('.editable-actions').show();
+            return false;
+        });
+
+        /**
+         * 編集取消クリック時
+         */
+        $(document).on('click', '.editable-actions .cancel', function(e) {
+            $('.time-label').show();
+            $('.time-input').hide();
+            $('.editable-button').show();
+            $('.editable-actions').hide();
+            return false;
+        });
+
+        /**
+         * 編集の更新クリック時
+         */
+        $(document).on('click', '.editable-actions .update', function(e) {
+            var $this = $(this);
+            var $parent = $this.parents('.time-row');
+            var ymd = $parent.data('ymd');
+            var employeeId = $('#employee-list').find('.current').data('id');
+
+            var data = {
+                '/in' : $parent.find('select[name="/in"]').val(),
+                '/out' : $parent.find('select[name="/out"]').val(),
+                '/break_in' : $parent.find('select[name="/break_in"]').val(),
+                '/break_out' : $parent.find('select[name="/break_out"]').val()
+            };
+            var parameter = {
+                target: ymd,
+                employeeId: employeeId,
+                data: data
+            };
+            console.log(parameter);
+
+            showLoading();
+            $.ajax({
+                type: 'POST',
+                url: '/api/time-cards/update',
+                data: JSON.stringify(parameter),
+                dataType: 'json',
+                contentType: 'application/json'
+            }).done(function( data, textStatus, jqXHR) {
+                console.log(data, jqXHR, textStatus);
+                loadTimeCardTable(employeeId, moment().format(DATE_FORMAT));
+                $('#notice').trigger('click');
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR, textStatus, errorThrown);
+            }).always(function(jqXHR, textStatus) {
+                console.log(jqXHR, textStatus);
+                hideLoading();
+            });
+
             return false;
         });
 
         /**
          * 勤務表の表示
          */
-        function loadEmployees(employeeId, target) {
+        function loadTimeCardTable(employeeId, target) {
             showLoading();
             var parameter = {
                 employeeId: employeeId,
@@ -100,7 +178,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             console.log(parameter);
             $.ajax({
                 type: 'GET',
-                url: '/time-cards/table',
+                url: '/api/time-cards/table',
                 data: parameter,
                 dataType: 'html'
             }).done(function(data, textStatus, jqXHR ) {

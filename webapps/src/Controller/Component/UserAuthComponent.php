@@ -20,6 +20,7 @@ class UserAuthComponent extends AuthComponent
     public function setUser(array $user)
     {
         // アソシエーションしてるテーブル情報も取ってくる
+        /** @var \App\Model\Table\UserStoresTable $UserStores */
         $data = TableRegistry::get('UserStores')
             ->find()
             ->where(
@@ -66,8 +67,8 @@ class UserAuthComponent extends AuthComponent
      * 現在ログインしているユーザーの操作店舗情報を取得します.
      *
      * @see \App\Model\Table\StoresTable
-     * @param $field
-     * @return array|string
+     * @param $field string 取得したいカラム
+     * @return string|\App\Model\Table\StoresTable
      */
     public function currentStore($field = '')
     {
@@ -94,6 +95,8 @@ class UserAuthComponent extends AuthComponent
     public function refresh()
     {
         $userId = $this->user('id');
+
+        /** @var \App\Model\Table\UsersTable $Users */
         $user = TableRegistry::get('Users')->get($userId, [
             'contain' => []
         ]);
