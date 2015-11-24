@@ -17,7 +17,6 @@
                     </li>
                 </ul>
 
-                <?php debug($employee) ?>
                 <?= $this->Form->create($employee) ?>
                 <div id="employeeTabContent" class="tab-content">
                     <div class="tab-pane active" id="required">
