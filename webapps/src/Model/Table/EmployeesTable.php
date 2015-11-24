@@ -12,6 +12,7 @@ use Cake\Validation\Validator;
  *
  * @property \Cake\ORM\Association\BelongsTo $Roles
  * @property \Cake\ORM\Association\BelongsTo $Stores
+ * @property \Cake\ORM\Association\hasMany $EmployeeSalaries
  */
 class EmployeesTable extends Table
 {
@@ -38,6 +39,10 @@ class EmployeesTable extends Table
         ]);
         $this->belongsTo('Stores', [
             'foreignKey' => 'store_id',
+            'joinType' => 'INNER'
+        ]);
+        $this->hasOne('EmployeeSalaries', [
+            'foreignKey' => 'employee_id',
             'joinType' => 'INNER'
         ]);
     }
@@ -77,6 +82,7 @@ class EmployeesTable extends Table
 //        $rules->add($rules->isUnique(['email']));
         $rules->add($rules->existsIn(['role_id'], 'Roles'));
         $rules->add($rules->existsIn(['store_id'], 'Stores'));
+        $rules->add($rules->existsIn(['employee_id'], 'EmployeeSalaries'));
         return $rules;
     }
 

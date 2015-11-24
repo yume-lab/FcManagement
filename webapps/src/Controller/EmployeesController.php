@@ -69,10 +69,14 @@ class EmployeesController extends AppController
     public function edit($id = null)
     {
         $employee = $this->Employees->get($id, [
-            'contain' => []
+            'contain' => ['EmployeeSalaries']
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $employee = $this->Employees->patchEntity($employee, $this->request->data);
+            $employee = $this->Employees->patchEntity(
+                $employee,
+                $this->request->data,
+                ['associated' => ['EmployeeSalaries']]
+            );
             if ($this->Employees->save($employee)) {
                 $this->Flash->success(__('従業員情報を更新しました。'));
                 return $this->redirect(['action' => 'index']);

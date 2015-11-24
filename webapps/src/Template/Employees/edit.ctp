@@ -24,6 +24,7 @@
                 <div id="employeeTabContent" class="tab-content">
                     <div class="tab-pane active" id="required">
                         <?php // 必須情報エリア ?>
+                        <?php // TODO: 区分けにして、時給をここに持ってくる ?>
                         <?php
                             echo $this->Form->input('role_id', ['label' => '役割', 'options' => $roles]);
                             echo $this->Form->input('store_id', [
@@ -44,8 +45,10 @@
                         ?>
                     </div>
                     <div class="tab-pane" id="hourly_pay">
-                        <?php // TODO: 時給編集エリア ?>
-                        <p>作成中..</p>
+                        <?php // 時給編集エリア ?>
+                        <?php
+                            echo $this->Form->input('employee_salary.amount', ['label' => '時給']);
+                        ?>
                     </div>
                 </div>
 
