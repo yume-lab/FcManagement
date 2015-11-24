@@ -228,3 +228,27 @@ insert into
       select * from employee_salaries where store_id = employees.store_id and employee_id = employees.id
     )
   );
+
+-- 新タイムカードテーブル
+CREATE TABLE employee_time_cards (
+  id INT unsigned NOT NULL AUTO_INCREMENT,
+  store_id INT unsigned NOT NULL,
+  employee_id INT unsigned NOT NULL,
+  worked_date VARCHAR(8) NOT NULL,
+  start_time TIME,
+  end_time TIME,
+  break_start_time TIME,
+  break_end_time TIME,
+  work_minute INT NOT NULL DEFAULT 0,
+  break_minute INT NOT NULL DEFAULT 0,
+  real_minute INT NOT NULL DEFAULT 0,
+  total_work_minute INT NOT NULL DEFAULT 0,
+  total_break_minute INT NOT NULL DEFAULT 0,
+  total_real_minute INT NOT NULL DEFAULT 0,
+  amount SMALLINT unsigned NOT NULL,
+  is_deleted TINYINT(1) NOT NULL DEFAULT 0,
+  created datetime NOT NULL,
+  updated datetime NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE uni_employee_time_cards(store_id, employee_id, worked_date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='タイムカードデータ' AUTO_INCREMENT=1;
