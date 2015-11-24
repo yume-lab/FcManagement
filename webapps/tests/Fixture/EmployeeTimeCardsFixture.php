@@ -20,6 +20,7 @@ class EmployeeTimeCardsFixture extends TestFixture
         'id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
         'store_id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'employee_id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
+        'time_card_state_id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'worked_date' => ['type' => 'string', 'length' => 8, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'fixed' => null],
         'start_time' => ['type' => 'time', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
         'end_time' => ['type' => 'time', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
@@ -34,7 +35,7 @@ class EmployeeTimeCardsFixture extends TestFixture
         'amount' => ['type' => 'integer', 'length' => 5, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'is_deleted' => ['type' => 'boolean', 'length' => null, 'null' => false, 'default' => '0', 'comment' => '', 'precision' => null],
         'created' => ['type' => 'datetime', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
-        'updated' => ['type' => 'datetime', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
+        'modified' => ['type' => 'datetime', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
             'uni_employee_time_cards' => ['type' => 'unique', 'columns' => ['store_id', 'employee_id', 'worked_date'], 'length' => []],
@@ -56,11 +57,12 @@ class EmployeeTimeCardsFixture extends TestFixture
             'id' => 1,
             'store_id' => 1,
             'employee_id' => 1,
+            'time_card_state_id' => 1,
             'worked_date' => 'Lorem ',
-            'start_time' => '11:40:08',
-            'end_time' => '11:40:08',
-            'break_start_time' => '11:40:08',
-            'break_end_time' => '11:40:08',
+            'start_time' => '13:21:53',
+            'end_time' => '13:21:53',
+            'break_start_time' => '13:21:53',
+            'break_end_time' => '13:21:53',
             'work_minute' => 1,
             'break_minute' => 1,
             'real_minute' => 1,
@@ -69,8 +71,8 @@ class EmployeeTimeCardsFixture extends TestFixture
             'total_real_minute' => 1,
             'amount' => 1,
             'is_deleted' => 1,
-            'created' => '2015-11-24 11:40:08',
-            'updated' => '2015-11-24 11:40:08'
+            'created' => '2015-11-24 13:21:53',
+            'modified' => '2015-11-24 13:21:53'
         ],
     ];
 }

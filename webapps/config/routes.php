@@ -46,7 +46,7 @@ Router::scope('/', function ($routes) {
     $routes->connect('/fixed/view/*', ['controller' => 'FixedShiftTables', 'action' => 'view']);
 
     // 勤怠打刻
-    $routes->connect('/time-card', ['controller' => 'LatestTimeCards', 'action' => 'index']);
+//    $routes->connect('/time-card', ['controller' => 'LatestTimeCards', 'action' => 'index']);
     $routes->connect('/api/time-card/write', ['controller' => 'LatestTimeCards', 'action' => 'write']);
     $routes->connect('/api/time-card/table', ['controller' => 'LatestTimeCards', 'action' => 'table']);
 
@@ -59,6 +59,8 @@ Router::scope('/', function ($routes) {
     $routes->connect('/e-time-cards/', ['controller' => 'EmployeeTimeCards', 'action' => 'index']);
     $routes->connect('/e-time-cards/write', ['controller' => 'EmployeeTimeCards', 'action' => 'write']);
     $routes->connect('/api/e-time-cards/table', ['controller' => 'EmployeeTimeCards', 'action' => 'table']);
+    $routes->connect('/time-card', ['controller' => 'EmployeeTimeCards', 'action' => 'input']);
+    $routes->connect('/api/time-card/rows', ['controller' => 'EmployeeTimeCards', 'action' => 'rows']);
 
 
     $routes->fallbacks('DashedRoute');

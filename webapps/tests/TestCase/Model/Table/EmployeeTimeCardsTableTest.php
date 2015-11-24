@@ -80,4 +80,14 @@ class EmployeeTimeCardsTableTest extends TestCase
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
+
+    /**
+     * Test findMonthly method
+     *
+     * @return void
+     */
+    public function testFindMonthly()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
 }

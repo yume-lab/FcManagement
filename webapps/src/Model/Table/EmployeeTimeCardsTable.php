@@ -6,12 +6,14 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Cake\ORM\TableRegistry;
 
 /**
  * EmployeeTimeCards Model
  *
  * @property \Cake\ORM\Association\BelongsTo $Stores
  * @property \Cake\ORM\Association\BelongsTo $Employees
+ * @property \Cake\ORM\Association\BelongsTo $TimeCardStates
  */
 class EmployeeTimeCardsTable extends Table
 {
@@ -38,6 +40,10 @@ class EmployeeTimeCardsTable extends Table
         ]);
         $this->belongsTo('Employees', [
             'foreignKey' => 'employee_id',
+            'joinType' => 'INNER'
+        ]);
+        $this->belongsTo('TimeCardStates', [
+            'foreignKey' => 'time_card_state_id',
             'joinType' => 'INNER'
         ]);
     }
@@ -128,6 +134,7 @@ class EmployeeTimeCardsTable extends Table
     {
         $rules->add($rules->existsIn(['store_id'], 'Stores'));
         $rules->add($rules->existsIn(['employee_id'], 'Employees'));
+        $rules->add($rules->existsIn(['time_card_state_id'], 'TimeCardStates'));
         return $rules;
     }
 
@@ -152,5 +159,36 @@ class EmployeeTimeCardsTable extends Table
             $results[$record['worked_date']] = $record;
         }
         return $results;
+    }
+
+    /**
+     * TODO: これだと全てのデータ取得のため、当日のやつだけ取るようにする.
+     * 全従業員の情報を取得します.
+     *
+     * @param $storeId
+     * @return $this
+     */
+    public function findAllEmployees($storeId) {
+        /** @var \App\Model\Table\EmployeesTable $Employees */
+        $Employees = TableRegistry::get('Employees');
+        return $Employees->find('all')
+            ->hydrate(false)
+            ->select([
+                'EmployeeTimeCards.time_card_state_id'
+            ])
+            ->autoFields(true)
+            ->join([
+                'table' => 'employee_time_cards',
+                'alias' => 'EmployeeTimeCards',
+                'type' => 'LEFT',
+                'conditions' => [
+                    'EmployeeTimeCards.store_id = Employees.store_id',
+                    'EmployeeTimeCards.employee_id = Employees.id',
+                ],
+            ])
+            ->where([
+                'Employees.store_id' => $storeId,
+                'Employees.is_deleted' => false
+            ]);
     }
 }

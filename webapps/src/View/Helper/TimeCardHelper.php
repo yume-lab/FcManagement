@@ -108,7 +108,7 @@ class TimeCardHelper extends Helper {
 
         $values = empty($state)
             ? ['default', '未出勤']
-            : [$this->type($state['alias']), trim($state['label'])];
+            : [$this->type($state['path']), trim($state['label'])];
 
         return vsprintf($tagFormat, $values);
     }
@@ -122,16 +122,16 @@ class TimeCardHelper extends Helper {
      */
     public function button($state) {
         $tagFormat = '
-            <button class="btn btn-lg col-md-4 center-block action-button btn-%s" data-alias="%s">
+            <button class="btn btn-lg col-md-4 center-block action-button btn-%s" data-path="%s">
                 <i class="glyphicon %s"></i> %s
             </button>
         ';
 
-        $alias = $state['alias'];
+        $path = $state['path'];
         $values = [
-            $this->type($alias),
-            $alias,
-            $this->icon($alias),
+            $this->type($path),
+            $path,
+            $this->icon($path),
             trim(trim($state['name']))
         ];
 
@@ -141,23 +141,22 @@ class TimeCardHelper extends Helper {
     /**
      * ボタンの種別から、classに指定する色種別を取得します.
      *
-     * @see TimeCardStatesTable
-     * @param $alias
+     * @param $path
      * @return string
      */
-    public function type($alias) {
+    public function type($path) {
         $class = 'default';
-        switch ($alias) {
-            case '/in':
+        switch ($path) {
+            case '/start':
                 $class = 'success';
                 break;
-            case '/out':
+            case '/end':
                 $class = 'danger';
                 break;
-            case '/break_in':
+            case '/break/start':
                 $class = 'primary';
                 break;
-            case '/break_out':
+            case '/break/end':
                 $class = 'warning';
                 break;
         }
@@ -167,23 +166,22 @@ class TimeCardHelper extends Helper {
     /**
      * ボタン種別からアイコンのclassを取得します.
      *
-     * @see TimeCardStatesTable
-     * @param $alias
+     * @param $path
      * @return string
      */
-    public function icon($alias) {
+    public function icon($path) {
         $icon = '';
-        switch ($alias) {
-            case '/in':
+        switch ($path) {
+            case '/start':
                 $icon = 'glyphicon-arrow-left';
                 break;
-            case '/out':
+            case '/end':
                 $icon = 'glyphicon-arrow-right';
                 break;
-            case '/break_in':
+            case '/break/start':
                 $icon = 'glyphicon-chevron-left';
                 break;
-            case '/break_out':
+            case '/break/end':
                 $icon = 'glyphicon-chevron-right';
                 break;
         }

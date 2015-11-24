@@ -7,11 +7,12 @@ use Cake\ORM\Entity;
  * TimeCardState Entity.
  *
  * @property int $id
- * @property string $alias
+ * @property string $path
  * @property string $name
+ * @property string $label
  * @property bool $is_deleted
  * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $updated
+ * @property \Cake\I18n\Time $modified
  * @property \App\Model\Entity\LatestTimeCard[] $latest_time_cards
  */
 class TimeCardState extends Entity
