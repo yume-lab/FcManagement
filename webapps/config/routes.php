@@ -54,6 +54,12 @@ Router::scope('/', function ($routes) {
     $routes->connect('/api/time-cards/table', ['controller' => 'TimeCards', 'action' => 'table']);
     $routes->connect('/api/time-cards/update', ['controller' => 'TimeCards', 'action' => 'update']);
 
+    // 新勤怠一覧
+    // TODO: ルーティングをtime-cards に変更する
+    $routes->connect('/e-time-cards/', ['controller' => 'EmployeeTimeCards', 'action' => 'index']);
+    $routes->connect('/e-time-cards/write', ['controller' => 'EmployeeTimeCards', 'action' => 'write']);
+    $routes->connect('/api/e-time-cards/table', ['controller' => 'EmployeeTimeCards', 'action' => 'table']);
+
 
     $routes->fallbacks('DashedRoute');
 });

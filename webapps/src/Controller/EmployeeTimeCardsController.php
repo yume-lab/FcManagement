@@ -2,27 +2,67 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 
 /**
  * EmployeeTimeCards Controller
+ * 勤怠関連コントローラー.
  *
+ * @property \App\Model\Table\EmployeesTable $Employees
  * @property \App\Model\Table\EmployeeTimeCardsTable $EmployeeTimeCards
+ * @property \App\Controller\Component\TimeCardComponent $TimeCard
  */
 class EmployeeTimeCardsController extends AppController
 {
 
     /**
-     * Index method
+     * 使用ヘルパー
+     * @var array
+     */
+    public $helpers = ['TimeCard'];
+
+    /**
+     * 使用コンポーネント
+     * @var array
+     */
+    public $components = ['TimeCard'];
+
+
+    /**
+     * 初期表示.
      *
      * @return void
      */
     public function index()
     {
-        $this->paginate = [
-            'contain' => ['Stores', 'Employees']
-        ];
-        $this->set('employeeTimeCards', $this->paginate($this->EmployeeTimeCards));
-        $this->set('_serialize', ['employeeTimeCards']);
+        /** @var \App\Model\Table\EmployeesTable $Employees */
+        $Employees = TableRegistry::get('Employees');
+        $employees = $Employees->findByStoreId(parent::getCurrentStoreId());
+        $this->set(compact('employees'));
+    }
+
+
+    /**
+     * 勤務表テーブルの表示を行います.
+     */
+    public function table()
+    {
+        $employeeId = $this->request->query('employeeId');
+        $month = $this->request->query('target_ym');
+
+        $records = $this->EmployeeTimeCards->findMonthly(parent::getCurrentStoreId(), $employeeId, $month);
+
+        $target = strtotime($month.'01');
+        $showMonth = date('Y年m月', $target);
+        $current = date('Y-m-d', $target);
+        $next = date('Ym', strtotime(date('Y-m-1', $target). ' +1 month'));
+        $prev = date('Ym', strtotime(date('Y-m-1', $target). ' -1 month'));
+
+        // 編集は1分単位で
+        $times = $this->TimeCard->buildTimes($this->UserAuth->currentStore(), 1);
+
+        $this->log($records);
+        $this->set(compact('records', 'employee', 'showMonth', 'next', 'prev', 'current', 'times'));
     }
 
     /**

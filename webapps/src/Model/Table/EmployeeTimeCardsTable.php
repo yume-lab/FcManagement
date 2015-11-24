@@ -130,4 +130,27 @@ class EmployeeTimeCardsTable extends Table
         $rules->add($rules->existsIn(['employee_id'], 'Employees'));
         return $rules;
     }
+
+    /**
+     * 一月分の勤怠データを取得します.
+     *
+     * @param $storeId int 店舗ID
+     * @param $employeeId int 従業員ID
+     * @param $month int 取得する月 (YM形式)
+     * @return array 取得したデータ
+     */
+    public function findMonthly($storeId, $employeeId, $month)
+    {
+        $records = $this->find()
+            ->where(['store_id' => $storeId])
+            ->where(['employee_id' => $employeeId])
+            ->where(['worked_date LIKE ' => $month.'%'])
+            ->toArray();
+
+        $results = [];
+        foreach ($records as $record) {
+            $results[$record['worked_date']] = $record;
+        }
+        return $results;
+    }
 }
