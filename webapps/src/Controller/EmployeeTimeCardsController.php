@@ -65,6 +65,25 @@ class EmployeeTimeCardsController extends AppController
         $this->set(compact('records', 'employee', 'showMonth', 'next', 'prev', 'current', 'times'));
     }
 
+    public function input()
+    {
+
+    }
+
+    public function rows()
+    {
+
+    }
+
+    public function write()
+    {
+
+    }
+
+
+
+    
+
     /**
      * View method
      *
