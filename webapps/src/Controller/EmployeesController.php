@@ -42,10 +42,15 @@ class EmployeesController extends AppController
      */
     public function add()
     {
-        $employee = $this->Employees->newEntity();
+        $options = ['associated' => ['EmployeeSalaries']];
+        $employee = $this->Employees->newEntity(null, $options);
         if ($this->request->is('post')) {
-            $employee = $this->Employees->patchEntity($employee, $this->request->data);
-            if ($this->Employees->save($employee)) {
+            $employee = $this->Employees->patchEntity(
+                $employee,
+                $this->request->data,
+                $options
+            );
+            if ($this->Employees->save($employee, $options)) {
                 $this->Flash->success('登録が完了しました。');
                 return $this->redirect(['action' => 'index']);
             } else {
@@ -69,10 +74,14 @@ class EmployeesController extends AppController
     public function edit($id = null)
     {
         $employee = $this->Employees->get($id, [
-            'contain' => []
+            'contain' => ['EmployeeSalaries']
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $employee = $this->Employees->patchEntity($employee, $this->request->data);
+            $employee = $this->Employees->patchEntity(
+                $employee,
+                $this->request->data,
+                ['associated' => ['EmployeeSalaries']]
+            );
             if ($this->Employees->save($employee)) {
                 $this->Flash->success(__('従業員情報を更新しました。'));
                 return $this->redirect(['action' => 'index']);

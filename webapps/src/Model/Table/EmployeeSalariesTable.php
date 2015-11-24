@@ -1,20 +1,19 @@
 <?php
 namespace App\Model\Table;
 
-use App\Model\Entity\Employee;
+use App\Model\Entity\EmployeeSalary;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * Employees Model
+ * EmployeeSalaries Model
  *
- * @property \Cake\ORM\Association\BelongsTo $Roles
  * @property \Cake\ORM\Association\BelongsTo $Stores
- * @property \Cake\ORM\Association\hasMany $EmployeeSalaries
+ * @property \Cake\ORM\Association\BelongsTo $Employees
  */
-class EmployeesTable extends Table
+class EmployeeSalariesTable extends Table
 {
 
     /**
@@ -27,25 +26,19 @@ class EmployeesTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('employees');
-        $this->displayField('name');
+        $this->table('employee_salaries');
+        $this->displayField('id');
         $this->primaryKey('id');
 
         $this->addBehavior('Timestamp');
 
-        $this->belongsTo('Roles', [
-            'foreignKey' => 'role_id',
-            'joinType' => 'INNER'
-        ]);
         $this->belongsTo('Stores', [
             'foreignKey' => 'store_id',
             'joinType' => 'INNER'
         ]);
-        $this->hasOne('EmployeeSalaries', [
-            'conditions' => [
-                'EmployeeSalaries.employee_id = Employees.id',
-                'EmployeeSalaries.store_id = Employees.store_id'
-            ]
+        $this->belongsTo('Employees', [
+            'foreignKey' => 'employee_id',
+            'joinType' => 'INNER'
         ]);
     }
 
@@ -62,12 +55,14 @@ class EmployeesTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->requirePresence('first_name', 'create')
-            ->notEmpty('first_name');
+            ->add('amount', 'valid', ['rule' => 'numeric'])
+            ->requirePresence('amount', 'create')
+            ->notEmpty('amount');
 
         $validator
-            ->requirePresence('last_name', 'create')
-            ->notEmpty('last_name');
+            ->add('is_deleted', 'valid', ['rule' => 'boolean'])
+            ->requirePresence('is_deleted', 'create')
+            ->notEmpty('is_deleted');
 
         return $validator;
     }
@@ -81,23 +76,8 @@ class EmployeesTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-//        $rules->add($rules->isUnique(['email']));
-        $rules->add($rules->existsIn(['role_id'], 'Roles'));
         $rules->add($rules->existsIn(['store_id'], 'Stores'));
-        $rules->add($rules->existsIn(['employee_id'], 'EmployeeSalaries'));
+        $rules->add($rules->existsIn(['employee_id'], 'Employees'));
         return $rules;
-    }
-
-    /**
-     * 店舗コードから従業員一覧を取得します.
-     * @param $storeId int 店舗コード
-     * @return $this 従業員一覧
-     */
-    public function findByStoreId($storeId)
-    {
-        return $this->find()->where([
-            'Employees.is_deleted' => false,
-            'Employees.store_id' => $storeId]
-        );
     }
 }
