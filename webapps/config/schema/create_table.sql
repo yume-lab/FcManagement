@@ -197,3 +197,31 @@ CREATE TABLE employee_salaries (
   PRIMARY KEY (id),
   UNIQUE uni_employee_salaries(store_id, employee_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='従業員時給マスタ' AUTO_INCREMENT=1;
+
+-- 既存の従業員の方のデータパッチ
+insert into
+  employee_salaries
+  (
+    `store_id`,
+    `employee_id`,
+    `amount`,
+    `is_deleted`,
+    `created`,
+    `updated`
+  )
+  (
+    select
+      store_id,
+      id,
+      800,
+      0,
+      now(),
+      now()
+    from
+      employees
+    where
+      is_deleted = 0
+    and not exists (
+      select * from employee_salaries where store_id = employees.store_id and employee_id = employees.id
+    )
+  );
