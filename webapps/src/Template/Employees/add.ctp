@@ -34,6 +34,9 @@
                             <?php // 時給エリア ?>
                             <?php
                                 echo $this->Form->input('employee_salary.amount', ['label' => '金額']);
+                                echo $this->Form->input('employee_salary.store_id', [
+                                    'type' => 'hidden', 'value' => $storeId
+                                ]);
                                 echo $this->Form->input('employee_salary.is_deleted', [
                                     'type' => 'hidden', 'value' => 0
                                 ]);

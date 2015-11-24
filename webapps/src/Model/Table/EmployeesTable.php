@@ -42,8 +42,10 @@ class EmployeesTable extends Table
             'joinType' => 'INNER'
         ]);
         $this->hasOne('EmployeeSalaries', [
-            'foreignKey' => 'employee_id',
-            'joinType' => 'INNER'
+            'conditions' => [
+                'EmployeeSalaries.employee_id = Employees.id',
+                'EmployeeSalaries.store_id = Employees.store_id'
+            ]
         ]);
     }
 
