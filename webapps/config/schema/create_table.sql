@@ -115,6 +115,8 @@ CREATE TABLE fixed_shift_tables (
   UNIQUE uni_fixed_shift_tables(store_id, target_ym, hash)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='確定シフト表データ' AUTO_INCREMENT=1;
 
+-- TODO: ボツ
+/*
 -- 勤務表データ
 CREATE TABLE time_cards (
   id INT unsigned NOT NULL AUTO_INCREMENT,
@@ -154,6 +156,7 @@ CREATE TABLE time_card_states (
   PRIMARY KEY (id),
   UNIQUE uni_time_card_states(alias)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='勤怠状態マスタ' AUTO_INCREMENT=1;
+*/
 
 -- パッチ….
 ALTER TABLE stores CHANGE updated modified datetime NOT NULL;
