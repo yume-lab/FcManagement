@@ -50,7 +50,7 @@ return [
             'timezone' => 'UTC',
             'cacheMetadata' => true,
             'log' => true,
-            'quoteIdentifiers' => false,
+            'quoteIdentifiers' => true,
         ],
 
         /**
@@ -67,7 +67,7 @@ return [
             'encoding' => 'utf8',
             'timezone' => 'UTC',
             'cacheMetadata' => true,
-            'quoteIdentifiers' => false,
+            'quoteIdentifiers' => true,
             'log' => true,
         ],
     ],

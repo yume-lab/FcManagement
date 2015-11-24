@@ -42,10 +42,15 @@ class EmployeesController extends AppController
      */
     public function add()
     {
-        $employee = $this->Employees->newEntity();
+        $options = ['associated' => ['EmployeeSalaries']];
+        $employee = $this->Employees->newEntity(null, $options);
         if ($this->request->is('post')) {
-            $employee = $this->Employees->patchEntity($employee, $this->request->data);
-            if ($this->Employees->save($employee)) {
+            $employee = $this->Employees->patchEntity(
+                $employee,
+                $this->request->data,
+                $options
+            );
+            if ($this->Employees->save($employee, $options)) {
                 $this->Flash->success('登録が完了しました。');
                 return $this->redirect(['action' => 'index']);
             } else {
