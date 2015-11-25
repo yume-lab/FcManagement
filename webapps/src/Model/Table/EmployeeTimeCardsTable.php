@@ -162,6 +162,15 @@ class EmployeeTimeCardsTable extends Table
         return $results;
     }
 
+    /**
+     * タイムカードデータへの書き込みを行います.
+     *
+     * @param $storeId int 店舗ID
+     * @param $employeeId int 従業員ID
+     * @param $path string 状態マスタのエイリアス
+     * @param $time string 打刻時間
+     * @return bool|\Cake\Datasource\EntityInterface
+     */
     public function write($storeId, $employeeId, $path, $time)
     {
         $date = date('Ymd', strtotime($time));
@@ -181,7 +190,7 @@ class EmployeeTimeCardsTable extends Table
 
         $state = $TimeCardStates->findByPath($path)->first();
 
-        $target = $this->getTargetColumns($path);
+        $target = $this->getTimeColumn($path);
         $record = [
             "$target" => date('H:i:s', strtotime($time)),
             'store_id' => $storeId,
@@ -191,11 +200,17 @@ class EmployeeTimeCardsTable extends Table
             'hour_pay' => $EmployeeSalaries->getAmount($storeId, $employeeId),
             'is_deleted' => false,
         ];
-        $entity = $this->patchEntity($entity, array_merge($record, $this->summary()));
+        $entity = $this->patchEntity($entity, array_merge($record, $this->summary($path)));
         return $this->save($entity);
     }
 
-    private function getTargetColumns($path)
+    /**
+     * 更新するカラム名を取得します.
+     * 
+     * @param $path string 状態マスタのエイリアス
+     * @return string 対象のカラム名
+     */
+    private function getTimeColumn($path)
     {
         $map = [
             '/start' => 'start_time',
@@ -206,7 +221,14 @@ class EmployeeTimeCardsTable extends Table
         return $map[$path];
     }
 
-    private function summary() {
+    /**
+     * 累計時間とその日のサマリーデータを取得します.
+     *
+     * @param $path string 状態マスタのエイリアス
+     * @return array
+     */
+    private function summary($path) {
+
         $columns = [
             'work_minute' => 0,
             'break_minute' => 0,
