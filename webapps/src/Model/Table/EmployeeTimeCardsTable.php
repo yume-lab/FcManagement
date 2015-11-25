@@ -7,7 +7,6 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use Cake\ORM\TableRegistry;
-use Cake\Log\Log;
 
 /**
  * EmployeeTimeCards Model
@@ -102,21 +101,6 @@ class EmployeeTimeCardsTable extends Table
             ->notEmpty('real_minute');
 
         $validator
-            ->add('total_work_minute', 'valid', ['rule' => 'numeric'])
-            ->requirePresence('total_work_minute', 'create')
-            ->notEmpty('total_work_minute');
-
-        $validator
-            ->add('total_break_minute', 'valid', ['rule' => 'numeric'])
-            ->requirePresence('total_break_minute', 'create')
-            ->notEmpty('total_break_minute');
-
-        $validator
-            ->add('total_real_minute', 'valid', ['rule' => 'numeric'])
-            ->requirePresence('total_real_minute', 'create')
-            ->notEmpty('total_real_minute');
-
-        $validator
             ->add('is_deleted', 'valid', ['rule' => 'boolean'])
             ->requirePresence('is_deleted', 'create')
             ->notEmpty('is_deleted');
@@ -192,7 +176,7 @@ class EmployeeTimeCardsTable extends Table
         $state = $TimeCardStates->findByPath($path)->first();
 
         $target = $this->getTimeColumn($path);
-        $record = [
+        $data = array_merge($entity->toArray(), [
             "$target" => date('H:i:s', strtotime($time)),
             'store_id' => $storeId,
             'employee_id' => $employeeId,
@@ -200,9 +184,9 @@ class EmployeeTimeCardsTable extends Table
             'worked_date' => $date,
             'hour_pay' => $EmployeeSalaries->getAmount($storeId, $employeeId),
             'is_deleted' => false,
-        ];
-        $record = array_merge($record, $this->summary($entity, $record, $path));
-        $entity = $this->patchEntity($entity, $record);
+        ]);
+        $data = array_merge($data, $this->summary($data));
+        $entity = $this->patchEntity($entity, $data);
         return $this->save($entity);
     }
 
@@ -255,38 +239,30 @@ class EmployeeTimeCardsTable extends Table
     }
 
     /**
-     * 累計時間とその日のサマリーデータを取得します.
+     * その日のサマリーデータを取得します.
      *
-     * @param $entity \App\Model\Table\EmployeeTimeCardsTable 現在の自分自身のインスタンス
-     * @param $path string 状態マスタのエイリアス
+     * @param $data array レコードのデータ
      * @return array
      */
-    private function summary($entity, $record, $path) {
-
+    private function summary($data)
+    {
         $summaries = [
-            'work_minute' => empty($entity->work_minute) ? 0 : $entity->work_minute,
-            'break_minute' => empty($entity->break_minute) ? 0 : $entity->break_minute,
-            'real_minute' => empty($entity->real_minute) ? 0 : $entity->real_minute,
-            'total_work_minute' => empty($entity->total_work_minute) ? 0 : $entity->total_work_minute,
-            'total_break_minute' => empty($entity->total_break_minute) ? 0 : $entity->total_break_minute,
-            'total_real_minute' => empty($entity->total_real_minute) ? 0 : $entity->total_real_minute,
+            'work_minute' => empty($data['work_minute']) ? 0 : $data['work_minute'],
+            'break_minute' => empty($data['break_minute']) ? 0 : $data['break_minute'],
+            'real_minute' => empty($data['real_minute']) ? 0 : $data['real_minute']
         ];
 
-        switch ($path) {
-            case '/start':
-            case '/break/start':
-                break;
-            case '/break/end':
-                $summaries['break_minute'] = $this->diffMinutes($entity->break_start_time, $record['break_end_time']);
-                $summaries['total_break_minute'] = $entity->total_break_minute + $summaries['break_minute'];
-                break;
-            case '/end':
-                $summaries['work_minute'] = $this->diffMinutes($entity->start_time, $record['end_time']);
-                $summaries['total_work_minute'] = $entity->total_work_minute + $summaries['work_minute'];
-                $summaries['real_minute'] = $summaries['work_minute'] - $summaries['break_minute'];
-                $summaries['total_real_minute'] = $entity->total_real_minute + $summaries['real_minute'];
-                break;
+        if (isset($data['end_time'])) {
+            $summaries['work_minute'] = $this->diffMinutes($data['start_time'], $data['end_time']);
+            $summaries['real_minute'] = $summaries['work_minute'] - $summaries['break_minute'];
         }
+        if (isset($data['break_end_time'])) {
+            $summaries['break_minute'] = $this->diffMinutes($data['break_start_time'], $data['break_end_time']);
+            if (!empty($summaries['work_minute'])) {
+                $summaries['real_minute'] = $summaries['work_minute'] - $summaries['break_minute'];
+            }
+        }
+
         return $summaries;
     }
 

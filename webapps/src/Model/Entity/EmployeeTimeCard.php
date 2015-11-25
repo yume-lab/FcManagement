@@ -12,6 +12,7 @@ use Cake\ORM\Entity;
  * @property int $employee_id
  * @property \App\Model\Entity\Employee $employee
  * @property int $current_state_id
+ * @property \App\Model\Entity\TimeCardState $time_card_state
  * @property string $worked_date
  * @property int $hour_pay
  * @property \Cake\I18n\Time $start_time
@@ -21,13 +22,9 @@ use Cake\ORM\Entity;
  * @property int $work_minute
  * @property int $break_minute
  * @property int $real_minute
- * @property int $total_work_minute
- * @property int $total_break_minute
- * @property int $total_real_minute
  * @property bool $is_deleted
  * @property \Cake\I18n\Time $created
  * @property \Cake\I18n\Time $updated
- * @property \App\Model\Entity\TimeCardState $time_card_state
  */
 class EmployeeTimeCard extends Entity
 {
