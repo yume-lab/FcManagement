@@ -38,6 +38,8 @@
             $year = date('Y', strtotime($current));
             $month = date('m', strtotime($current));
             $end = date('t', strtotime($current));
+
+            $canEdit = ($year.$month) == date('Ym');
         ?>
 
         <?php for ($day = 1; $day <= $end; $day++): ?>
@@ -77,22 +79,24 @@
                     </td>
                     <td>
                         <?php // 編集ボタンを押したら、更新部分が表示されます. ?>
-                        <span class="editable-button">
-                            <a class="btn btn-primary btn-sm" href="#">
-                                <i class="glyphicon glyphicon-edit icon-white"></i>
-                                編集
-                            </a>
-                        </span>
-                        <span class="editable-actions" style="display: none;">
-                            <a class="btn btn-info btn-sm update" href="#">
-                                <i class="glyphicon glyphicon-edit icon-white"></i>
-                                更新
-                            </a>
-                            <a class="btn btn-danger btn-sm cancel" href="#">
-                                <i class="glyphicon glyphicon-trash icon-white"></i>
-                                取消
-                            </a>
-                        </span>
+                        <?php if ($canEdit) :?>
+                            <span class="editable-button">
+                                <a class="btn btn-primary btn-sm" href="#">
+                                    <i class="glyphicon glyphicon-edit icon-white"></i>
+                                    編集
+                                </a>
+                            </span>
+                            <span class="editable-actions" style="display: none;">
+                                <a class="btn btn-info btn-sm update" href="#">
+                                    <i class="glyphicon glyphicon-edit icon-white"></i>
+                                    更新
+                                </a>
+                                <a class="btn btn-danger btn-sm cancel" href="#">
+                                    <i class="glyphicon glyphicon-trash icon-white"></i>
+                                    取消
+                                </a>
+                            </span>
+                        <?php endif; ?>
                     </td>
                 <?php else: ?>
                     <td>
@@ -111,22 +115,24 @@
                     <td></td>
                     <td>
                         <?php // 追加ボタンを押したら、更新部分が表示されます. ?>
-                        <span class="editable-button">
-                            <a class="btn btn-warning btn-sm" href="#">
-                                <i class="glyphicon glyphicon-plus icon-white"></i>
-                                追加
-                            </a>
-                        </span>
-                        <span class="editable-actions" style="display: none;">
-                            <a class="btn btn-success btn-sm update" href="#">
-                                <i class="glyphicon glyphicon-edit icon-white"></i>
-                                登録
-                            </a>
-                            <a class="btn btn-danger btn-sm cancel" href="#">
-                                <i class="glyphicon glyphicon-trash icon-white"></i>
-                                取消
-                            </a>
-                        </span>
+                        <?php if ($canEdit) :?>
+                            <span class="editable-button">
+                                <a class="btn btn-warning btn-sm" href="#">
+                                    <i class="glyphicon glyphicon-plus icon-white"></i>
+                                    追加
+                                </a>
+                            </span>
+                            <span class="editable-actions" style="display: none;">
+                                <a class="btn btn-success btn-sm update" href="#">
+                                    <i class="glyphicon glyphicon-edit icon-white"></i>
+                                    登録
+                                </a>
+                                <a class="btn btn-danger btn-sm cancel" href="#">
+                                    <i class="glyphicon glyphicon-trash icon-white"></i>
+                                    取消
+                                </a>
+                            </span>
+                        <?php endif; ?>
                     </td>
                 <?php endif; ?>
             </tr>
