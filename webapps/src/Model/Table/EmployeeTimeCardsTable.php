@@ -7,6 +7,7 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use Cake\ORM\TableRegistry;
+use Cake\Log\Log;
 
 /**
  * EmployeeTimeCards Model
@@ -200,7 +201,8 @@ class EmployeeTimeCardsTable extends Table
             'hour_pay' => $EmployeeSalaries->getAmount($storeId, $employeeId),
             'is_deleted' => false,
         ];
-        $entity = $this->patchEntity($entity, array_merge($record, $this->summary($path)));
+        $record = array_merge($record, $this->summary($entity, $record, $path));
+        $entity = $this->patchEntity($entity, $record);
         return $this->save($entity);
     }
 
@@ -234,7 +236,7 @@ class EmployeeTimeCardsTable extends Table
                 'Employees.is_deleted' => false
             ]);
     }
-    
+
     /**
      * 更新するカラム名を取得します.
      *
@@ -255,20 +257,47 @@ class EmployeeTimeCardsTable extends Table
     /**
      * 累計時間とその日のサマリーデータを取得します.
      *
+     * @param $entity \App\Model\Table\EmployeeTimeCardsTable 現在の自分自身のインスタンス
      * @param $path string 状態マスタのエイリアス
      * @return array
      */
-    private function summary($path) {
+    private function summary($entity, $record, $path) {
 
-        $columns = [
-            'work_minute' => 0,
-            'break_minute' => 0,
-            'real_minute' => 0,
-            'total_work_minute' => 0,
-            'total_break_minute' => 0,
-            'total_real_minute' => 0,
+        $summaries = [
+            'work_minute' => empty($entity->work_minute) ? 0 : $entity->work_minute,
+            'break_minute' => empty($entity->break_minute) ? 0 : $entity->break_minute,
+            'real_minute' => empty($entity->real_minute) ? 0 : $entity->real_minute,
+            'total_work_minute' => empty($entity->total_work_minute) ? 0 : $entity->total_work_minute,
+            'total_break_minute' => empty($entity->total_break_minute) ? 0 : $entity->total_break_minute,
+            'total_real_minute' => empty($entity->total_real_minute) ? 0 : $entity->total_real_minute,
         ];
-        return $columns;
+
+        switch ($path) {
+            case '/start':
+            case '/break/start':
+                break;
+            case '/break/end':
+                $summaries['break_minute'] = $this->diffMinutes($entity->break_start_time, $record['break_end_time']);
+                $summaries['total_break_minute'] = $entity->total_break_minute + $summaries['break_minute'];
+                break;
+            case '/end':
+                $summaries['work_minute'] = $this->diffMinutes($entity->start_time, $record['end_time']);
+                $summaries['total_work_minute'] = $entity->total_work_minute + $summaries['work_minute'];
+                $summaries['real_minute'] = $summaries['work_minute'] - $summaries['break_minute'];
+                $summaries['total_real_minute'] = $entity->total_real_minute + $summaries['real_minute'];
+                break;
+        }
+        return $summaries;
     }
 
+    /**
+     * 時間の差を分で取得します.
+     *
+     * @param $start string 対象の開始時間 (H:i:s)
+     * @param $end string 対象の終了時間 (H:i:s)
+     * @return int 時間(分)
+     */
+    private function diffMinutes($start, $end) {
+        return (strtotime($end) - strtotime($start)) / 60;
+    }
 }
