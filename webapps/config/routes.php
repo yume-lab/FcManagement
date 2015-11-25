@@ -52,7 +52,7 @@ Router::scope('/', function ($routes) {
 
     // 勤怠一覧
     $routes->connect('/api/time-cards/table', ['controller' => 'TimeCards', 'action' => 'table']);
-    $routes->connect('/api/time-cards/update', ['controller' => 'TimeCards', 'action' => 'update']);
+//    $routes->connect('/api/time-cards/update', ['controller' => 'TimeCards', 'action' => 'update']);
 
     // 新勤怠一覧
     // TODO: ルーティングをtime-cards に変更する
@@ -62,6 +62,7 @@ Router::scope('/', function ($routes) {
     $routes->connect('/time-card', ['controller' => 'EmployeeTimeCards', 'action' => 'input']);
     $routes->connect('/api/time-card/rows', ['controller' => 'EmployeeTimeCards', 'action' => 'rows']);
     $routes->connect('/api/time-card/write', ['controller' => 'EmployeeTimeCards', 'action' => 'write']);
+    $routes->connect('/api/time-cards/update', ['controller' => 'EmployeeTimeCards', 'action' => 'update']);
 
 
     $routes->fallbacks('DashedRoute');

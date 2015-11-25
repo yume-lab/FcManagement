@@ -103,6 +103,8 @@ class EmployeeTimeCardsController extends AppController
      */
     public function table()
     {
+        $this->viewBuilder()->layout('');
+
         $employeeId = $this->request->query('employeeId');
         $month = $this->request->query('target_ym');
 
@@ -115,10 +117,45 @@ class EmployeeTimeCardsController extends AppController
         $prev = date('Ym', strtotime(date('Y-m-1', $target). ' -1 month'));
 
         // 編集は1分単位で
-        $times = $this->TimeCard->buildTimes($this->UserAuth->currentStore(), 1);
+        $times = $this->TimeCard->buildTimes($this->UserAuth->currentStore());
 
         $this->log($records);
         $this->set(compact('records', 'employee', 'showMonth', 'next', 'prev', 'current', 'times'));
+    }
+
+    /**
+     * API
+     * 勤怠データ1日分の更新を行います.
+     */
+    public function update()
+    {
+        $this->autoRender = false;
+
+        $data = $this->request->data();
+        $this->log($data);
+
+        $ymd = $data['target'];
+        $employeeId = $data['employeeId'];
+        $input = $data['data'];
+
+        $path = '/start';
+        $time = date('Y-m-d H:i:s', strtotime($ymd . ' ' . $input[$path]));
+        $this->EmployeeTimeCards->write(parent::getCurrentStoreId(), $employeeId, $path, $time);
+
+        $path = '/break/start';
+        $time = date('Y-m-d H:i:s', strtotime($ymd . ' ' . $input[$path]));
+        $this->EmployeeTimeCards->write(parent::getCurrentStoreId(), $employeeId, $path, $time);
+
+        $path = '/break/end';
+        $time = date('Y-m-d H:i:s', strtotime($ymd . ' ' . $input[$path]));
+        $this->EmployeeTimeCards->write(parent::getCurrentStoreId(), $employeeId, $path, $time);
+
+        $path = '/end';
+        $time = date('Y-m-d H:i:s', strtotime($ymd . ' ' . $input[$path]));
+        $this->EmployeeTimeCards->write(parent::getCurrentStoreId(), $employeeId, $path, $time);
+
+        echo json_encode(['success' => true]);
+
     }
 
     /**

@@ -56,16 +56,18 @@
                         $data = $records[$ymd];
                     ?>
                     <td>
-                        <?= $this->TimeCard->formatTime($data['start_time']); ?>
+                        <?= $this->TimeCard->editableTime($times, $data['start_time'], '/start'); ?>
                     </td>
                     <td>
-                        <?= $this->TimeCard->formatTime($data['end_time']); ?>
+                        <?= $this->TimeCard->editableTime($times, $data['end_time'], '/end'); ?>
                     </td>
                     <td>
-                        <?= $this->TimeCard->formatTime($data['break_start_time']); ?>
+                        <?= $this->TimeCard->editableTime(
+                            $times, $data['break_start_time'], '/break/start'); ?>
                     </td>
                     <td>
-                        <?= $this->TimeCard->formatTime($data['break_end_time']); ?>
+                        <?= $this->TimeCard->editableTime(
+                            $times, $data['break_end_time'], '/break/end'); ?>
                     </td>
                     <td>
                         <?= $this->TimeCard->formatHour($data['work_minute']); ?>
@@ -78,28 +80,47 @@
                         <span class="editable-button">
                             <a class="btn btn-primary btn-sm" href="#">
                                 <i class="glyphicon glyphicon-edit icon-white"></i>
-                                編集
+                            </a>
+                        </span>
+                        <span class="editable-actions" style="display: none;">
+                            <a class="btn btn-success btn-sm update" href="#">
+                                <i class="glyphicon glyphicon-edit icon-white"></i>
+                            </a>
+                            <a class="btn btn-danger btn-sm cancel" href="#">
+                                <i class="glyphicon glyphicon-trash icon-white"></i>
+                            </a>
+                        </span>
+                    </td>
+                <?php else: ?>
+                    <td>
+                        <?= $this->TimeCard->editableTime($times, '', '/start'); ?>
+                    </td>
+                    <td>
+                        <?= $this->TimeCard->editableTime($times, '', '/end'); ?>
+                    </td>
+                    <td>
+                        <?= $this->TimeCard->editableTime($times, '', '/break/start'); ?>
+                    </td>
+                    <td>
+                        <?= $this->TimeCard->editableTime($times, '', '/break/end'); ?>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <span class="editable-button">
+                            <a class="btn btn-info btn-sm" href="#">
+                                <i class="glyphicon glyphicon-plus icon-white"></i>
                             </a>
                         </span>
                         <span class="editable-actions" style="display: none;">
                             <a class="btn btn-info btn-sm update" href="#">
                                 <i class="glyphicon glyphicon-edit icon-white"></i>
-                                更新
                             </a>
                             <a class="btn btn-danger btn-sm cancel" href="#">
                                 <i class="glyphicon glyphicon-trash icon-white"></i>
-                                取消
                             </a>
                         </span>
                     </td>
-                <?php else: ?>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
                 <?php endif; ?>
             </tr>
         <?php endfor; ?>

@@ -132,12 +132,12 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             var ymd = $parent.data('ymd');
             var employeeId = $('#employee-list').find('.current').data('id');
 
-            var data = {
-                '/in' : $parent.find('select[name="/in"]').val(),
-                '/out' : $parent.find('select[name="/out"]').val(),
-                '/break_in' : $parent.find('select[name="/break_in"]').val(),
-                '/break_out' : $parent.find('select[name="/break_out"]').val()
-            };
+            var data = {};
+            $parent.find('.time-input').each(function() {
+                var $s = $(this).find('select');
+                data[$s.data('path')] = $s.val();
+            });
+
             var parameter = {
                 target: ymd,
                 employeeId: employeeId,
@@ -162,7 +162,6 @@ echo $this->Html->script($base.'/lib/moment.min.js');
                 console.log(jqXHR, textStatus);
                 hideLoading();
             });
-
             return false;
         });
 

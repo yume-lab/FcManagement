@@ -56,23 +56,23 @@ class TimeCardHelper extends Helper {
     /**
      * 勤怠一覧の編集可能時間エリア
      * @param $times array 選択可能時間 Componentで構築したもの.
-     * @param $data array 勤怠データ
-     * @param $alias string 状態のエイリアス
+     * @param $value string 現在の値
+     * @param $path string 勤怠状態のエイリアス
      * @return string タグ
      */
-    public function editableTime($times, $data, $alias) {
+    public function editableTime($times, $value, $path) {
         $tagFormat = '
             <span class="time-label">
                 %s
             </span>
             <span class="time-input">
-                <select name="%s" class="form-control" style="height: 30px; width: auto;">
+                <select data-path="%s" class="form-control" style="height: 30px; width: auto;">
                     %s
                 </select>
             </span>
         ';
-        $value = $data[$alias];
-        $values = [$value, $alias, $this->buildTimeOptions($times, $value)];
+        $value = $this->formatTime($value);
+        $values = [$value, $path, $this->buildTimeOptions($times, $value)];
         return vsprintf($tagFormat, $values);
     }
 
@@ -85,6 +85,7 @@ class TimeCardHelper extends Helper {
     public function buildTimeOptions($times, $value = '') {
         $tagFormat = '<option value="%s" %s>%s</option>';
         $optionTag = '';
+        $optionTag .= vsprintf($tagFormat, ['', '', '']);
         foreach ($times as $time) {
             $selected = ($time == $value) ? 'selected' : '';
             $optionTag .= vsprintf($tagFormat, [$time, $selected, $time]);
@@ -144,7 +145,7 @@ class TimeCardHelper extends Helper {
      * @return bool|string
      */
     public function formatTime($time) {
-        return date('H:i', strtotime($time));
+        return empty($time) ? '' : date('H:i', strtotime($time));
     }
 
     /**
