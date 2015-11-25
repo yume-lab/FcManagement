@@ -191,6 +191,25 @@ class EmployeeTimeCardsTable extends Table
     }
 
     /**
+     * 打刻時間の修正処理を行います.
+     *
+     * @param $storeId int 店舗ID
+     * @param $employeeId int 従業員ID
+     * @param $workedDate string 対象日 (Ymd形式)
+     * @param $values array 修正された時間の値. TimeCardStates.pathがキー.
+     * @return bool|\Cake\Datasource\EntityInterface
+     */
+    public function patch($storeId, $employeeId, $workedDate, $values)
+    {
+        $paths = ['/start', '/end', '/break/start', '/break/end'];
+        foreach ($paths as $path) {
+            $time = date('Y-m-d H:i:s', strtotime($workedDate.' '.$values[$path]));
+            $this->write($storeId, $employeeId, $path, $time);
+        }
+        return true;
+    }
+
+    /**
      * 全従業員の、当日の情報を取得します.
      *
      * @param $storeId

@@ -62,7 +62,7 @@ Router::scope('/', function ($routes) {
     $routes->connect('/time-card', ['controller' => 'EmployeeTimeCards', 'action' => 'input']);
     $routes->connect('/api/time-card/rows', ['controller' => 'EmployeeTimeCards', 'action' => 'rows']);
     $routes->connect('/api/time-card/write', ['controller' => 'EmployeeTimeCards', 'action' => 'write']);
-    $routes->connect('/api/time-cards/update', ['controller' => 'EmployeeTimeCards', 'action' => 'update']);
+    $routes->connect('/api/time-cards/touch', ['controller' => 'EmployeeTimeCards', 'action' => 'touch']);
 
 
     $routes->fallbacks('DashedRoute');

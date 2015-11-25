@@ -127,7 +127,7 @@ class EmployeeTimeCardsController extends AppController
      * API
      * 勤怠データ1日分の更新を行います.
      */
-    public function update()
+    public function touch()
     {
         $this->autoRender = false;
 
@@ -138,24 +138,8 @@ class EmployeeTimeCardsController extends AppController
         $employeeId = $data['employeeId'];
         $input = $data['data'];
 
-        $path = '/start';
-        $time = date('Y-m-d H:i:s', strtotime($ymd . ' ' . $input[$path]));
-        $this->EmployeeTimeCards->write(parent::getCurrentStoreId(), $employeeId, $path, $time);
-
-        $path = '/break/start';
-        $time = date('Y-m-d H:i:s', strtotime($ymd . ' ' . $input[$path]));
-        $this->EmployeeTimeCards->write(parent::getCurrentStoreId(), $employeeId, $path, $time);
-
-        $path = '/break/end';
-        $time = date('Y-m-d H:i:s', strtotime($ymd . ' ' . $input[$path]));
-        $this->EmployeeTimeCards->write(parent::getCurrentStoreId(), $employeeId, $path, $time);
-
-        $path = '/end';
-        $time = date('Y-m-d H:i:s', strtotime($ymd . ' ' . $input[$path]));
-        $this->EmployeeTimeCards->write(parent::getCurrentStoreId(), $employeeId, $path, $time);
-
-        echo json_encode(['success' => true]);
-
+        $result = $this->EmployeeTimeCards->patch(parent::getCurrentStoreId(), $employeeId, $ymd, $input);
+        echo json_encode(['success' => $result]);
     }
 
     /**

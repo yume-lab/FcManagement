@@ -148,7 +148,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             showLoading();
             $.ajax({
                 type: 'POST',
-                url: '/api/time-cards/update',
+                url: '/api/time-cards/touch',
                 data: JSON.stringify(parameter),
                 dataType: 'json',
                 contentType: 'application/json'
