@@ -180,7 +180,7 @@ class EmployeeTimeCardsController extends AppController
 
     /**
      * 勤怠状態を取得します.
-     * 
+     *
      * @return array
      */
     private function getStates()

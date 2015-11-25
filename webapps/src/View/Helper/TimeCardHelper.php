@@ -132,10 +132,35 @@ class TimeCardHelper extends Helper {
             $this->type($path),
             $path,
             $this->icon($path),
-            trim(trim($state['name']))
+            trim($state['name'])
         ];
 
         return vsprintf($tagFormat, $values);
+    }
+
+    /**
+     * 表示する時間のフォーマットを行います.
+     * @param $time string 時間
+     * @return bool|string
+     */
+    public function formatTime($time) {
+        return date('H:i', strtotime($time));
+    }
+
+    /**
+     * 表示する時間のフォーマットを行います.
+     * @param $minutes string 時間(分)
+     * @return bool|string
+     */
+    public function formatHour($minutes) {
+        $hourDecimal = round($minutes / 60, 2);
+
+        $split = explode('.', $hourDecimal);
+        $hour = $split[0];
+        $min = $hourDecimal - $hour;
+
+        // 30分->0.5 のような状態なので、分の表示を時間に合わせるため、60をかける
+        return sprintf('%d時間 %d分', abs($hour), $min * 60);
     }
 
     /**

@@ -56,22 +56,22 @@
                         $data = $records[$ymd];
                     ?>
                     <td>
-                        <?= h($data['start_time']); ?>
+                        <?= $this->TimeCard->formatTime($data['start_time']); ?>
                     </td>
                     <td>
-                        <?= h($data['end_time']); ?>
+                        <?= $this->TimeCard->formatTime($data['end_time']); ?>
                     </td>
                     <td>
-                        <?= h($data['break_start_time']); ?>
+                        <?= $this->TimeCard->formatTime($data['break_start_time']); ?>
                     </td>
                     <td>
-                        <?= h($data['break_end_time']); ?>
+                        <?= $this->TimeCard->formatTime($data['break_end_time']); ?>
                     </td>
                     <td>
-                        <?= h($data['work_minute']); ?>
+                        <?= $this->TimeCard->formatHour($data['work_minute']); ?>
                     </td>
                     <td>
-                        <?= h($data['real_minute']); ?>
+                        <?= $this->TimeCard->formatHour($data['real_minute']); ?>
                     </td>
                     <td>
                         <?php // 編集ボタンを押したら、更新部分が表示されます. ?>
