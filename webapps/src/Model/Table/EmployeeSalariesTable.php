@@ -80,4 +80,21 @@ class EmployeeSalariesTable extends Table
         $rules->add($rules->existsIn(['employee_id'], 'Employees'));
         return $rules;
     }
+
+    /**
+     * 現在の時給を取得します.
+     *
+     * @param $storeId int 店舗ID
+     * @param $employeeId int 従業員ID
+     * @return int 時給金額. 万が一レコードが無い場合は0を返します.
+     */
+    public function getAmount($storeId, $employeeId)
+    {
+        $record = $this->find()
+            ->where(['store_id' => $storeId])
+            ->where(['employee_id' => $employeeId])
+            ->where(['is_deleted' => false])
+            ->first();
+        return empty($record) ? 0 : $record->amount;
+    }
 }

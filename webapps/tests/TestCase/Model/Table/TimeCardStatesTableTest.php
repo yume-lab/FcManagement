@@ -24,7 +24,8 @@ class TimeCardStatesTableTest extends TestCase
         'app.employees',
         'app.roles',
         'app.user_stores',
-        'app.users'
+        'app.users',
+        'app.employee_salaries'
     ];
 
     /**

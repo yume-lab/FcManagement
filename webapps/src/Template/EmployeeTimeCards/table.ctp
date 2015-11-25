@@ -44,39 +44,36 @@
             <?php
                 $timestamp = mktime(0, 0, 0, $month, $day, $year);
                 $dayOfWeek = date('w', $timestamp);
-                $key = 'day-'.(($day < 10) ? '0'.$day : $day);
-                $hasData = isset($matrix[$key]);
+                $ymd = date('Ymd', $timestamp);
+                $hasData = isset($records[$ymd]);
             ?>
             <tr class="time-row <?= $this->TimeCard->dayClass($dayOfWeek); ?>"
                 style="height: 47px;"
-                data-ymd="<?= date('Ymd', $timestamp) ?>">
+                data-ymd="<?= $ymd; ?>">
                 <td><?= $day.$this->TimeCard->dayOfWeekString($dayOfWeek); ?></td>
                 <?php if ($hasData): ?>
                     <?php
-                        $data = $matrix[$key];
-                        $hasBreak = !empty($data['/break_all']);
+                        $data = $records[$ymd];
                     ?>
                     <td>
-                        <?= $this->TimeCard->editableTime($times, $data, '/in'); ?>
+                        <?= $this->TimeCard->editableTime($oneStepTimes, $data['start_time'], '/start'); ?>
                     </td>
                     <td>
-                        <?= $this->TimeCard->editableTime($times, $data, '/out'); ?>
+                        <?= $this->TimeCard->editableTime($oneStepTimes, $data['end_time'], '/end'); ?>
                     </td>
                     <td>
-                        <?php if ($hasBreak): ?>
-                            <?= $this->TimeCard->editableTime($times, $data, '/break_in'); ?>
-                        <?php endif; ?>
+                        <?= $this->TimeCard->editableTime(
+                            $oneStepTimes, $data['break_start_time'], '/break/start'); ?>
                     </td>
                     <td>
-                        <?php if ($hasBreak): ?>
-                            <?= $this->TimeCard->editableTime($times, $data, '/break_out'); ?>
-                        <?php endif; ?>
+                        <?= $this->TimeCard->editableTime(
+                            $oneStepTimes, $data['break_end_time'], '/break/end'); ?>
                     </td>
                     <td>
-                        <?= $data['/all'] ?>
+                        <?= $this->TimeCard->formatHour($data['work_minute']); ?>
                     </td>
                     <td>
-                        <?= $data['/real'] ?>
+                        <?= $this->TimeCard->formatHour($data['real_minute']); ?>
                     </td>
                     <td>
                         <?php // 編集ボタンを押したら、更新部分が表示されます. ?>
@@ -98,13 +95,39 @@
                         </span>
                     </td>
                 <?php else: ?>
+                    <td>
+                        <?= $this->TimeCard->editableTime($times, '', '/start'); ?>
+                    </td>
+                    <td>
+                        <?= $this->TimeCard->editableTime($times, '', '/end'); ?>
+                    </td>
+                    <td>
+                        <?= $this->TimeCard->editableTime($times, '', '/break/start'); ?>
+                    </td>
+                    <td>
+                        <?= $this->TimeCard->editableTime($times, '', '/break/end'); ?>
+                    </td>
                     <td></td>
                     <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>
+                        <?php // 追加ボタンを押したら、更新部分が表示されます. ?>
+                        <span class="editable-button">
+                            <a class="btn btn-warning btn-sm" href="#">
+                                <i class="glyphicon glyphicon-plus icon-white"></i>
+                                追加
+                            </a>
+                        </span>
+                        <span class="editable-actions" style="display: none;">
+                            <a class="btn btn-success btn-sm update" href="#">
+                                <i class="glyphicon glyphicon-edit icon-white"></i>
+                                登録
+                            </a>
+                            <a class="btn btn-danger btn-sm cancel" href="#">
+                                <i class="glyphicon glyphicon-trash icon-white"></i>
+                                取消
+                            </a>
+                        </span>
+                    </td>
                 <?php endif; ?>
             </tr>
         <?php endfor; ?>

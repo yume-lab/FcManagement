@@ -56,23 +56,23 @@ class TimeCardHelper extends Helper {
     /**
      * 勤怠一覧の編集可能時間エリア
      * @param $times array 選択可能時間 Componentで構築したもの.
-     * @param $data array 勤怠データ
-     * @param $alias string 状態のエイリアス
+     * @param $value string 現在の値
+     * @param $path string 勤怠状態のエイリアス
      * @return string タグ
      */
-    public function editableTime($times, $data, $alias) {
+    public function editableTime($times, $value, $path) {
         $tagFormat = '
             <span class="time-label">
                 %s
             </span>
             <span class="time-input">
-                <select name="%s" class="form-control" style="height: 30px; width: auto;">
+                <select data-path="%s" class="form-control" style="height: 30px; width: auto;">
                     %s
                 </select>
             </span>
         ';
-        $value = $data[$alias];
-        $values = [$value, $alias, $this->buildTimeOptions($times, $value)];
+        $value = $this->formatTime($value);
+        $values = [$value, $path, $this->buildTimeOptions($times, $value)];
         return vsprintf($tagFormat, $values);
     }
 
@@ -85,6 +85,7 @@ class TimeCardHelper extends Helper {
     public function buildTimeOptions($times, $value = '') {
         $tagFormat = '<option value="%s" %s>%s</option>';
         $optionTag = '';
+        $optionTag .= vsprintf($tagFormat, ['', '', '']);
         foreach ($times as $time) {
             $selected = ($time == $value) ? 'selected' : '';
             $optionTag .= vsprintf($tagFormat, [$time, $selected, $time]);
@@ -108,7 +109,7 @@ class TimeCardHelper extends Helper {
 
         $values = empty($state)
             ? ['default', '未出勤']
-            : [$this->type($state['alias']), trim($state['label'])];
+            : [$this->type($state['path']), trim($state['label'])];
 
         return vsprintf($tagFormat, $values);
     }
@@ -122,42 +123,66 @@ class TimeCardHelper extends Helper {
      */
     public function button($state) {
         $tagFormat = '
-            <button class="btn btn-lg col-md-4 center-block action-button btn-%s" data-alias="%s">
+            <button class="btn btn-lg col-md-4 center-block action-button btn-%s" data-path="%s">
                 <i class="glyphicon %s"></i> %s
             </button>
         ';
 
-        $alias = $state['alias'];
+        $path = $state['path'];
         $values = [
-            $this->type($alias),
-            $alias,
-            $this->icon($alias),
-            trim(trim($state['name']))
+            $this->type($path),
+            $path,
+            $this->icon($path),
+            trim($state['name'])
         ];
 
         return vsprintf($tagFormat, $values);
     }
 
     /**
+     * 表示する時間のフォーマットを行います.
+     * @param $time string 時間
+     * @return bool|string
+     */
+    public function formatTime($time) {
+        return empty($time) ? '' : date('H:i', strtotime($time));
+    }
+
+    /**
+     * 表示する時間のフォーマットを行います.
+     * @param $minutes string 時間(分)
+     * @return bool|string
+     */
+    public function formatHour($minutes) {
+        $hourDecimal = round($minutes / 60, 2);
+
+        $split = explode('.', $hourDecimal);
+        $hour = $split[0];
+        $min = $hourDecimal - $hour;
+
+        // 30分->0.5 のような状態なので、分の表示を時間に合わせるため、60をかける
+        return sprintf('%d時間 %d分', abs($hour), $min * 60);
+    }
+
+    /**
      * ボタンの種別から、classに指定する色種別を取得します.
      *
-     * @see TimeCardStatesTable
-     * @param $alias
+     * @param $path
      * @return string
      */
-    public function type($alias) {
+    public function type($path) {
         $class = 'default';
-        switch ($alias) {
-            case '/in':
+        switch ($path) {
+            case '/start':
                 $class = 'success';
                 break;
-            case '/out':
+            case '/end':
                 $class = 'danger';
                 break;
-            case '/break_in':
+            case '/break/start':
                 $class = 'primary';
                 break;
-            case '/break_out':
+            case '/break/end':
                 $class = 'warning';
                 break;
         }
@@ -167,23 +192,22 @@ class TimeCardHelper extends Helper {
     /**
      * ボタン種別からアイコンのclassを取得します.
      *
-     * @see TimeCardStatesTable
-     * @param $alias
+     * @param $path
      * @return string
      */
-    public function icon($alias) {
+    public function icon($path) {
         $icon = '';
-        switch ($alias) {
-            case '/in':
+        switch ($path) {
+            case '/start':
                 $icon = 'glyphicon-arrow-left';
                 break;
-            case '/out':
+            case '/end':
                 $icon = 'glyphicon-arrow-right';
                 break;
-            case '/break_in':
+            case '/break/start':
                 $icon = 'glyphicon-chevron-left';
                 break;
-            case '/break_out':
+            case '/break/end':
                 $icon = 'glyphicon-chevron-right';
                 break;
         }

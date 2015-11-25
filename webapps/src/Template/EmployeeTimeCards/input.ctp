@@ -97,7 +97,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             $('#employee-name').html($this.find('.name').html()+'さん');
             $('#employee-id').val($this.data('id'));
 
-            switchActionButton($this.data('state'));
+            switchActionButton($this.data('path'));
             $modal.modal('show');
         });
 
@@ -110,7 +110,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             var parameter = {
                 token: $('#token').val(),
                 employeeId: $('#employee-id').val(),
-                alias: $(this).data('alias'),
+                path: $(this).data('path'),
                 time: moment().format('YYYY-MM-DD HH:mm:ss')
             };
             console.log(parameter);
@@ -122,8 +122,8 @@ echo $this->Html->script($base.'/lib/moment.min.js');
                 contentType: 'application/json',
             }).done(function( data, textStatus, jqXHR) {
                 console.log(data, jqXHR, textStatus);
-                switchActionButton(parameter.alias);
-                loadTable();
+                switchActionButton(parameter.path);
+                loadEmployeeRows();
                 $('#notice').trigger('click');
             }).fail(function(jqXHR, textStatus, errorThrown) {
                 console.log(jqXHR, textStatus, errorThrown);
@@ -147,7 +147,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
         /**
          * 従業員一覧部分を表示します.
          */
-        function loadTable() {
+        function loadEmployeeRows() {
             showLoading();
             var parameter = {
                 token: $('#token').val()
@@ -155,7 +155,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             console.log(parameter);
             $.ajax({
                 type: 'GET',
-                url: '/api/time-card/table',
+                url: '/api/time-card/rows',
                 data: parameter,
                 dataType: 'html'
             }).done(function(data, textStatus, jqXHR ) {
@@ -173,11 +173,11 @@ echo $this->Html->script($base.'/lib/moment.min.js');
         /**
          * ボタンの表示切り替えを行います.
          */
-        function switchActionButton(alias) {
-            var showAlias = getShowButton(alias);
+        function switchActionButton(path) {
+            var showButtons = getShowButton(path);
             $(buttonSelector).hide();
             $(buttonSelector).each(function() {
-                if (0 <= $.inArray($(this).data('alias'), showAlias)) {
+                if (0 <= $.inArray($(this).data('path'), showButtons)) {
                     $(this).css('display', 'inline-block');
                 }
             });
@@ -193,32 +193,32 @@ echo $this->Html->script($base.'/lib/moment.min.js');
 
         /**
          * 表示するボタンを返します.
-         * @param alias
+         * @param path
          * @return array
          */
-        function getShowButton(alias) {
+        function getShowButton(path) {
             var matrix = {
                 'default': [
-                    '/in'
+                    '/start'
                 ],
-                '/in': [
-                    '/out',
-                    '/break_in'
+                '/start': [
+                    '/end',
+                    '/break/start'
                 ],
-                '/out': [
-                    '/in'
+                '/end': [
+                    '/start'
                 ],
-                '/break_in': [
-                    '/break_out'
+                '/break/start': [
+                    '/break/end'
                 ],
-                '/break_out': [
-                    '/out'
+                '/break/end': [
+                    '/end'
                 ]
             };
 
-            alias = alias || 'default';
-            return matrix[alias];
+            path = path || 'default';
+            return matrix[path];
         }
-        loadTable();
+        loadEmployeeRows();
     });
 </script>

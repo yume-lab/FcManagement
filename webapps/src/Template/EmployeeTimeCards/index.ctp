@@ -33,14 +33,14 @@
                 <table id="employee-list" class="table responsive">
                     <thead>
                     <tr>
-                        <th>氏名</th>
+                        <th>苗字</th>
                     </tr>
                     </thead>
                     <tbody>
                     <?php foreach ($employees as $employee) :?>
                         <tr class="employee-row" data-id="<?= $employee->id ?>">
                             <td>
-                                <?= $employee->last_name.' '.$employee->first_name; ?>
+                                <?= $employee->last_name; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -58,7 +58,7 @@
             </div>
             <div id="time-table" class="box-content">
                 <p>
-                    左メニューから、従業員の方を選択してください。
+                    従業員の方を選択してください。
                 </p>
             </div>
         </div>
@@ -132,12 +132,12 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             var ymd = $parent.data('ymd');
             var employeeId = $('#employee-list').find('.current').data('id');
 
-            var data = {
-                '/in' : $parent.find('select[name="/in"]').val(),
-                '/out' : $parent.find('select[name="/out"]').val(),
-                '/break_in' : $parent.find('select[name="/break_in"]').val(),
-                '/break_out' : $parent.find('select[name="/break_out"]').val()
-            };
+            var data = {};
+            $parent.find('.time-input').each(function() {
+                var $s = $(this).find('select');
+                data[$s.data('path')] = $s.val();
+            });
+
             var parameter = {
                 target: ymd,
                 employeeId: employeeId,
@@ -148,7 +148,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             showLoading();
             $.ajax({
                 type: 'POST',
-                url: '/api/time-cards/update',
+                url: '/api/time-cards/touch',
                 data: JSON.stringify(parameter),
                 dataType: 'json',
                 contentType: 'application/json'
@@ -162,7 +162,6 @@ echo $this->Html->script($base.'/lib/moment.min.js');
                 console.log(jqXHR, textStatus);
                 hideLoading();
             });
-
             return false;
         });
 

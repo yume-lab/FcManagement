@@ -3,21 +3,19 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\Event\Event;
-use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
+use Cake\Network\Exception\BadRequestException;
 use Cake\Controller\Component\CookieComponent;
 
 /**
- * LatestTimeCards Controller
- * 従業員の方の勤怠打刻用ページコントローラー
+ * EmployeeTimeCards Controller
+ * 勤怠関連コントローラー.
  *
- * @property \App\Model\Table\LatestTimeCardsTable $LatestTimeCards
- * @property \App\Model\Table\TimeCardStatesTable $TimeCardStates
- * @property \App\Model\Table\TimeCardsTable $TimeCards
  * @property \App\Model\Table\EmployeesTable $Employees
- * @property \Cake\Controller\Component\CookieComponent $Cookie
+ * @property \App\Model\Table\EmployeeTimeCardsTable $EmployeeTimeCards
+ * @property \App\Controller\Component\TimeCardComponent $TimeCard
  */
-class LatestTimeCardsController extends AppController
+class EmployeeTimeCardsController extends AppController
 {
 
     /**
@@ -30,7 +28,7 @@ class LatestTimeCardsController extends AppController
      * 使用コンポーネント
      * @var array
      */
-    public $components = ['Cookie'];
+    public $components = ['TimeCard', 'Cookie'];
 
     /**
      * 店舗ID
@@ -66,7 +64,7 @@ class LatestTimeCardsController extends AppController
     public function initialize() {
         parent::initialize();
 
-        $this->UserAuth->allow(['table', 'write']);
+        $this->UserAuth->allow(['rows', 'write']);
     }
 
     /**
@@ -87,11 +85,70 @@ class LatestTimeCardsController extends AppController
     }
 
     /**
-     * 打刻画面初期表示
+     * 初期表示.
      *
      * @return void
      */
     public function index()
+    {
+        /** @var \App\Model\Table\EmployeesTable $Employees */
+        $Employees = TableRegistry::get('Employees');
+        $employees = $Employees->findByStoreId(parent::getCurrentStoreId());
+        $this->set(compact('employees'));
+    }
+
+
+    /**
+     * 勤務表テーブルの表示を行います.
+     */
+    public function table()
+    {
+        $this->viewBuilder()->layout('');
+
+        $employeeId = $this->request->query('employeeId');
+        $month = $this->request->query('target_ym');
+
+        $records = $this->EmployeeTimeCards->findMonthly(parent::getCurrentStoreId(), $employeeId, $month);
+
+        $target = strtotime($month.'01');
+        $showMonth = date('Y年m月', $target);
+        $current = date('Y-m-d', $target);
+        $next = date('Ym', strtotime(date('Y-m-1', $target). ' +1 month'));
+        $prev = date('Ym', strtotime(date('Y-m-1', $target). ' -1 month'));
+
+        // 編集は1分単位で
+        $times = $this->TimeCard->buildTimes($this->UserAuth->currentStore());
+        $oneStepTimes = $this->TimeCard->buildTimes($this->UserAuth->currentStore(), 1);
+
+        $this->log($records);
+        $this->set(compact(
+            'records', 'employee', 'showMonth', 'next', 'prev', 'current', 'times', 'oneStepTimes'
+        ));
+    }
+
+    /**
+     * API
+     * 勤怠データ1日分の更新を行います.
+     */
+    public function touch()
+    {
+        $this->autoRender = false;
+
+        $data = $this->request->data();
+        $this->log($data);
+
+        $ymd = $data['target'];
+        $employeeId = $data['employeeId'];
+        $input = $data['data'];
+
+        $result = $this->EmployeeTimeCards->patch(parent::getCurrentStoreId(), $employeeId, $ymd, $input);
+        echo json_encode(['success' => $result]);
+    }
+
+    /**
+     * 勤怠入力画面を表示します.
+     */
+    public function input()
     {
         parent::removeViewFrame();
 
@@ -104,36 +161,25 @@ class LatestTimeCardsController extends AppController
 
         $states = $this->getStates();
         $this->set(compact('states', 'token'));
+
     }
 
     /**
-     * 従業員一覧部分を表示します.
-     * このアクションはJSから呼ばれ、レンダリング済のHTMLをJSで組み込んでいる形です.
+     * 勤怠入力の従業員一覧を出力します.
      */
-    public function table()
+    public function rows()
     {
         $this->assertToken($this->request->query(self::REQUEST_TOKEN_KEY));
 
         $states = $this->getStates();
 
-        /** @var \App\Model\Table\EmployeesTable $Employees */
-        $Employees = TableRegistry::get('Employees');
-        $employees = $Employees->findByStoreId($this->storeId);
-
-        $latestTimeCards = $this->LatestTimeCards->find()->where(['store_id' => $this->storeId]);
-        $data = [];
-        foreach ($latestTimeCards as $latest) {
-            $data[$latest->employee_id] = $latest;
-        }
-
-        $this->set(compact('employees', 'data', 'states'));
+        $records = $this->EmployeeTimeCards->findAllEmployees($this->storeId);
+        $this->set(compact('records', 'states'));
     }
 
     /**
      * API
-     * 勤怠打刻処理を行います.
-     *
-     * @return void Redirects on successful edit, renders view otherwise.
+     * 勤怠データの書き込みを行います.
      */
     public function write()
     {
@@ -146,25 +192,19 @@ class LatestTimeCardsController extends AppController
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $employeeId = $data['employeeId'];
-            $alias = $data['alias'];
+            $path = $data['path'];
             $time = $data['time'];
 
-            /** @var \App\Model\Table\TimeCardStatesTable $TimeCardStates */
-            $TimeCardStates = TableRegistry::get('TimeCardStates');
-            $state = $TimeCardStates->findByAlias($alias)->first();
+            $result = $this->EmployeeTimeCards->write($this->storeId, $employeeId, $path, $time);
 
-            /** @var \App\Model\Table\TimeCardsTable $TimeCards */
-            $TimeCards = TableRegistry::get('TimeCards');
-
-            $isSuccess = $this->LatestTimeCards->write($employeeId, $this->storeId, $state->id, $time)
-                && $TimeCards->write($employeeId, $this->storeId, $state, $time);
-
-            echo json_encode(['success' => $isSuccess]);
+            $this->log($result);
+            echo json_encode(['success' => $result]);
         }
     }
 
     /**
-     * 勤怠状態一覧を取得します.
+     * 勤怠状態を取得します.
+     *
      * @return array
      */
     private function getStates()
@@ -194,5 +234,4 @@ class LatestTimeCardsController extends AppController
         }
         throw new BadRequestException();
     }
-
 }

@@ -1,14 +1,14 @@
 <?php
 namespace App\Test\TestCase\Model\Table;
 
-use App\Model\Table\TimeCardsTable;
+use App\Model\Table\EmployeeTimeCardsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * App\Model\Table\TimeCardsTable Test Case
+ * App\Model\Table\EmployeeTimeCardsTable Test Case
  */
-class TimeCardsTableTest extends TestCase
+class EmployeeTimeCardsTableTest extends TestCase
 {
 
     /**
@@ -17,13 +17,16 @@ class TimeCardsTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.time_cards',
+        'app.employee_time_cards',
         'app.stores',
         'app.store_categories',
         'app.employees',
         'app.roles',
         'app.user_stores',
-        'app.users'
+        'app.users',
+        'app.employee_salaries',
+        'app.time_card_states',
+        'app.latest_time_cards'
     ];
 
     /**
@@ -34,8 +37,8 @@ class TimeCardsTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::exists('TimeCards') ? [] : ['className' => 'App\Model\Table\TimeCardsTable'];
-        $this->TimeCards = TableRegistry::get('TimeCards', $config);
+        $config = TableRegistry::exists('EmployeeTimeCards') ? [] : ['className' => 'App\Model\Table\EmployeeTimeCardsTable'];
+        $this->EmployeeTimeCards = TableRegistry::get('EmployeeTimeCards', $config);
     }
 
     /**
@@ -45,7 +48,7 @@ class TimeCardsTableTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->TimeCards);
+        unset($this->EmployeeTimeCards);
 
         parent::tearDown();
     }
@@ -76,6 +79,36 @@ class TimeCardsTableTest extends TestCase
      * @return void
      */
     public function testBuildRules()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test findMonthly method
+     *
+     * @return void
+     */
+    public function testFindMonthly()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test write method
+     *
+     * @return void
+     */
+    public function testWrite()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test findAllEmployees method
+     *
+     * @return void
+     */
+    public function testFindAllEmployees()
     {
         $this->markTestIncomplete('Not implemented yet.');
     }

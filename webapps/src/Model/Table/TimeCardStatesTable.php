@@ -10,6 +10,7 @@ use Cake\Validation\Validator;
 /**
  * TimeCardStates Model
  *
+ * @property \Cake\ORM\Association\HasMany $EmployeeTimeCards
  * @property \Cake\ORM\Association\HasMany $LatestTimeCards
  */
 class TimeCardStatesTable extends Table
@@ -31,6 +32,9 @@ class TimeCardStatesTable extends Table
 
         $this->addBehavior('Timestamp');
 
+        $this->hasMany('EmployeeTimeCards', [
+            'foreignKey' => 'time_card_state_id'
+        ]);
         $this->hasMany('LatestTimeCards', [
             'foreignKey' => 'time_card_state_id'
         ]);
@@ -49,13 +53,17 @@ class TimeCardStatesTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->requirePresence('alias', 'create')
-            ->notEmpty('alias')
-            ->add('alias', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
+            ->requirePresence('path', 'create')
+            ->notEmpty('path')
+            ->add('path', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
 
         $validator
             ->requirePresence('name', 'create')
             ->notEmpty('name');
+
+        $validator
+            ->requirePresence('label', 'create')
+            ->notEmpty('label');
 
         $validator
             ->add('is_deleted', 'valid', ['rule' => 'boolean'])

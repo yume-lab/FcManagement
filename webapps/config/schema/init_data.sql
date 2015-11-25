@@ -17,9 +17,9 @@ VALUES
   ('/help', '他店のヘルプ', '0', now(), now());
 
 INSERT INTO time_card_states
-  (`alias`, `name`, `label`, `is_deleted`, `created`, `modified`)
+  (`path`, `name`, `label`, `is_deleted`, `created`, `modified`)
 VALUES
-  ('/in', '出勤', '就業中', '0', now(), now()),
-  ('/out', '退勤', '未出勤', '0', now(), now()),
-  ('/break_in', '休憩IN', '休憩中', '0', now(), now()),
-  ('/break_out', '休憩OUT', '就業中', '0', now(), now());
+  ('/start', '出勤', '就業中', '0', now(), now()),
+  ('/end', '退勤', '未出勤', '0', now(), now()),
+  ('/break/start', '休憩IN', '休憩中', '0', now(), now()),
+  ('/break/end', '休憩OUT', '就業中', '0', now(), now());
