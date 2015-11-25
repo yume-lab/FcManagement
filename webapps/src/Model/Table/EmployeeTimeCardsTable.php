@@ -205,8 +205,39 @@ class EmployeeTimeCardsTable extends Table
     }
 
     /**
+     * 全従業員の、当日の情報を取得します.
+     *
+     * @param $storeId
+     * @return $this
+     */
+    public function findAllEmployees($storeId) {
+        /** @var \App\Model\Table\EmployeesTable $Employees */
+        $Employees = TableRegistry::get('Employees');
+        return $Employees->find('all')
+            ->hydrate(false)
+            ->select([
+                'EmployeeTimeCards.current_state_id'
+            ])
+            ->autoFields(true)
+            ->join([
+                'table' => 'employee_time_cards',
+                'alias' => 'EmployeeTimeCards',
+                'type' => 'LEFT',
+                'conditions' => [
+                    'EmployeeTimeCards.store_id = Employees.store_id',
+                    'EmployeeTimeCards.employee_id = Employees.id',
+                    'EmployeeTimeCards.worked_date' => date('Ymd')
+                ],
+            ])
+            ->where([
+                'Employees.store_id' => $storeId,
+                'Employees.is_deleted' => false
+            ]);
+    }
+    
+    /**
      * 更新するカラム名を取得します.
-     * 
+     *
      * @param $path string 状態マスタのエイリアス
      * @return string 対象のカラム名
      */
@@ -238,37 +269,6 @@ class EmployeeTimeCardsTable extends Table
             'total_real_minute' => 0,
         ];
         return $columns;
-    }
-
-    /**
-     * 全従業員の、当日の情報を取得します.
-     *
-     * @param $storeId
-     * @return $this
-     */
-    public function findAllEmployees($storeId) {
-        /** @var \App\Model\Table\EmployeesTable $Employees */
-        $Employees = TableRegistry::get('Employees');
-        return $Employees->find('all')
-            ->hydrate(false)
-            ->select([
-                'EmployeeTimeCards.current_state_id'
-            ])
-            ->autoFields(true)
-            ->join([
-                'table' => 'employee_time_cards',
-                'alias' => 'EmployeeTimeCards',
-                'type' => 'LEFT',
-                'conditions' => [
-                    'EmployeeTimeCards.store_id = Employees.store_id',
-                    'EmployeeTimeCards.employee_id = Employees.id',
-                    'EmployeeTimeCards.worked_date' => date('Ymd')
-                ],
-            ])
-            ->where([
-                'Employees.store_id' => $storeId,
-                'Employees.is_deleted' => false
-            ]);
     }
 
 }
