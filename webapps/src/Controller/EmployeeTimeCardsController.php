@@ -118,9 +118,12 @@ class EmployeeTimeCardsController extends AppController
 
         // 編集は1分単位で
         $times = $this->TimeCard->buildTimes($this->UserAuth->currentStore());
+        $oneStepTimes = $this->TimeCard->buildTimes($this->UserAuth->currentStore(), 1);
 
         $this->log($records);
-        $this->set(compact('records', 'employee', 'showMonth', 'next', 'prev', 'current', 'times'));
+        $this->set(compact(
+            'records', 'employee', 'showMonth', 'next', 'prev', 'current', 'times', 'oneStepTimes'
+        ));
     }
 
     /**

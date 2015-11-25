@@ -56,18 +56,18 @@
                         $data = $records[$ymd];
                     ?>
                     <td>
-                        <?= $this->TimeCard->editableTime($times, $data['start_time'], '/start'); ?>
+                        <?= $this->TimeCard->editableTime($oneStepTimes, $data['start_time'], '/start'); ?>
                     </td>
                     <td>
-                        <?= $this->TimeCard->editableTime($times, $data['end_time'], '/end'); ?>
-                    </td>
-                    <td>
-                        <?= $this->TimeCard->editableTime(
-                            $times, $data['break_start_time'], '/break/start'); ?>
+                        <?= $this->TimeCard->editableTime($oneStepTimes, $data['end_time'], '/end'); ?>
                     </td>
                     <td>
                         <?= $this->TimeCard->editableTime(
-                            $times, $data['break_end_time'], '/break/end'); ?>
+                            $oneStepTimes, $data['break_start_time'], '/break/start'); ?>
+                    </td>
+                    <td>
+                        <?= $this->TimeCard->editableTime(
+                            $oneStepTimes, $data['break_end_time'], '/break/end'); ?>
                     </td>
                     <td>
                         <?= $this->TimeCard->formatHour($data['work_minute']); ?>
