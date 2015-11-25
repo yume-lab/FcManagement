@@ -177,7 +177,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             console.log(parameter);
             $.ajax({
                 type: 'GET',
-                url: '/api/e-time-cards/table',
+                url: '/api/time-cards/table',
                 data: parameter,
                 dataType: 'html'
             }).done(function(data, textStatus, jqXHR ) {

@@ -45,25 +45,15 @@ Router::scope('/', function ($routes) {
     $routes->connect('/fixed', ['controller' => 'FixedShiftTables', 'action' => 'index']);
     $routes->connect('/fixed/view/*', ['controller' => 'FixedShiftTables', 'action' => 'view']);
 
-    // 勤怠打刻
-//    $routes->connect('/time-card', ['controller' => 'LatestTimeCards', 'action' => 'index']);
-//    $routes->connect('/api/time-card/write', ['controller' => 'LatestTimeCards', 'action' => 'write']);
-    $routes->connect('/api/time-card/table', ['controller' => 'LatestTimeCards', 'action' => 'table']);
-
-    // 勤怠一覧
-    $routes->connect('/api/time-cards/table', ['controller' => 'TimeCards', 'action' => 'table']);
-//    $routes->connect('/api/time-cards/update', ['controller' => 'TimeCards', 'action' => 'update']);
-
     // 新勤怠一覧
-    // TODO: ルーティングをtime-cards に変更する
-    $routes->connect('/e-time-cards/', ['controller' => 'EmployeeTimeCards', 'action' => 'index']);
-    $routes->connect('/e-time-cards/write', ['controller' => 'EmployeeTimeCards', 'action' => 'write']);
-    $routes->connect('/api/e-time-cards/table', ['controller' => 'EmployeeTimeCards', 'action' => 'table']);
+    $routes->connect('/time-cards/', ['controller' => 'EmployeeTimeCards', 'action' => 'index']);
+    $routes->connect('/api/time-cards/table', ['controller' => 'EmployeeTimeCards', 'action' => 'table']);
+    $routes->connect('/api/time-cards/touch', ['controller' => 'EmployeeTimeCards', 'action' => 'touch']);
+
+    // 勤怠打刻
     $routes->connect('/time-card', ['controller' => 'EmployeeTimeCards', 'action' => 'input']);
     $routes->connect('/api/time-card/rows', ['controller' => 'EmployeeTimeCards', 'action' => 'rows']);
     $routes->connect('/api/time-card/write', ['controller' => 'EmployeeTimeCards', 'action' => 'write']);
-    $routes->connect('/api/time-cards/touch', ['controller' => 'EmployeeTimeCards', 'action' => 'touch']);
-
 
     $routes->fallbacks('DashedRoute');
 });
