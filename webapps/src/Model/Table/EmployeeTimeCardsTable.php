@@ -7,6 +7,7 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use Cake\ORM\TableRegistry;
+use Cake\Log\Log;
 
 /**
  * EmployeeTimeCards Model
@@ -161,9 +162,66 @@ class EmployeeTimeCardsTable extends Table
         return $results;
     }
 
+    public function write($storeId, $employeeId, $path, $time)
+    {
+        $date = date('Ymd', strtotime($time));
+        $entity = $this->find()
+            ->where(['store_id' => $storeId])
+            ->where(['employee_id' => $employeeId])
+            ->where(['worked_date' => $date])
+            ->first();
+        if (empty($entity)) {
+            $entity = $this->newEntity();
+        }
+
+        Log::error($entity);
+
+        /** @var \App\Model\Table\TimeCardStatesTable $TimeCardStates */
+        $TimeCardStates = TableRegistry::get('TimeCardStates');
+        $state = $TimeCardStates->findByPath($path)->first();
+        Log::error($state);
+
+        $target = $this->getTargetColumns($path);
+        $record = [
+            "$target" => date('H:i:s', strtotime($time)),
+            'store_id' => $storeId,
+            'employee_id' => $employeeId,
+            'time_card_state_id' => $state->id,
+            'worked_date' => $date,
+            'amount' => 900,
+            'is_deleted' => false,
+        ];
+        Log::error($record);
+        $data = $this->patchEntity($entity, array_merge($record, $this->summary()));
+        Log::error($data);
+        return $this->save($data);
+    }
+
+    private function getTargetColumns($path)
+    {
+        $map = [
+            '/start' => 'start_time',
+            '/end' => 'end_time',
+            '/break/start' => 'break_start_time',
+            '/break/end' => 'break_end_time',
+        ];
+        return $map[$path];
+    }
+
+    private function summary() {
+        $columns = [
+            'work_minute' => 0,
+            'break_minute' => 0,
+            'real_minute' => 0,
+            'total_work_minute' => 0,
+            'total_break_minute' => 0,
+            'total_real_minute' => 0,
+        ];
+        return $columns;
+    }
+
     /**
-     * TODO: これだと全てのデータ取得のため、当日のやつだけ取るようにする.
-     * 全従業員の情報を取得します.
+     * 全従業員の、当日の情報を取得します.
      *
      * @param $storeId
      * @return $this
@@ -184,6 +242,7 @@ class EmployeeTimeCardsTable extends Table
                 'conditions' => [
                     'EmployeeTimeCards.store_id = Employees.store_id',
                     'EmployeeTimeCards.employee_id = Employees.id',
+                    'EmployeeTimeCards.worked_date' => date('Ymd')
                 ],
             ])
             ->where([

@@ -47,7 +47,7 @@ Router::scope('/', function ($routes) {
 
     // 勤怠打刻
 //    $routes->connect('/time-card', ['controller' => 'LatestTimeCards', 'action' => 'index']);
-    $routes->connect('/api/time-card/write', ['controller' => 'LatestTimeCards', 'action' => 'write']);
+//    $routes->connect('/api/time-card/write', ['controller' => 'LatestTimeCards', 'action' => 'write']);
     $routes->connect('/api/time-card/table', ['controller' => 'LatestTimeCards', 'action' => 'table']);
 
     // 勤怠一覧
@@ -61,6 +61,7 @@ Router::scope('/', function ($routes) {
     $routes->connect('/api/e-time-cards/table', ['controller' => 'EmployeeTimeCards', 'action' => 'table']);
     $routes->connect('/time-card', ['controller' => 'EmployeeTimeCards', 'action' => 'input']);
     $routes->connect('/api/time-card/rows', ['controller' => 'EmployeeTimeCards', 'action' => 'rows']);
+    $routes->connect('/api/time-card/write', ['controller' => 'EmployeeTimeCards', 'action' => 'write']);
 
 
     $routes->fallbacks('DashedRoute');

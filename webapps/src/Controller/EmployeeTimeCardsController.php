@@ -149,6 +149,23 @@ class EmployeeTimeCardsController extends AppController
 
     public function write()
     {
+        $this->autoRender = false;
+
+        $data = $this->request->data();
+
+        $this->log($data);
+        $this->assertToken($data[self::REQUEST_TOKEN_KEY]);
+
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $employeeId = $data['employeeId'];
+            $path = $data['path'];
+            $time = $data['time'];
+
+            $result = $this->EmployeeTimeCards->write($this->storeId, $employeeId, $path, $time);
+
+            $this->log($result);
+            echo json_encode(['success' => $result]);
+        }
 
     }
 

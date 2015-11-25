@@ -102,7 +102,6 @@ echo $this->Html->script($base.'/lib/moment.min.js');
         });
 
         /**
-         * TODO: リファクタリング後の処理にする
          * ボタン押下時
          */
         $(document).on('click', buttonSelector, function(e) {
@@ -111,7 +110,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             var parameter = {
                 token: $('#token').val(),
                 employeeId: $('#employee-id').val(),
-                alias: $(this).data('alias'),
+                path: $(this).data('path'),
                 time: moment().format('YYYY-MM-DD HH:mm:ss')
             };
             console.log(parameter);
@@ -123,7 +122,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
                 contentType: 'application/json',
             }).done(function( data, textStatus, jqXHR) {
                 console.log(data, jqXHR, textStatus);
-                switchActionButton(parameter.alias);
+                switchActionButton(parameter.path);
                 loadEmployeeRows();
                 $('#notice').trigger('click');
             }).fail(function(jqXHR, textStatus, errorThrown) {
@@ -212,7 +211,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
                 '/break/start': [
                     '/break/end'
                 ],
-                '/break/out': [
+                '/break/end': [
                     '/end'
                 ]
             };
