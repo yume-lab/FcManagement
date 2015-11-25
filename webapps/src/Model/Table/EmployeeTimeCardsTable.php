@@ -7,7 +7,6 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use Cake\ORM\TableRegistry;
-use Cake\Log\Log;
 
 /**
  * EmployeeTimeCards Model
@@ -44,7 +43,7 @@ class EmployeeTimeCardsTable extends Table
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('TimeCardStates', [
-            'foreignKey' => 'time_card_state_id',
+            'foreignKey' => 'current_state_id',
             'joinType' => 'INNER'
         ]);
     }
@@ -64,6 +63,11 @@ class EmployeeTimeCardsTable extends Table
         $validator
             ->requirePresence('worked_date', 'create')
             ->notEmpty('worked_date');
+
+        $validator
+            ->add('hour_pay', 'valid', ['rule' => 'numeric'])
+            ->requirePresence('hour_pay', 'create')
+            ->notEmpty('hour_pay');
 
         $validator
             ->add('start_time', 'valid', ['rule' => 'time'])
@@ -112,11 +116,6 @@ class EmployeeTimeCardsTable extends Table
             ->notEmpty('total_real_minute');
 
         $validator
-            ->add('amount', 'valid', ['rule' => 'numeric'])
-            ->requirePresence('amount', 'create')
-            ->notEmpty('amount');
-
-        $validator
             ->add('is_deleted', 'valid', ['rule' => 'boolean'])
             ->requirePresence('is_deleted', 'create')
             ->notEmpty('is_deleted');
@@ -135,9 +134,10 @@ class EmployeeTimeCardsTable extends Table
     {
         $rules->add($rules->existsIn(['store_id'], 'Stores'));
         $rules->add($rules->existsIn(['employee_id'], 'Employees'));
-        $rules->add($rules->existsIn(['time_card_state_id'], 'TimeCardStates'));
+        $rules->add($rules->existsIn(['current_state_id'], 'TimeCardStates'));
         return $rules;
     }
+
 
     /**
      * 一月分の勤怠データを取得します.
@@ -174,27 +174,25 @@ class EmployeeTimeCardsTable extends Table
             $entity = $this->newEntity();
         }
 
-        Log::error($entity);
-
         /** @var \App\Model\Table\TimeCardStatesTable $TimeCardStates */
         $TimeCardStates = TableRegistry::get('TimeCardStates');
+        /** @var \App\Model\Table\EmployeeSalariesTable $EmployeeSalaries */
+        $EmployeeSalaries = TableRegistry::get('EmployeeSalaries');
+
         $state = $TimeCardStates->findByPath($path)->first();
-        Log::error($state);
 
         $target = $this->getTargetColumns($path);
         $record = [
             "$target" => date('H:i:s', strtotime($time)),
             'store_id' => $storeId,
             'employee_id' => $employeeId,
-            'time_card_state_id' => $state->id,
+            'current_state_id' => $state->id,
             'worked_date' => $date,
-            'amount' => 900,
+            'hour_pay' => $EmployeeSalaries->getAmount($storeId, $employeeId),
             'is_deleted' => false,
         ];
-        Log::error($record);
-        $data = $this->patchEntity($entity, array_merge($record, $this->summary()));
-        Log::error($data);
-        return $this->save($data);
+        $entity = $this->patchEntity($entity, array_merge($record, $this->summary()));
+        return $this->save($entity);
     }
 
     private function getTargetColumns($path)
@@ -232,7 +230,7 @@ class EmployeeTimeCardsTable extends Table
         return $Employees->find('all')
             ->hydrate(false)
             ->select([
-                'EmployeeTimeCards.time_card_state_id'
+                'EmployeeTimeCards.current_state_id'
             ])
             ->autoFields(true)
             ->join([
@@ -250,4 +248,5 @@ class EmployeeTimeCardsTable extends Table
                 'Employees.is_deleted' => false
             ]);
     }
+
 }

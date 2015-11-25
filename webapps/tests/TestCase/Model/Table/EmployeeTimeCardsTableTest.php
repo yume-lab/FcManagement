@@ -24,7 +24,9 @@ class EmployeeTimeCardsTableTest extends TestCase
         'app.roles',
         'app.user_stores',
         'app.users',
-        'app.employee_salaries'
+        'app.employee_salaries',
+        'app.time_card_states',
+        'app.latest_time_cards'
     ];
 
     /**
@@ -87,6 +89,26 @@ class EmployeeTimeCardsTableTest extends TestCase
      * @return void
      */
     public function testFindMonthly()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test write method
+     *
+     * @return void
+     */
+    public function testWrite()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test findAllEmployees method
+     *
+     * @return void
+     */
+    public function testFindAllEmployees()
     {
         $this->markTestIncomplete('Not implemented yet.');
     }

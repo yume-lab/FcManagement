@@ -191,8 +191,9 @@ CREATE TABLE employee_time_cards (
   id INT unsigned NOT NULL AUTO_INCREMENT,
   store_id INT unsigned NOT NULL,
   employee_id INT unsigned NOT NULL,
-  time_card_state_id INT unsigned NOT NULL,
+  current_state_id INT unsigned NOT NULL,
   worked_date VARCHAR(8) NOT NULL,
+  hour_pay SMALLINT unsigned NOT NULL,
   start_time TIME,
   end_time TIME,
   break_start_time TIME,
@@ -203,7 +204,6 @@ CREATE TABLE employee_time_cards (
   total_work_minute INT NOT NULL DEFAULT 0,
   total_break_minute INT NOT NULL DEFAULT 0,
   total_real_minute INT NOT NULL DEFAULT 0,
-  amount SMALLINT unsigned NOT NULL,
   is_deleted TINYINT(1) NOT NULL DEFAULT 0,
   created datetime NOT NULL,
   updated datetime NOT NULL,
@@ -211,6 +211,7 @@ CREATE TABLE employee_time_cards (
   UNIQUE uni_employee_time_cards(store_id, employee_id, worked_date)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='タイムカードデータ' AUTO_INCREMENT=1;
 
+-- 新タイムカードステータス
 CREATE TABLE time_card_states (
   id INT unsigned NOT NULL AUTO_INCREMENT,
   path VARCHAR(20) NOT NULL,

@@ -9,7 +9,7 @@
     <?php foreach ($records as $record) :?>
         <?php
             $times = $record['EmployeeTimeCards'];
-            $stateId = $times['time_card_state_id'];
+            $stateId = $times['current_state_id'];
             $hasState = !empty($stateId);
             $state = $hasState ? $states[$stateId] : [];
         ?>
