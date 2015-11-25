@@ -80,14 +80,17 @@
                         <span class="editable-button">
                             <a class="btn btn-primary btn-sm" href="#">
                                 <i class="glyphicon glyphicon-edit icon-white"></i>
+                                編集
                             </a>
                         </span>
                         <span class="editable-actions" style="display: none;">
-                            <a class="btn btn-success btn-sm update" href="#">
+                            <a class="btn btn-info btn-sm update" href="#">
                                 <i class="glyphicon glyphicon-edit icon-white"></i>
+                                更新
                             </a>
                             <a class="btn btn-danger btn-sm cancel" href="#">
                                 <i class="glyphicon glyphicon-trash icon-white"></i>
+                                取消
                             </a>
                         </span>
                     </td>
@@ -107,17 +110,21 @@
                     <td></td>
                     <td></td>
                     <td>
+                        <?php // 追加ボタンを押したら、更新部分が表示されます. ?>
                         <span class="editable-button">
-                            <a class="btn btn-info btn-sm" href="#">
+                            <a class="btn btn-warning btn-sm" href="#">
                                 <i class="glyphicon glyphicon-plus icon-white"></i>
+                                追加
                             </a>
                         </span>
                         <span class="editable-actions" style="display: none;">
-                            <a class="btn btn-info btn-sm update" href="#">
+                            <a class="btn btn-success btn-sm update" href="#">
                                 <i class="glyphicon glyphicon-edit icon-white"></i>
+                                登録
                             </a>
                             <a class="btn btn-danger btn-sm cancel" href="#">
                                 <i class="glyphicon glyphicon-trash icon-white"></i>
+                                取消
                             </a>
                         </span>
                     </td>
