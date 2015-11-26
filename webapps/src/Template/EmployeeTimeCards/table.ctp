@@ -5,11 +5,26 @@
     .time-input input {
         height: 30px;
     }
+    table th {
+        text-align: center;
+    }
 </style>
 
-<h3 class="center-block">
-    <?= $showMonth ?>
-</h3>
+<table class="table-bordered responsive">
+    <thead>
+    <tr>
+        <th>年月</th>
+        <th>氏名</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><?= $showMonth ?></td>
+        <td><?= trim($employee->last_name).' '.trim($employee->first_name); ?></td>
+    </tr>
+    </tbody>
+</table>
+
 <ul class="pagination col-md-12">
     <li id="prev" style="float: left;">
         <a href="#" data-target="<?= $prev ?>">&lt; 前月</a>
@@ -22,14 +37,21 @@
 <table class="table table-bordered responsive">
     <thead>
     <tr>
-        <th>日付</th>
-        <th>開始時間</th>
-        <th>終了時間</th>
-        <th>休憩開始</th>
-        <th>休憩終了</th>
-        <th>総労働時間</th>
-        <th>実労働時間</th>
-        <th>操作</th>
+        <th rowspan="2">日付</th>
+        <th colspan="2">タイムカード</th>
+        <th colspan="2">実時刻</th>
+        <th colspan="4">当日集約</th>
+        <th rowspan="2">操作</th>
+    </tr>
+    <tr>
+        <th>出勤</th>
+        <th>退勤</th>
+        <th>始業</th>
+        <th>終業</th>
+        <th>総労働(時.分)</th>
+        <th>休憩(分)</th>
+        <th>実労働(時.分)</th>
+        <th>時給(円)</th>
     </tr>
     </thead>
     <tbody>
@@ -63,19 +85,29 @@
                     <td>
                         <?= $this->TimeCard->editableTime($oneStepTimes, $data['end_time'], '/end'); ?>
                     </td>
+                    <?php // TODO: ?>
                     <td>
-                        <?= $this->TimeCard->editableTime(
-                            $oneStepTimes, $data['break_start_time'], '/break/start'); ?>
+                        <?= $this->TimeCard->editableTime($oneStepTimes, $data['start_time'], '/start'); ?>
                     </td>
                     <td>
-                        <?= $this->TimeCard->editableTime(
-                            $oneStepTimes, $data['break_end_time'], '/break/end'); ?>
+                        <?= $this->TimeCard->editableTime($oneStepTimes, $data['end_time'], '/end'); ?>
                     </td>
+
                     <td>
                         <?= $this->TimeCard->formatHour($data['work_minute']); ?>
                     </td>
+
+                    <?php // TODO: ?>
+                    <td>
+                        <?= 10; ?>
+                    </td>
+
                     <td>
                         <?= $this->TimeCard->formatHour($data['real_minute']); ?>
+                    </td>
+
+                    <td>
+                        <?= h($data['hour_pay']); ?>
                     </td>
                     <td>
                         <?php // 編集ボタンを押したら、更新部分が表示されます. ?>
@@ -105,6 +137,14 @@
                     <td>
                         <?= $this->TimeCard->editableTime($times, '', '/end'); ?>
                     </td>
+                    <?php // TODO: ?>
+                    <td>
+                        <?= $this->TimeCard->editableTime($times, '', '/start'); ?>
+                    </td>
+                    <td>
+                        <?= $this->TimeCard->editableTime($times, '', '/end'); ?>
+                    </td>
+
                     <td>
                         <?= $this->TimeCard->editableTime($times, '', '/break/start'); ?>
                     </td>

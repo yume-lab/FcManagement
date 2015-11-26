@@ -116,6 +116,10 @@ class EmployeeTimeCardsController extends AppController
         $next = date('Ym', strtotime(date('Y-m-1', $target). ' +1 month'));
         $prev = date('Ym', strtotime(date('Y-m-1', $target). ' -1 month'));
 
+        /** @var \App\Model\Table\EmployeesTable $Employees */
+        $Employees = TableRegistry::get('Employees');
+        $employee = $Employees->get($employeeId);
+
         // 編集は1分単位で
         $times = $this->TimeCard->buildTimes($this->UserAuth->currentStore());
         $oneStepTimes = $this->TimeCard->buildTimes($this->UserAuth->currentStore(), 1);
