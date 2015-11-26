@@ -79,7 +79,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
          * 次月、前月クリック時
          */
         $(document).on('click', '.pagination a', function(e) {
-            var employeeId = $('#employee-list').find('.current').data('id');
+            var employeeId = $('#employee-list').val();
             var target = $(this).data('target');
             loadTimeCardTable(employeeId, target);
             return false;

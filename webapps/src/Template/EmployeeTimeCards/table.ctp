@@ -86,36 +86,14 @@
                     <?php
                         $data = $records[$ymd];
                     ?>
-                    <td>
-                        <?= $this->TimeCard->editableTime($oneStepTimes, $data['start_time'], '/start'); ?>
-                    </td>
-                    <td>
-                        <?= $this->TimeCard->editableTime($oneStepTimes, $data['end_time'], '/end'); ?>
-                    </td>
-                    <?php // TODO: ?>
-                    <td>
-                        <?= $this->TimeCard->editableTime($oneStepTimes, $data['start_time'], '/start'); ?>
-                    </td>
-                    <td>
-                        <?= $this->TimeCard->editableTime($oneStepTimes, $data['end_time'], '/end'); ?>
-                    </td>
-
-                    <td>
-                        <?= $this->TimeCard->formatHour($data['work_minute']); ?>
-                    </td>
-
-                    <?php // TODO: ?>
-                    <td>
-                        <?= 10; ?>
-                    </td>
-
-                    <td>
-                        <?= $this->TimeCard->formatHour($data['real_minute']); ?>
-                    </td>
-
-                    <td>
-                        <?= h($data['hour_pay']); ?>
-                    </td>
+                    <td><?= $this->TimeCard->formatTime($data['start_time']); ?></td>
+                    <td><?= $this->TimeCard->formatTime($data['end_time']); ?></td>
+                    <td><?= $this->TimeCard->editableTime($times, $data['round_start_time'], 'round_start_time'); ?></td>
+                    <td><?= $this->TimeCard->editableTime($times, $data['round_end_time'], 'round_end_time'); ?></td>
+                    <td><?= $this->TimeCard->formatHour($data['work_minute']); ?></td>
+                    <td><?= $this->TimeCard->editableText($data['break_minute'], 'break_minute');?></td>
+                    <td><?= $this->TimeCard->formatHour($data['real_minute']); ?></td>
+                    <td><?= $this->TimeCard->editableText($data['hour_pay'], 'hour_pay'); ?></td>
                     <td>
                         <?php // 編集ボタンを押したら、更新部分が表示されます. ?>
                         <?php if ($canEdit) :?>
@@ -140,13 +118,8 @@
                 <?php else: ?>
                     <td></td>
                     <td></td>
-                    <td>
-                        <?= $this->TimeCard->editableTime($times, '', 'round_start_time'); ?>
-                    </td>
-                    <td>
-                        <?= $this->TimeCard->editableTime($times, '', 'round_end_time'); ?>
-                    </td>
-
+                    <td><?= $this->TimeCard->editableTime($times, '', 'round_start_time'); ?></td>
+                    <td><?= $this->TimeCard->editableTime($times, '', 'round_end_time'); ?></td>
                     <td></td>
                     <td><?= $this->TimeCard->editableText(15, 'break_minute', ['label' => false]); // TODO: 設定ファイル ?></td>
                     <td></td>
