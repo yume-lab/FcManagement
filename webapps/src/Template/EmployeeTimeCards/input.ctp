@@ -203,16 +203,9 @@ echo $this->Html->script($base.'/lib/moment.min.js');
                 ],
                 '/start': [
                     '/end',
-                    '/break/start'
                 ],
                 '/end': [
                     '/start'
-                ],
-                '/break/start': [
-                    '/break/end'
-                ],
-                '/break/end': [
-                    '/end'
                 ]
             };
 

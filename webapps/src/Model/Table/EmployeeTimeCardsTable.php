@@ -175,9 +175,7 @@ class EmployeeTimeCardsTable extends Table
 
         $state = $TimeCardStates->findByPath($path)->first();
 
-        $target = $this->getTimeColumn($path);
         $data = array_merge($entity->toArray(), [
-            "$target" => date('H:i:s', strtotime($time)),
             'store_id' => $storeId,
             'employee_id' => $employeeId,
             'current_state_id' => $state->id,
@@ -185,6 +183,7 @@ class EmployeeTimeCardsTable extends Table
             'hour_pay' => $EmployeeSalaries->getAmount($storeId, $employeeId),
             'is_deleted' => false,
         ]);
+        $data = array_merge($data, $this->getTime($time, $path));
         $data = array_merge($data, $this->summary($data));
         $entity = $this->patchEntity($entity, $data);
         return $this->save($entity);
@@ -197,6 +196,10 @@ class EmployeeTimeCardsTable extends Table
      * @param $employeeId int 従業員ID
      * @param $workedDate string 対象日 (Ymd形式)
      * @param $values array 修正された時間の値. TimeCardStates.pathがキー.
+     *  - round_start_time
+     *  - round_end_time
+     *  - hour_pay
+     *  - break_minute
      * @return bool|\Cake\Datasource\EntityInterface
      */
     public function patch($storeId, $employeeId, $workedDate, $values)
@@ -274,6 +277,64 @@ class EmployeeTimeCardsTable extends Table
             '/break/end' => 'break_end_time',
         ];
         return $map[$path];
+    }
+
+    /**
+     * 勤怠打刻データの取得を行います.
+     *
+     * @param $date string 時間
+     * @param $path string 対象時間のエイリアス
+     * @return array 更新するカラムの配列
+     */
+    private function getTime($date, $path)
+    {
+        $results = [];
+        $time = date('H:i:s', strtotime($date));
+
+        if ($path == '/start') {
+            $results['start_time'] = $time;
+            $results['round_start_time'] = $this->roundTime($time, $path);
+        }
+        if ($path == '/end') {
+            $results['end_time'] = $time;
+            $results['round_end_time'] = $this->roundTime($time, $path);
+        }
+
+        return $results;
+    }
+
+    /**
+     * 時間を丸める処理を行います.
+     *
+     * @param $time string 対象の時間 (H:i:s形式)
+     * @param $path string 対象時間のエイリアス
+     * @return string 丸めた時間
+     */
+    private function roundTime($time, $path) {
+
+        $interval = 15;
+        $split = explode(':', $time);
+        $min = $split[1];
+        if ($path == '/start') {
+            $round = $min;
+            if (!($min == 0 || ($min % $interval) == 0)) {
+                // 0もしくは区切りの数値で割れない場合だけ繰り上げ処理を行う
+                $round = ((int) ($min / $interval) + 1) * $interval;
+            }
+
+            if ($round == 60) {
+                $split[0] = $split[0] + 1;
+                $round = 0;
+            }
+            $split[1] = $round;
+        }
+
+        if ($path == '/end') {
+            $round = (int) ($min / $interval) * $interval;
+            $split[1] = $round;
+        }
+
+        return implode(':', $split);
     }
 
     /**
