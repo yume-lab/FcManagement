@@ -154,9 +154,12 @@ class EmployeeTimeCardsTable extends Table
      * @param $employeeId int 従業員ID
      * @param $path string 状態マスタのエイリアス
      * @param $time string 打刻時間
+     * @param $additions array その他、直接登録をしたい項目.
+     *  - key: カラム名
+     *  - value: 値
      * @return bool|\Cake\Datasource\EntityInterface
      */
-    public function write($storeId, $employeeId, $path, $time)
+    public function write($storeId, $employeeId, $path, $time, $additions = [])
     {
         $date = date('Ymd', strtotime($time));
         $entity = $this->find()
@@ -183,6 +186,7 @@ class EmployeeTimeCardsTable extends Table
             'hour_pay' => $EmployeeSalaries->getAmount($storeId, $employeeId),
             'is_deleted' => false,
         ]);
+        $data = array_merge($data, $additions);
         $data = array_merge($data, $this->getTime($time, $path));
         $data = array_merge($data, $this->summary($data));
         $entity = $this->patchEntity($entity, $data);
@@ -263,23 +267,6 @@ class EmployeeTimeCardsTable extends Table
     }
 
     /**
-     * 更新するカラム名を取得します.
-     *
-     * @param $path string 状態マスタのエイリアス
-     * @return string 対象のカラム名
-     */
-    private function getTimeColumn($path)
-    {
-        $map = [
-            '/start' => 'start_time',
-            '/end' => 'end_time',
-            '/break/start' => 'break_start_time',
-            '/break/end' => 'break_end_time',
-        ];
-        return $map[$path];
-    }
-
-    /**
      * 勤怠打刻データの取得を行います.
      *
      * @param $date string 時間
@@ -315,8 +302,8 @@ class EmployeeTimeCardsTable extends Table
         $interval = 15;
         $split = explode(':', $time);
         $min = $split[1];
+        $round = $min;
         if ($path == '/start') {
-            $round = $min;
             if (!($min == 0 || ($min % $interval) == 0)) {
                 // 0もしくは区切りの数値で割れない場合だけ繰り上げ処理を行う
                 $round = ((int) ($min / $interval) + 1) * $interval;
@@ -326,13 +313,16 @@ class EmployeeTimeCardsTable extends Table
                 $split[0] = $split[0] + 1;
                 $round = 0;
             }
-            $split[1] = $round;
         }
 
         if ($path == '/end') {
-            $round = (int) ($min / $interval) * $interval;
-            $split[1] = $round;
+            if (!($min == 0 || ($min % $interval) == 0)) {
+                $round = (int) ($min / $interval) * $interval;
+            }
         }
+        // 丸めるので、秒は0に
+        $split[1] = $round;
+        $split[2] = '00';
 
         return implode(':', $split);
     }

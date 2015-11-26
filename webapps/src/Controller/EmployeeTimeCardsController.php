@@ -200,8 +200,10 @@ class EmployeeTimeCardsController extends AppController
             $employeeId = $data['employeeId'];
             $path = $data['path'];
             $time = $data['time'];
+            $additions = [];
+            $additions['break_minute'] = $data['break_minute'];
 
-            $result = $this->EmployeeTimeCards->write($this->storeId, $employeeId, $path, $time);
+            $result = $this->EmployeeTimeCards->write($this->storeId, $employeeId, $path, $time, $additions);
 
             $this->log($result);
             echo json_encode(['success' => $result]);
