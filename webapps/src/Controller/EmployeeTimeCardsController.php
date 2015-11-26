@@ -116,6 +116,12 @@ class EmployeeTimeCardsController extends AppController
         $next = date('Ym', strtotime(date('Y-m-1', $target). ' +1 month'));
         $prev = date('Ym', strtotime(date('Y-m-1', $target). ' -1 month'));
 
+        /** @var \App\Model\Table\EmployeesTable $Employees */
+        $Employees = TableRegistry::get('Employees');
+        $employee = $Employees->get($employeeId, ['contain' => ['EmployeeSalaries']]);
+
+        $this->log($employee);
+
         // 編集は1分単位で
         $times = $this->TimeCard->buildTimes($this->UserAuth->currentStore());
         $oneStepTimes = $this->TimeCard->buildTimes($this->UserAuth->currentStore(), 1);
@@ -194,8 +200,10 @@ class EmployeeTimeCardsController extends AppController
             $employeeId = $data['employeeId'];
             $path = $data['path'];
             $time = $data['time'];
+            $additions = [];
+            $additions['break_minute'] = $data['break_minute'];
 
-            $result = $this->EmployeeTimeCards->write($this->storeId, $employeeId, $path, $time);
+            $result = $this->EmployeeTimeCards->write($this->storeId, $employeeId, $path, $time, $additions);
 
             $this->log($result);
             echo json_encode(['success' => $result]);

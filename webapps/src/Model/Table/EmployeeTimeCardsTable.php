@@ -154,9 +154,12 @@ class EmployeeTimeCardsTable extends Table
      * @param $employeeId int 従業員ID
      * @param $path string 状態マスタのエイリアス
      * @param $time string 打刻時間
+     * @param $additions array その他、直接登録をしたい項目.
+     *  - key: カラム名
+     *  - value: 値
      * @return bool|\Cake\Datasource\EntityInterface
      */
-    public function write($storeId, $employeeId, $path, $time)
+    public function write($storeId, $employeeId, $path, $time, $additions = [])
     {
         $date = date('Ymd', strtotime($time));
         $entity = $this->find()
@@ -175,9 +178,7 @@ class EmployeeTimeCardsTable extends Table
 
         $state = $TimeCardStates->findByPath($path)->first();
 
-        $target = $this->getTimeColumn($path);
         $data = array_merge($entity->toArray(), [
-            "$target" => date('H:i:s', strtotime($time)),
             'store_id' => $storeId,
             'employee_id' => $employeeId,
             'current_state_id' => $state->id,
@@ -185,6 +186,8 @@ class EmployeeTimeCardsTable extends Table
             'hour_pay' => $EmployeeSalaries->getAmount($storeId, $employeeId),
             'is_deleted' => false,
         ]);
+        $data = array_merge($data, $additions);
+        $data = array_merge($data, $this->getTime($time, $path));
         $data = array_merge($data, $this->summary($data));
         $entity = $this->patchEntity($entity, $data);
         return $this->save($entity);
@@ -197,16 +200,39 @@ class EmployeeTimeCardsTable extends Table
      * @param $employeeId int 従業員ID
      * @param $workedDate string 対象日 (Ymd形式)
      * @param $values array 修正された時間の値. TimeCardStates.pathがキー.
+     *  - round_start_time
+     *  - round_end_time
+     *  - hour_pay
+     *  - break_minute
      * @return bool|\Cake\Datasource\EntityInterface
      */
     public function patch($storeId, $employeeId, $workedDate, $values)
     {
-        $paths = ['/start', '/end', '/break/start', '/break/end'];
-        foreach ($paths as $path) {
-            $time = date('Y-m-d H:i:s', strtotime($workedDate.' '.$values[$path]));
-            $this->write($storeId, $employeeId, $path, $time);
+        $entity = $this->find()
+            ->where(['store_id' => $storeId])
+            ->where(['employee_id' => $employeeId])
+            ->where(['worked_date' => $workedDate])
+            ->first();
+        if (empty($entity)) {
+            $entity = $this->newEntity();
         }
-        return true;
+
+        /** @var \App\Model\Table\TimeCardStatesTable $TimeCardStates */
+        $TimeCardStates = TableRegistry::get('TimeCardStates');
+
+        $state = $TimeCardStates->findByPath('/end')->first();
+
+        $data = array_merge($entity->toArray(), [
+            'store_id' => $storeId,
+            'employee_id' => $employeeId,
+            'current_state_id' => $state->id,
+            'worked_date' => $workedDate,
+            'is_deleted' => false,
+        ]);
+        $data = array_merge($data, $values);
+        $data = array_merge($data, $this->summary($data));
+        $entity = $this->patchEntity($entity, $data);
+        return $this->save($entity);
     }
 
     /**
@@ -241,20 +267,64 @@ class EmployeeTimeCardsTable extends Table
     }
 
     /**
-     * 更新するカラム名を取得します.
+     * 勤怠打刻データの取得を行います.
      *
-     * @param $path string 状態マスタのエイリアス
-     * @return string 対象のカラム名
+     * @param $date string 時間
+     * @param $path string 対象時間のエイリアス
+     * @return array 更新するカラムの配列
      */
-    private function getTimeColumn($path)
+    private function getTime($date, $path)
     {
-        $map = [
-            '/start' => 'start_time',
-            '/end' => 'end_time',
-            '/break/start' => 'break_start_time',
-            '/break/end' => 'break_end_time',
-        ];
-        return $map[$path];
+        $results = [];
+        $time = date('H:i:s', strtotime($date));
+
+        if ($path == '/start') {
+            $results['start_time'] = $time;
+            $results['round_start_time'] = $this->roundTime($time, $path);
+        }
+        if ($path == '/end') {
+            $results['end_time'] = $time;
+            $results['round_end_time'] = $this->roundTime($time, $path);
+        }
+
+        return $results;
+    }
+
+    /**
+     * 時間を丸める処理を行います.
+     *
+     * @param $time string 対象の時間 (H:i:s形式)
+     * @param $path string 対象時間のエイリアス
+     * @return string 丸めた時間
+     */
+    private function roundTime($time, $path) {
+
+        $interval = 15;
+        $split = explode(':', $time);
+        $min = $split[1];
+        $round = $min;
+        if ($path == '/start') {
+            if (!($min == 0 || ($min % $interval) == 0)) {
+                // 0もしくは区切りの数値で割れない場合だけ繰り上げ処理を行う
+                $round = ((int) ($min / $interval) + 1) * $interval;
+            }
+
+            if ($round == 60) {
+                $split[0] = $split[0] + 1;
+                $round = 0;
+            }
+        }
+
+        if ($path == '/end') {
+            if (!($min == 0 || ($min % $interval) == 0)) {
+                $round = (int) ($min / $interval) * $interval;
+            }
+        }
+        // 丸めるので、秒は0に
+        $split[1] = $round;
+        $split[2] = '00';
+
+        return implode(':', $split);
     }
 
     /**
@@ -271,15 +341,12 @@ class EmployeeTimeCardsTable extends Table
             'real_minute' => empty($data['real_minute']) ? 0 : $data['real_minute']
         ];
 
-        if (isset($data['end_time'])) {
-            $summaries['work_minute'] = $this->diffMinutes($data['start_time'], $data['end_time']);
+        if (isset($data['round_end_time'])) {
+            $summaries['work_minute'] = $this->diffMinutes($data['round_start_time'], $data['round_end_time']);
             $summaries['real_minute'] = $summaries['work_minute'] - $summaries['break_minute'];
         }
-        if (isset($data['break_end_time'])) {
-            $summaries['break_minute'] = $this->diffMinutes($data['break_start_time'], $data['break_end_time']);
-            if (!empty($summaries['work_minute'])) {
-                $summaries['real_minute'] = $summaries['work_minute'] - $summaries['break_minute'];
-            }
+        if (!empty($summaries['work_minute'])) {
+            $summaries['real_minute'] = $summaries['work_minute'] - $summaries['break_minute'];
         }
 
         return $summaries;

@@ -53,6 +53,11 @@
             </div>
             <div class="modal-body">
                 <h2 id="clock"></h2>
+                <div id="break-input-area" class="box center-block" style="display: none;">
+                    休憩時間：
+                    <input id="break-time" type="text" name="break_minute"
+                           value="15" class="form-control" style="width: 50%; display: inline-block;">
+                </div>
             </div>
             <div class="modal-footer center">
                 <?php foreach ($states as $state): ?>
@@ -111,7 +116,8 @@ echo $this->Html->script($base.'/lib/moment.min.js');
                 token: $('#token').val(),
                 employeeId: $('#employee-id').val(),
                 path: $(this).data('path'),
-                time: moment().format('YYYY-MM-DD HH:mm:ss')
+                time: moment().format('YYYY-MM-DD HH:mm:ss'),
+                break_minute: $('#break-time').val()
             };
             console.log(parameter);
             $.ajax({
@@ -179,6 +185,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             $(buttonSelector).each(function() {
                 if (0 <= $.inArray($(this).data('path'), showButtons)) {
                     $(this).css('display', 'inline-block');
+                    $('#break-input-area').css('display', ($(this).data('path') === '/end') ? 'block' : 'none');
                 }
             });
         }
@@ -203,16 +210,9 @@ echo $this->Html->script($base.'/lib/moment.min.js');
                 ],
                 '/start': [
                     '/end',
-                    '/break/start'
                 ],
                 '/end': [
                     '/start'
-                ],
-                '/break/start': [
-                    '/break/end'
-                ],
-                '/break/end': [
-                    '/end'
                 ]
             };
 
