@@ -1,9 +1,16 @@
 <style>
-    .time-input {
+    .editable-input {
         display: none;
     }
-    .time-input input {
+    .editable-input input
+    {
         height: 30px;
+        width: 4em;
+    }
+    .editable-input select
+    {
+        height: 30px;
+        width: 5em;
     }
     table th {
         text-align: center;
@@ -48,9 +55,9 @@
         <th>退勤</th>
         <th>始業</th>
         <th>終業</th>
-        <th>総労働(時.分)</th>
+        <th>総労働</th>
         <th>休憩(分)</th>
-        <th>実労働(時.分)</th>
+        <th>実労働</th>
         <th>時給(円)</th>
     </tr>
     </thead>
@@ -131,28 +138,24 @@
                         <?php endif; ?>
                     </td>
                 <?php else: ?>
+                    <td></td>
+                    <td></td>
                     <td>
-                        <?= $this->TimeCard->editableTime($times, '', '/start'); ?>
+                        <?= $this->TimeCard->editableTime($times, '', 'round_start_time'); ?>
                     </td>
                     <td>
-                        <?= $this->TimeCard->editableTime($times, '', '/end'); ?>
-                    </td>
-                    <?php // TODO: ?>
-                    <td>
-                        <?= $this->TimeCard->editableTime($times, '', '/start'); ?>
-                    </td>
-                    <td>
-                        <?= $this->TimeCard->editableTime($times, '', '/end'); ?>
+                        <?= $this->TimeCard->editableTime($times, '', 'round_end_time'); ?>
                     </td>
 
-                    <td>
-                        <?= $this->TimeCard->editableTime($times, '', '/break/start'); ?>
-                    </td>
-                    <td>
-                        <?= $this->TimeCard->editableTime($times, '', '/break/end'); ?>
-                    </td>
                     <td></td>
+                    <td><?= $this->TimeCard->editableText(15, 'break_minute', ['label' => false]); // TODO: 設定ファイル ?></td>
                     <td></td>
+                    <td>
+                        <?php
+                            $amount = empty($employee->employee_salary) ? 0 : $employee->employee_salary->amount;
+                            echo $this->TimeCard->editableText($amount, 'hour_pay', ['label' => false]);
+                        ?>
+                    </td>
                     <td>
                         <?php // 追加ボタンを押したら、更新部分が表示されます. ?>
                         <?php if ($canEdit) :?>

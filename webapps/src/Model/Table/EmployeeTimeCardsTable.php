@@ -201,12 +201,31 @@ class EmployeeTimeCardsTable extends Table
      */
     public function patch($storeId, $employeeId, $workedDate, $values)
     {
-        $paths = ['/start', '/end', '/break/start', '/break/end'];
-        foreach ($paths as $path) {
-            $time = date('Y-m-d H:i:s', strtotime($workedDate.' '.$values[$path]));
-            $this->write($storeId, $employeeId, $path, $time);
+        $entity = $this->find()
+            ->where(['store_id' => $storeId])
+            ->where(['employee_id' => $employeeId])
+            ->where(['worked_date' => $workedDate])
+            ->first();
+        if (empty($entity)) {
+            $entity = $this->newEntity();
         }
-        return true;
+
+        /** @var \App\Model\Table\TimeCardStatesTable $TimeCardStates */
+        $TimeCardStates = TableRegistry::get('TimeCardStates');
+
+        $state = $TimeCardStates->findByPath('/end')->first();
+
+        $data = array_merge($entity->toArray(), [
+            'store_id' => $storeId,
+            'employee_id' => $employeeId,
+            'current_state_id' => $state->id,
+            'worked_date' => $workedDate,
+            'is_deleted' => false,
+        ]);
+        $data = array_merge($data, $values);
+        $data = array_merge($data, $this->summary($data));
+        $entity = $this->patchEntity($entity, $data);
+        return $this->save($entity);
     }
 
     /**
@@ -271,15 +290,12 @@ class EmployeeTimeCardsTable extends Table
             'real_minute' => empty($data['real_minute']) ? 0 : $data['real_minute']
         ];
 
-        if (isset($data['end_time'])) {
-            $summaries['work_minute'] = $this->diffMinutes($data['start_time'], $data['end_time']);
+        if (isset($data['round_end_time'])) {
+            $summaries['work_minute'] = $this->diffMinutes($data['round_start_time'], $data['round_end_time']);
             $summaries['real_minute'] = $summaries['work_minute'] - $summaries['break_minute'];
         }
-        if (isset($data['break_end_time'])) {
-            $summaries['break_minute'] = $this->diffMinutes($data['break_start_time'], $data['break_end_time']);
-            if (!empty($summaries['work_minute'])) {
-                $summaries['real_minute'] = $summaries['work_minute'] - $summaries['break_minute'];
-            }
+        if (!empty($summaries['work_minute'])) {
+            $summaries['real_minute'] = $summaries['work_minute'] - $summaries['break_minute'];
         }
 
         return $summaries;

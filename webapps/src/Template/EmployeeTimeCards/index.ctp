@@ -90,14 +90,14 @@ echo $this->Html->script($base.'/lib/moment.min.js');
          */
         $(document).on('click', '.editable-button a', function(e) {
             var $this = $(this);
-            $('.time-label').show();
-            $('.time-input').hide();
+            $('.editable-label').show();
+            $('.editable-input').hide();
             $('.editable-button').show();
             $('.editable-actions').hide();
 
             var $parent = $this.parents('.time-row');
-            $parent.find('.time-label').hide();
-            $parent.find('.time-input').show();
+            $parent.find('.editable-label').hide();
+            $parent.find('.editable-input').show();
 
             $parent.find('.editable-button').hide();
             $parent.find('.editable-actions').show();
@@ -108,8 +108,8 @@ echo $this->Html->script($base.'/lib/moment.min.js');
          * 編集取消クリック時
          */
         $(document).on('click', '.editable-actions .cancel', function(e) {
-            $('.time-label').show();
-            $('.time-input').hide();
+            $('.editable-label').show();
+            $('.editable-input').hide();
             $('.editable-button').show();
             $('.editable-actions').hide();
             return false;
@@ -122,12 +122,12 @@ echo $this->Html->script($base.'/lib/moment.min.js');
             var $this = $(this);
             var $parent = $this.parents('.time-row');
             var ymd = $parent.data('ymd');
-            var employeeId = $('#employee-list').find('.current').data('id');
+            var employeeId = $('#employee-list').val();
 
             var data = {};
-            $parent.find('.time-input').each(function() {
-                var $s = $(this).find('select');
-                data[$s.data('path')] = $s.val();
+            $parent.find('.editable-input').each(function() {
+                var $s = $(this).find('.item');
+                data[$s.attr('name')] = $s.val();
             });
 
             var parameter = {

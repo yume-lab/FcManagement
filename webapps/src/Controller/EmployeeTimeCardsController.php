@@ -118,7 +118,9 @@ class EmployeeTimeCardsController extends AppController
 
         /** @var \App\Model\Table\EmployeesTable $Employees */
         $Employees = TableRegistry::get('Employees');
-        $employee = $Employees->get($employeeId);
+        $employee = $Employees->get($employeeId, ['contain' => ['EmployeeSalaries']]);
+
+        $this->log($employee);
 
         // 編集は1分単位で
         $times = $this->TimeCard->buildTimes($this->UserAuth->currentStore());

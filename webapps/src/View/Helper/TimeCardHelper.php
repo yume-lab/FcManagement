@@ -57,23 +57,49 @@ class TimeCardHelper extends Helper {
      * 勤怠一覧の編集可能時間エリア
      * @param $times array 選択可能時間 Componentで構築したもの.
      * @param $value string 現在の値
-     * @param $path string 勤怠状態のエイリアス
+     * @param $name string 指定するname
      * @return string タグ
      */
-    public function editableTime($times, $value, $path) {
+    public function editableTime($times, $value, $name) {
         $tagFormat = '
-            <span class="time-label">
+            <span class="editable-label">
                 %s
             </span>
-            <span class="time-input">
-                <select data-path="%s" class="form-control" style="height: 30px; width: auto;">
+            <span class="editable-input">
+                <select name="%s" class="item" class="form-control">
                     %s
                 </select>
             </span>
         ';
         $value = $this->formatTime($value);
-        $values = [$value, $path, $this->buildTimeOptions($times, $value)];
+        $values = [$value, $name, $this->buildTimeOptions($times, $value)];
         return vsprintf($tagFormat, $values);
+    }
+
+    /**
+     * テキスト入力切り替え可能なラベルを出力します.
+     *
+     * @param $value string|int 現在の値
+     * @param $name string input属性に指定するname
+     * @param $showValue array 値を表示させたい項目. labelだけとかできるように.
+     * @return string HTMLタグ
+     */
+    public function editableText($value, $name, array $showValue = []) {
+        $tagFormat = '
+            <span class="editable-label">
+                %s
+            </span>
+            <span class="editable-input">
+                <input type="text" class="item" value="%s" name="%s" />
+            </span>
+        ';
+        $showValue = array_merge(['label' => true, 'input' => true], $showValue);
+        $values = [];
+        $values[] = empty($showValue['label']) ? ' ' : $value;
+        $values[] = empty($showValue['input']) ? ' ' : $value;
+        $values[] = $name;
+        return vsprintf($tagFormat, $values);
+
     }
 
     /**
