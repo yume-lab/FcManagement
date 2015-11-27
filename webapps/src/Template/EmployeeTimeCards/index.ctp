@@ -161,6 +161,12 @@ echo $this->Html->script($base.'/lib/moment.min.js');
          * 勤務表の表示
          */
         function loadTimeCardTable(employeeId, target) {
+            var $table = $('#time-table');
+            if (!employeeId) {
+                $table.html('<p> 従業員の方を選択してください。</p>');
+                return;
+            }
+
             showLoading();
             var parameter = {
                 employeeId: employeeId,
@@ -174,7 +180,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
                 dataType: 'html'
             }).done(function(data, textStatus, jqXHR ) {
                 console.log(jqXHR, textStatus);
-                $('#time-table').html(data);
+                $table.html(data);
             }).fail(function(jqXHR, textStatus, errorThrown) {
                 console.log(jqXHR, textStatus, errorThrown);
             }).always(function(jqXHR, textStatus) {

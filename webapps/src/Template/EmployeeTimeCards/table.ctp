@@ -17,7 +17,7 @@
     }
 </style>
 
-<table class="table-bordered responsive">
+<table class="table-bordered">
     <thead>
     <tr>
         <th>年月</th>
@@ -41,7 +41,7 @@
     </li>
 </ul>
 
-<table class="table table-bordered responsive">
+<table class="table table-bordered bootstrap-datatable">
     <thead>
     <tr>
         <th rowspan="2">日付</th>
