@@ -32,8 +32,9 @@
         max-width: 1200px;
         margin: 20px auto;
     }
-    .fc-timeline-event .fc-content {
-        white-space: pre-line;
+    .fc-time-area col {
+        max-width: 2.2em;
+        min-width: 43px;
     }
 </style>
 
@@ -41,9 +42,16 @@
 
     $(function() {
         $('#fix-shift-table').fullCalendar({
+            schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
             now: '<?= date('Y-m-d', strtotime($data['target_ym'].'01')); ?>',
             header: {
                 right: false
+            },
+            slotLabelFormat: {
+                month: [
+                    'D',
+                    'ddd'
+                ]
             },
             editable: false,
             lang: 'ja',
