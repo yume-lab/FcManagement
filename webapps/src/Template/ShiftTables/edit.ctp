@@ -261,7 +261,8 @@ $resources = json_encode($resources);
             },
             slotLabelFormat: {
                 month: [
-                    'D ddd'
+                    'D',
+                    'ddd'
                 ],
                 day: [
                     'H:mm'
