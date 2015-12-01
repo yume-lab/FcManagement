@@ -311,8 +311,6 @@ $resources = json_encode($resources);
             eventClick: function(calEvent, jsEvent, view) {
                 showEventPopover($(this), calEvent, MODE.UPDATE);
             },
-            resourceAreaWidth: '12%',
-            resourceLabelText: '従業員',
             events: function(start, end, timezone, callback) {
                 showLoading();
                 $.ajax({
@@ -344,6 +342,19 @@ $resources = json_encode($resources);
 //                url: '/api/shift/resources',
 //                type: 'POST'
 //            }
+            resourceAreaWidth: '20%',
+            resourceColumns: [
+                {
+                    labelText: '従業員',
+                    field: 'title'
+                },
+                {
+                    labelText: '時間',
+                    text: function(resource) {
+                        return '0';
+                    }
+                }
+            ],
             resources: <?= $resources ?>
         });
 
