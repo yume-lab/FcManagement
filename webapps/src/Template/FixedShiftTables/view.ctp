@@ -32,6 +32,10 @@
         max-width: 1200px;
         margin: 20px auto;
     }
+    .fc-time-area col {
+        max-width: 2.2em;
+        min-width: 43px;
+    }
 </style>
 
 <script>
