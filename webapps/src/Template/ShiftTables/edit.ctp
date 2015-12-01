@@ -24,7 +24,7 @@ $resources = json_encode($resources);
     .fc-timeline-event .fc-content {
         white-space: pre-line;
     }
-    .fc-timelineMonth-view .fc-cell-text{
+    .fc-timelineMonth-view  .fc-time-area .fc-widget-header .fc-cell-text {
         cursor: pointer;
     }
 </style>
@@ -230,8 +230,10 @@ $resources = json_encode($resources);
 
         /**
          * 月表示から詳細を見れるように.
+         * 同じセレクタでスタイルも上部に定義済み.
          */
-        $(document).on('click', '.fc-timelineMonth-view .fc-cell-text', function() {
+        $(document).on('click',
+            '.fc-timelineMonth-view  .fc-time-area .fc-widget-header .fc-cell-text', function() {
             var $calendar = $(calendarSelector);
             var date = $calendar.fullCalendar('getDate');
             // FIXME: フォーマット変わったらマズイ
@@ -261,8 +263,7 @@ $resources = json_encode($resources);
             },
             slotLabelFormat: {
                 month: [
-                    'D',
-                    'ddd'
+                    'D ddd'
                 ],
                 day: [
                     'H:mm'
