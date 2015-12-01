@@ -32,9 +32,6 @@
         max-width: 1200px;
         margin: 20px auto;
     }
-    .fc-timeline-event .fc-content {
-        white-space: pre-line;
-    }
 </style>
 
 <script>

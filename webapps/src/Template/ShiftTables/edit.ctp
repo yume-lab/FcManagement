@@ -21,9 +21,6 @@ $resources = json_encode($resources);
 <?= $this->element('Notice/show_top', ['message' => 'シフトを一時保存しました']); ?>
 
 <style>
-    .fc-timeline-event .fc-content {
-        white-space: pre-line;
-    }
     .fc-timelineMonth-view  .fc-time-area .fc-widget-header .fc-cell-text {
         cursor: pointer;
     }
