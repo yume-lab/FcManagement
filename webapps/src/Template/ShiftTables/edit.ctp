@@ -40,12 +40,18 @@ $resources = json_encode($resources);
 
         var calendarSelector = '#shift-calendar';
 
+        /**
+         * Popoverの非表示処理.
+         */
         var destroyPopover = function() {
             $(popoverSelector).each(function() {
                 $(this).popover('destroy');
             });
         }
 
+        /**
+         * Popoverの表示.
+         */
         var showEventPopover = function($target, event, mode) {
             var current = event.start;
 
@@ -93,6 +99,10 @@ $resources = json_encode($resources);
 
             $('.popover-select').change();
         }
+
+        /**
+         * シフトの新規追加.
+         */
         var addNewEvent = function() {
             var date = moment($.data($body, 'data-time')).format('YYYY-MM-DD');
             var getTime = function(name) {
@@ -120,6 +130,9 @@ $resources = json_encode($resources);
             $.removeData($body);
         }
 
+        /**
+         * シフトの削除.
+         */
         var removeEvent = function(eventId) {
             if (eventId) {
                 $(calendarSelector).fullCalendar('removeEvents', eventId);
@@ -127,6 +140,9 @@ $resources = json_encode($resources);
             destroyPopover();
         }
 
+        /**
+         * Popoverでの変更をDOMに関連付けする.
+         */
         $(document).on('change', '.popover-select', function() {
             var name = $(this).data('set-name');
             $.data($body, name, $(this).val());
@@ -294,7 +310,6 @@ $resources = json_encode($resources);
                     return event.resourceId === $(this).val();
                 });
                 event.employeeId = $employee.val();
-//                event.title = $.trim($employee.html());
             },
             select: function(start, end, jsEvent, view, resource) {
                 jsEvent.preventDefault();
@@ -324,7 +339,6 @@ $resources = json_encode($resources);
                         var events = [];
                         $.each(shifts, function(i, shift) {
                             events.push({
-//                                title: shift.title,
                                 start: shift.start,
                                 end: shift.end,
                                 resourceId: shift.employeeId,
