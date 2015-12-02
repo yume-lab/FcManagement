@@ -373,7 +373,18 @@ $resources = json_encode($resources);
                 {
                     labelText: '時間',
                     text: function(resource) {
-                        return '0';
+                        console.log('text resource');
+                        console.log(resource);
+                        var events = $(calendarSelector).fullCalendar('clientEvents', function(event) {
+                            return event.resourceId == resource.id;
+                        });
+                        console.log(events);
+
+                        var hour = 0;
+                        (events || []).forEach(function(event, index, arr) {
+                            hour += event.end.diff(event.start, 'hour');
+                        });
+                        return hour == 0 ? '0' : hour;
                     }
                 }
             ],
