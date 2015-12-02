@@ -376,7 +376,7 @@ $resources = json_encode($resources);
                     field: 'title'
                 },
                 {
-                    labelText: '時間',
+                    labelText: '月合計',
                     text: function(resource) {
                         console.log('text resource');
                         console.log(resource);
@@ -389,7 +389,7 @@ $resources = json_encode($resources);
                         (events || []).forEach(function(event, index, arr) {
                             minutes += event.end.diff(event.start, 'minutes');
                         });
-                        return minutes == 0 ? '0' : (minutes / 60);
+                        return minutes == 0 ? '0' : (minutes / 60) + ' 時間';
                     }
                 }
             ],
