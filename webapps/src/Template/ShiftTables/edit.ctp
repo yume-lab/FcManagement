@@ -141,6 +141,14 @@ $resources = json_encode($resources);
         }
 
         /**
+         * リソースエリア(従業員/時間)の更新.
+         * これを呼び出して、リソーステキストのコールバックを呼び出す.
+         */
+        var refreshResources = function() {
+            $(calendarSelector).fullCalendar('refetchResources');
+        }
+
+        /**
          * Popoverでの変更をDOMに関連付けする.
          */
         $(document).on('change', '.popover-select', function() {
