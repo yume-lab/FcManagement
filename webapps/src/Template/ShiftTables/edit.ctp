@@ -193,6 +193,7 @@ $resources = json_encode($resources);
          */
         $(document).on('click', '#register', function() {
             addNewEvent();
+            refreshResources();
             return false;
         });
 
@@ -203,6 +204,7 @@ $resources = json_encode($resources);
             var eventId = $.data($body, 'data-eventId');
             removeEvent(eventId);
             addNewEvent();
+            refreshResources();
             return false;
         });
 
@@ -213,6 +215,7 @@ $resources = json_encode($resources);
             var eventId = $.data($body, 'data-eventId');
             removeEvent(eventId);
             $.removeData($body);
+            refreshResources();
             return false;
         });
 
@@ -310,14 +313,14 @@ $resources = json_encode($resources);
                 destroyPopover();
             },
             eventDrop: function(event, delta, revertFunc, jsEvent, ui, view ) {
-                console.log(event.resourceId);
-                console.log(delta);
-                console.log(revertFunc);
-
+                console.log(event);
                 var $employee = $('#employees').find('option').filter(function(row) {
                     return event.resourceId === $(this).val();
                 });
                 event.employeeId = $employee.val();
+                refreshResources();
+            },
+            eventResize: function(event, delta, revertFunc, jsEvent, ui, view) {
                 refreshResources();
             },
             select: function(start, end, jsEvent, view, resource) {
@@ -357,6 +360,7 @@ $resources = json_encode($resources);
                         console.log(events);
                         hideLoading();
                         callback(events);
+                        refreshResources();
                     }
                 });
             },
@@ -381,11 +385,11 @@ $resources = json_encode($resources);
                         });
                         console.log(events);
 
-                        var hour = 0;
+                        var minutes = 0;
                         (events || []).forEach(function(event, index, arr) {
-                            hour += event.end.diff(event.start, 'hour');
+                            minutes += event.end.diff(event.start, 'minutes');
                         });
-                        return hour == 0 ? '0' : hour;
+                        return minutes == 0 ? '0' : (minutes / 60);
                     }
                 }
             ],
