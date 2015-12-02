@@ -318,6 +318,7 @@ $resources = json_encode($resources);
                     return event.resourceId === $(this).val();
                 });
                 event.employeeId = $employee.val();
+                refreshResources();
             },
             select: function(start, end, jsEvent, view, resource) {
                 jsEvent.preventDefault();
