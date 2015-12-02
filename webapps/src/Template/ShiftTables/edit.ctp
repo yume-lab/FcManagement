@@ -40,12 +40,18 @@ $resources = json_encode($resources);
 
         var calendarSelector = '#shift-calendar';
 
+        /**
+         * Popoverの非表示処理.
+         */
         var destroyPopover = function() {
             $(popoverSelector).each(function() {
                 $(this).popover('destroy');
             });
         }
 
+        /**
+         * Popoverの表示.
+         */
         var showEventPopover = function($target, event, mode) {
             var current = event.start;
 
@@ -93,6 +99,10 @@ $resources = json_encode($resources);
 
             $('.popover-select').change();
         }
+
+        /**
+         * シフトの新規追加.
+         */
         var addNewEvent = function() {
             var date = moment($.data($body, 'data-time')).format('YYYY-MM-DD');
             var getTime = function(name) {
@@ -120,6 +130,9 @@ $resources = json_encode($resources);
             $.removeData($body);
         }
 
+        /**
+         * シフトの削除.
+         */
         var removeEvent = function(eventId) {
             if (eventId) {
                 $(calendarSelector).fullCalendar('removeEvents', eventId);
@@ -127,6 +140,17 @@ $resources = json_encode($resources);
             destroyPopover();
         }
 
+        /**
+         * リソースエリア(従業員/時間)の更新.
+         * これを呼び出して、リソーステキストのコールバックを呼び出す.
+         */
+        var refreshResources = function() {
+            $(calendarSelector).fullCalendar('refetchResources');
+        }
+
+        /**
+         * Popoverでの変更をDOMに関連付けする.
+         */
         $(document).on('change', '.popover-select', function() {
             var name = $(this).data('set-name');
             $.data($body, name, $(this).val());
@@ -169,6 +193,7 @@ $resources = json_encode($resources);
          */
         $(document).on('click', '#register', function() {
             addNewEvent();
+            refreshResources();
             return false;
         });
 
@@ -179,6 +204,7 @@ $resources = json_encode($resources);
             var eventId = $.data($body, 'data-eventId');
             removeEvent(eventId);
             addNewEvent();
+            refreshResources();
             return false;
         });
 
@@ -189,6 +215,7 @@ $resources = json_encode($resources);
             var eventId = $.data($body, 'data-eventId');
             removeEvent(eventId);
             $.removeData($body);
+            refreshResources();
             return false;
         });
 
@@ -286,15 +313,15 @@ $resources = json_encode($resources);
                 destroyPopover();
             },
             eventDrop: function(event, delta, revertFunc, jsEvent, ui, view ) {
-                console.log(event.resourceId);
-                console.log(delta);
-                console.log(revertFunc);
-
+                console.log(event);
                 var $employee = $('#employees').find('option').filter(function(row) {
                     return event.resourceId === $(this).val();
                 });
                 event.employeeId = $employee.val();
-//                event.title = $.trim($employee.html());
+                refreshResources();
+            },
+            eventResize: function(event, delta, revertFunc, jsEvent, ui, view) {
+                refreshResources();
             },
             select: function(start, end, jsEvent, view, resource) {
                 jsEvent.preventDefault();
@@ -311,8 +338,6 @@ $resources = json_encode($resources);
             eventClick: function(calEvent, jsEvent, view) {
                 showEventPopover($(this), calEvent, MODE.UPDATE);
             },
-            resourceAreaWidth: '12%',
-            resourceLabelText: '従業員',
             events: function(start, end, timezone, callback) {
                 showLoading();
                 $.ajax({
@@ -326,7 +351,6 @@ $resources = json_encode($resources);
                         var events = [];
                         $.each(shifts, function(i, shift) {
                             events.push({
-//                                title: shift.title,
                                 start: shift.start,
                                 end: shift.end,
                                 resourceId: shift.employeeId,
@@ -336,6 +360,7 @@ $resources = json_encode($resources);
                         console.log(events);
                         hideLoading();
                         callback(events);
+                        refreshResources();
                     }
                 });
             },
@@ -344,6 +369,30 @@ $resources = json_encode($resources);
 //                url: '/api/shift/resources',
 //                type: 'POST'
 //            }
+            resourceAreaWidth: '20%',
+            resourceColumns: [
+                {
+                    labelText: '従業員',
+                    field: 'title'
+                },
+                {
+                    labelText: '月合計',
+                    text: function(resource) {
+                        console.log('text resource');
+                        console.log(resource);
+                        var events = $(calendarSelector).fullCalendar('clientEvents', function(event) {
+                            return event.resourceId == resource.id;
+                        });
+                        console.log(events);
+
+                        var minutes = 0;
+                        (events || []).forEach(function(event, index, arr) {
+                            minutes += event.end.diff(event.start, 'minutes');
+                        });
+                        return minutes == 0 ? '0' : (minutes / 60) + ' 時間';
+                    }
+                }
+            ],
             resources: <?= $resources ?>
         });
 

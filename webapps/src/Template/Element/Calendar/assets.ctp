@@ -19,7 +19,6 @@ echo $this->Html->script(CHARISMA_BOWER.'/fullcalendar/dist/lang-all.js');
         white-space: pre-line;
     }
     .fc-rows td.fc-widget-content div,
-    .fc-content td.fc-widget-content div,
     .fc-event-container {
         height: 40px !important;
     }
