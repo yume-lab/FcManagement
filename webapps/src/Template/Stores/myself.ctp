@@ -155,9 +155,6 @@
                     rested: rested
                 });
             });
-            restedTimeValues.sort(function(one, two) {
-                return parseInt(one.worked) - parseInt(two.worked);
-            });
             $('#rested_times').val(JSON.stringify(restedTimeValues));
             return true;
         });

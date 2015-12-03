@@ -40,6 +40,15 @@ $resources = json_encode($resources);
 
         var calendarSelector = '#shift-calendar';
 
+        var restedTable = function() {
+            var range = $('#break-range').val();
+            var restedInfo = $.parseJSON(range) || [];
+            restedInfo.sort(function(one, two) {
+                return parseInt(one.worked) - parseInt(two.worked);
+            });
+            return restedInfo;
+        }
+
         /**
          * Popoverの非表示処理.
          */
@@ -385,11 +394,20 @@ $resources = json_encode($resources);
                         });
                         console.log(events);
 
-                        var minutes = 0;
+                        var worked = 0;
+                        var rested = 0;
                         (events || []).forEach(function(event, index, arr) {
-                            minutes += event.end.diff(event.start, 'minutes');
+                            worked += event.end.diff(event.start, 'minutes');
+                            restedTable.some(function(info, index) {
+                                if (worked < info.worked) {
+                                    return true;
+                                }
+                                rested += info.rested;
+                            });
                         });
-                        return minutes == 0 ? '0' : (minutes / 60) + ' 時間';
+                        console.log(worked);
+                        console.log(rested);
+                        return worked == 0 ? '0' : (worked / 60) + ' 時間 ' + rested;
                     }
                 }
             ],
@@ -432,6 +450,8 @@ $resources = json_encode($resources);
 <input type="hidden" id="opened" value="<?= $opened ?>" />
 <input type="hidden" id="closed" value="<?= $closed ?>" />
 <input type="hidden" id="interval" value="<?= $interval ?>" />
+<?php // JSON文字列が格納されるため、valueではシングルクォートで囲む ?>
+<input type="hidden" id="break-range" value='<?= $break ?>' />
 
 <form id="fixed_form" name="fixed_form" method="post" action="/shift/fixed">
     <input id="fixed_year" name="fixed_year" type="hidden" value="" />

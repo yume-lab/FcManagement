@@ -41,12 +41,17 @@ class ShiftTablesController extends AppController
 
         /** @var \App\Model\Table\EmployeesTable $Employees */
         $Employees = TableRegistry::get('Employees');
-        $employees = $Employees->findByStoreId(parent::getCurrentStoreId());
+        $employees = $Employees->findByStoreId($store->id);
 
         $opened = date('H:i:s', strtotime($store->opened));
         $closed = date('H:i:s', strtotime($store->closed));
 
-        $this->set(compact('opened', 'closed', 'interval', 'times', 'employees'));
+        /** @var \App\Model\Table\StoreSettingsTable $StoreSettings */
+        $StoreSettings = TableRegistry::get('StoreSettings');
+        $setting = $StoreSettings->findByStoreId($store->id)->first();
+        $break = $setting->rested_times;
+
+        $this->set(compact('opened', 'closed', 'interval', 'times', 'employees', 'break'));
         $this->set('_serialize', ['employees']);
     }
 
