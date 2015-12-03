@@ -48,10 +48,15 @@ class StoresController extends AppController
      */
     public function add()
     {
-        $store = $this->Stores->newEntity();
+        $options = ['associated' => ['StoreSettings']];
+        $store = $this->Stores->newEntity(null, $options);
         if ($this->request->is('post')) {
-            $store = $this->Stores->patchEntity($store, $this->request->data);
-            if ($this->Stores->save($store)) {
+            $store = $this->Stores->patchEntity(
+                $store,
+                $this->request->data,
+                $options
+            );
+            if ($this->Stores->save($store, $options)) {
                 $this->Flash->success(__('The store has been saved.'));
                 return $this->redirect(['action' => 'index']);
             } else {
@@ -123,7 +128,11 @@ class StoresController extends AppController
         ]);
         $this->log($store);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $store = $this->Stores->patchEntity($store, $this->request->data);
+            $store = $this->Stores->patchEntity(
+                $store,
+                $this->request->data,
+                ['associated' => ['StoreSettings']]
+            );
             if ($this->Stores->save($store)) {
                 $this->Flash->success('店舗情報を更新しました。');
                 $this->UserAuth->refresh();
