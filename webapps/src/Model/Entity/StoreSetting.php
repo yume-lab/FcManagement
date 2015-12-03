@@ -9,7 +9,9 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property int $store_id
  * @property \App\Model\Entity\Store $store
- * @property int $training_minutes
+ * @property int $training_hour
+ * @property int $training_hour_pay
+ * @property int $default_hour_pay
  * @property int $default_fare
  * @property string $rested_times
  * @property bool $is_deleted

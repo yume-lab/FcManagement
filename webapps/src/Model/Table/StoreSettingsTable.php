@@ -47,8 +47,16 @@ class StoreSettingsTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->add('training_minutes', 'valid', ['rule' => 'numeric'])
-            ->allowEmpty('training_minutes');
+            ->add('training_hour', 'valid', ['rule' => 'numeric'])
+            ->allowEmpty('training_hour');
+
+        $validator
+            ->add('training_hour_pay', 'valid', ['rule' => 'numeric'])
+            ->allowEmpty('training_hour_pay');
+
+        $validator
+            ->add('default_hour_pay', 'valid', ['rule' => 'numeric'])
+            ->allowEmpty('default_hour_pay');
 
         $validator
             ->add('default_fare', 'valid', ['rule' => 'numeric'])
