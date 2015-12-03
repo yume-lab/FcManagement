@@ -94,7 +94,7 @@
                             <legend>交通費</legend>
                             <?php
                                 echo $this->Form->input('store_setting.default_fare',
-                                    ['label' => '支給金額']); ?>
+                                    ['label' => '支給金額（1勤務あたり）']); ?>
                             <legend>休憩設定</legend>
                             <div id="break-settings">
                                 <div id="base" style="display: none;">
