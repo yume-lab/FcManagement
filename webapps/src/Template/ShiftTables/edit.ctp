@@ -161,6 +161,15 @@ $resources = json_encode($resources);
         }
 
         /**
+         * 表示する時間をまるめます.
+         */
+        var roundHour = function(src) {
+            // 小数第二位まで残すため、100かけてまるめた後に、また100で割る
+            var hour = src / 60;
+            return Math.round(hour * 100) / 100;
+        }
+
+        /**
          * Popoverでの変更をDOMに関連付けする.
          */
         $(document).on('change', '.popover-select', function() {
@@ -408,7 +417,7 @@ $resources = json_encode($resources);
                             rested += parseInt(dayRested);
                         });
                         return worked == 0 ? '0'
-                            : (worked / 60) + ' (' + ((worked - rested) / 60) + ')';
+                            : roundHour(worked) + ' (' + roundHour(worked - rested) + ')';
                     }
                 }
             ],
