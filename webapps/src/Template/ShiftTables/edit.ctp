@@ -41,6 +41,18 @@ $resources = json_encode($resources);
         var calendarSelector = '#shift-calendar';
 
         /**
+         * 休憩基本設定の情報
+         */
+        var restedTable = (function() {
+            var range = $('#break-range').val();
+            var restedInfo = $.parseJSON(range) || [];
+            restedInfo.sort(function(one, two) {
+                return parseInt(one.worked) - parseInt(two.worked);
+            });
+            return restedInfo;
+        })();
+
+        /**
          * Popoverの非表示処理.
          */
         var destroyPopover = function() {
@@ -364,19 +376,14 @@ $resources = json_encode($resources);
                     }
                 });
             },
-            // TODO: inputで従業員の人を表示させないようにしたら
-//            resources: {
-//                url: '/api/shift/resources',
-//                type: 'POST'
-//            }
-            resourceAreaWidth: '20%',
+            resourceAreaWidth: '25%',
             resourceColumns: [
                 {
                     labelText: '従業員',
                     field: 'title'
                 },
                 {
-                    labelText: '月合計',
+                    labelText: '月合計時間',
                     text: function(resource) {
                         console.log('text resource');
                         console.log(resource);
@@ -385,11 +392,23 @@ $resources = json_encode($resources);
                         });
                         console.log(events);
 
-                        var minutes = 0;
+                        // 総労働時間と実働時間の計算
+                        var worked = 0;
+                        var rested = 0;
                         (events || []).forEach(function(event, index, arr) {
-                            minutes += event.end.diff(event.start, 'minutes');
+                            var dayWorked = event.end.diff(event.start, 'minutes');
+                            var restedTimes = $.grep(restedTable, function(item, index) {
+                                return (item.worked <= dayWorked);
+                            }) || [];
+                            var dayRested = 0;
+                            if (restedTimes.length > 0) {
+                                dayRested = restedTimes.pop().rested;
+                            }
+                            worked += parseInt(dayWorked);
+                            rested += parseInt(dayRested);
                         });
-                        return minutes == 0 ? '0' : (minutes / 60) + ' 時間';
+                        return worked == 0 ? '0'
+                            : (worked / 60) + ' (' + ((worked - rested) / 60) + ')';
                     }
                 }
             ],
@@ -410,9 +429,15 @@ $resources = json_encode($resources);
 
             <div class="box-content">
                 <?= $this->Flash->render() ?>
-                <div class="box col-md-6">
+                <div class="col-md-12" style="padding: 0.5em 0;">
+                    <div class="alert alert-info">
+                        「月合計時間」は、総労働 (実働時間)の順番で記載されています。<br/>
+                        例： 8 (7.5)
+                    </div>
                 </div>
-                <div class="box col-md-6" style="text-align: right;">
+
+                <div class="col-md-12"
+                     style="text-align: right;padding: 0.5em 0;">
                     <a id="save" class="btn btn-info" href="#">
                         <i class="glyphicon glyphicon-pencil icon-white"></i>
                         一時保存
@@ -432,6 +457,8 @@ $resources = json_encode($resources);
 <input type="hidden" id="opened" value="<?= $opened ?>" />
 <input type="hidden" id="closed" value="<?= $closed ?>" />
 <input type="hidden" id="interval" value="<?= $interval ?>" />
+<?php // JSON文字列が格納されるため、valueではシングルクォートで囲む ?>
+<input type="hidden" id="break-range" value='<?= $break ?>' />
 
 <form id="fixed_form" name="fixed_form" method="post" action="/shift/fixed">
     <input id="fixed_year" name="fixed_year" type="hidden" value="" />
