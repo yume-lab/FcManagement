@@ -55,7 +55,7 @@
                 <h2 id="clock"></h2>
                 <div id="break-input-area" class="box center-block" style="display: none;">
                     休憩時間：
-                    <input id="break-time" type="text" name="break_minute"
+                    <input id="break-time" type="text" name="rested_minutes"
                            value="15" class="form-control" style="width: 50%; display: inline-block;">
                 </div>
             </div>
@@ -117,7 +117,7 @@ echo $this->Html->script($base.'/lib/moment.min.js');
                 employeeId: $('#employee-id').val(),
                 path: $(this).data('path'),
                 time: moment().format('YYYY-MM-DD HH:mm:ss'),
-                break_minute: $('#break-time').val()
+                rested_minutes: $('#break-time').val()
             };
             console.log(parameter);
             $.ajax({

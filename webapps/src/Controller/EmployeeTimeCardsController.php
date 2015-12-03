@@ -201,7 +201,7 @@ class EmployeeTimeCardsController extends AppController
             $path = $data['path'];
             $time = $data['time'];
             $additions = [];
-            $additions['break_minute'] = $data['break_minute'];
+            $additions['rested_minutes'] = $data['rested_minutes'];
 
             $result = $this->EmployeeTimeCards->write($this->storeId, $employeeId, $path, $time, $additions);
 
