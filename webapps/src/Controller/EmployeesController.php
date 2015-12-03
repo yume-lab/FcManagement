@@ -82,7 +82,10 @@ class EmployeesController extends AppController
     public function edit($id = null)
     {
         $employee = $this->Employees->get($id, [
-            'contain' => ['EmployeeSalaries']
+            'contain' => ['EmployeeSalaries'],
+            'conditions' => [
+                'Employees.store_id' => parent::getCurrentStoreId()
+            ],
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $employee = $this->Employees->patchEntity(
