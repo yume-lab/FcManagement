@@ -9,7 +9,7 @@ CREATE TABLE users (
   last_name VARCHAR(50) NOT NULL,
   is_deleted TINYINT(1) NOT NULL DEFAULT 0,
   created datetime NOT NULL,
-  updated datetime NOT NULL,
+  modified datetime NOT NULL,
   PRIMARY KEY (id),
   UNIQUE uni_users(email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='ユーザーマスタ' AUTO_INCREMENT=1;
@@ -28,7 +28,7 @@ CREATE TABLE stores (
   closed TIME,
   is_deleted TINYINT(1) NOT NULL DEFAULT 0,
   created datetime NOT NULL,
-  updated datetime NOT NULL,
+  modified datetime NOT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='店舗マスタ' AUTO_INCREMENT=1;
 
@@ -39,7 +39,7 @@ CREATE TABLE store_categories (
   name VARCHAR(50) NOT NULL,
   is_deleted TINYINT(1) NOT NULL DEFAULT 0,
   created datetime NOT NULL,
-  updated datetime NOT NULL,
+  modified datetime NOT NULL,
   PRIMARY KEY (id),
   UNIQUE uni_store_categories(alias)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='店舗種別マスタ' AUTO_INCREMENT=1;
@@ -51,7 +51,7 @@ CREATE TABLE roles (
   name VARCHAR(50) NOT NULL,
   is_deleted TINYINT(1) NOT NULL DEFAULT 0,
   created datetime NOT NULL,
-  updated datetime NOT NULL,
+  modified datetime NOT NULL,
   PRIMARY KEY (id),
   UNIQUE uni_roles(alias)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='役割マスタ' AUTO_INCREMENT=1;
@@ -64,7 +64,7 @@ CREATE TABLE user_stores (
   role_id INT unsigned NOT NULL,
   is_deleted TINYINT(1) NOT NULL DEFAULT 0,
   created datetime NOT NULL,
-  updated datetime NOT NULL,
+  modified datetime NOT NULL,
   PRIMARY KEY (id),
   UNIQUE uni_user_stores(user_id, store_id, role_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='ユーザー管理店舗マスタ' AUTO_INCREMENT=1;
@@ -84,7 +84,7 @@ CREATE TABLE employees (
   last_name VARCHAR(50) NOT NULL,
   is_deleted TINYINT(1) NOT NULL DEFAULT 0,
   created datetime NOT NULL,
-  updated datetime NOT NULL,
+  modified datetime NOT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='従業員マスタ' AUTO_INCREMENT=1;
 
@@ -96,7 +96,7 @@ CREATE TABLE shift_tables (
   body TEXT DEFAULT NULL ,
   is_deleted TINYINT(1) NOT NULL DEFAULT 0,
   created datetime NOT NULL,
-  updated datetime NOT NULL,
+  modified datetime NOT NULL,
   PRIMARY KEY (id),
   UNIQUE uni_shift_tables(store_id, target_ym)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='シフト表データ' AUTO_INCREMENT=1;
@@ -110,40 +110,10 @@ CREATE TABLE fixed_shift_tables (
   body TEXT DEFAULT NULL ,
   is_deleted TINYINT(1) NOT NULL DEFAULT 0,
   created datetime NOT NULL,
-  updated datetime NOT NULL,
+  modified datetime NOT NULL,
   PRIMARY KEY (id),
   UNIQUE uni_fixed_shift_tables(store_id, target_ym, hash)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='確定シフト表データ' AUTO_INCREMENT=1;
-
--- パッチ….
-ALTER TABLE stores CHANGE updated modified datetime NOT NULL;
-ALTER TABLE store_categories CHANGE updated modified datetime NOT NULL;
-ALTER TABLE roles CHANGE updated modified datetime NOT NULL;
-ALTER TABLE users CHANGE updated modified datetime NOT NULL;
-ALTER TABLE user_stores CHANGE updated modified datetime NOT NULL;
-ALTER TABLE employees CHANGE updated modified datetime NOT NULL;
-ALTER TABLE shift_tables CHANGE updated modified datetime NOT NULL;
-ALTER TABLE fixed_shift_tables CHANGE updated modified datetime NOT NULL;
-ALTER TABLE time_card_states CHANGE updated modified datetime NOT NULL;
-ALTER TABLE time_cards CHANGE updated modified datetime NOT NULL;
-ALTER TABLE latest_time_cards CHANGE updated modified datetime NOT NULL;
-
--- 時給マスタ
--- TODO: 時給変動を管理するマスタにしたい
-/*
-CREATE TABLE salaries (
-  id INT unsigned NOT NULL AUTO_INCREMENT,
-  store_id INT unsigned NOT NULL,
-  start_time TIME NOT NULL,
-  end_time TIME NOT NULL,
-  amount SMALLINT unsigned NOT NULL,
-  is_deleted TINYINT(1) NOT NULL DEFAULT 0,
-  created datetime NOT NULL,
-  updated datetime NOT NULL,
-  PRIMARY KEY (id),
-  UNIQUE uni_salaries(store_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='勤怠状態マスタ' AUTO_INCREMENT=1;
-*/
 
 -- 基本時給管理
 CREATE TABLE employee_salaries (
@@ -153,7 +123,7 @@ CREATE TABLE employee_salaries (
   amount SMALLINT unsigned NOT NULL,
   is_deleted TINYINT(1) NOT NULL DEFAULT 0,
   created datetime NOT NULL,
-  updated datetime NOT NULL,
+  modified datetime NOT NULL,
   PRIMARY KEY (id),
   UNIQUE uni_employee_salaries(store_id, employee_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='従業員時給マスタ' AUTO_INCREMENT=1;
@@ -167,7 +137,7 @@ insert into
     `amount`,
     `is_deleted`,
     `created`,
-    `updated`
+    `modified`
   )
   (
     select
@@ -203,7 +173,7 @@ CREATE TABLE employee_time_cards (
   real_minute INT NOT NULL DEFAULT 0,
   is_deleted TINYINT(1) NOT NULL DEFAULT 0,
   created datetime NOT NULL,
-  updated datetime NOT NULL,
+  modified datetime NOT NULL,
   PRIMARY KEY (id),
   UNIQUE uni_employee_time_cards(store_id, employee_id, worked_date)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='タイムカードデータ' AUTO_INCREMENT=1;
@@ -216,11 +186,7 @@ CREATE TABLE time_card_states (
   label VARCHAR(50) NOT NULL,
   is_deleted TINYINT(1) NOT NULL DEFAULT 0,
   created datetime NOT NULL,
-  updated datetime NOT NULL,
+  modified datetime NOT NULL,
   PRIMARY KEY (id),
   UNIQUE uni_time_card_states(path)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='勤怠状態マスタ' AUTO_INCREMENT=1;
-
-ALTER TABLE employee_salaries CHANGE updated modified datetime NOT NULL;
-ALTER TABLE employee_time_cards CHANGE updated modified datetime NOT NULL;
-ALTER TABLE time_card_states CHANGE updated modified datetime NOT NULL;
