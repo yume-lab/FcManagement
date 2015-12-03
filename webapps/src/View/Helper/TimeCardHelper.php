@@ -205,12 +205,6 @@ class TimeCardHelper extends Helper {
             case '/end':
                 $class = 'danger';
                 break;
-            case '/break/start':
-                $class = 'primary';
-                break;
-            case '/break/end':
-                $class = 'warning';
-                break;
         }
         return $class;
     }
@@ -229,12 +223,6 @@ class TimeCardHelper extends Helper {
                 break;
             case '/end':
                 $icon = 'glyphicon-arrow-right';
-                break;
-            case '/break/start':
-                $icon = 'glyphicon-chevron-left';
-                break;
-            case '/break/end':
-                $icon = 'glyphicon-chevron-right';
                 break;
         }
         return $icon;

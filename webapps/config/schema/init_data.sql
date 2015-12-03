@@ -20,6 +20,4 @@ INSERT INTO time_card_states
   (`path`, `name`, `label`, `is_deleted`, `created`, `modified`)
 VALUES
   ('/start', '出勤', '就業中', '0', now(), now()),
-  ('/end', '退勤', '未出勤', '0', now(), now()),
-  ('/break/start', '休憩IN', '休憩中', '0', now(), now()),
-  ('/break/end', '休憩OUT', '就業中', '0', now(), now());
+  ('/end', '退勤', '未出勤', '0', now(), now());
