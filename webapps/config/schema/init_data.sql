@@ -14,7 +14,8 @@ VALUES
   ('/owner', '店舗オーナー', '0', now(), now()),
   ('/manager', '店長', '0', now(), now()),
   ('/part', 'アルバイト・パート', '0', now(), now()),
-  ('/help', '他店のヘルプ', '0', now(), now());
+  ('/help', '他店のヘルプ', '0', now(), now()),
+  ('/system', 'システム管理者', '0', now(), now());
 
 INSERT INTO time_card_states
   (`path`, `name`, `label`, `is_deleted`, `created`, `modified`)
