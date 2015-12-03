@@ -60,7 +60,14 @@ class EmployeesController extends AppController
         $roles = $this->Employees->Roles->find('list', ['limit' => 200]);
         $stores = $this->Employees->Stores->find('list', ['limit' => 200]);
         $storeId = parent::getCurrentStoreId();
-        $this->set(compact('employee', 'roles', 'stores', 'storeId'));
+
+        /** @var \App\Model\Table\StoreSettingsTable $StoreSettings */
+        $StoreSettings = TableRegistry::get('StoreSettings');
+        $setting = $StoreSettings->findByStoreId($storeId)->first();
+        $defaultSalary = $setting->default_hour_pay;
+        $defaultSalary = empty($defaultSalary) ? 0 : $defaultSalary;
+
+        $this->set(compact('employee', 'roles', 'stores', 'storeId', 'defaultSalary'));
         $this->set('_serialize', ['employee']);
     }
 
