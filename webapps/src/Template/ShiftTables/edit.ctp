@@ -429,9 +429,15 @@ $resources = json_encode($resources);
 
             <div class="box-content">
                 <?= $this->Flash->render() ?>
-                <div class="box col-md-6">
+                <div class="col-md-12" style="padding: 0.5em 0;">
+                    <div class="alert alert-info">
+                        「月合計時間」は、総労働 (実働時間)の順番で記載されています。<br/>
+                        例： 8 (7.5)
+                    </div>
                 </div>
-                <div class="box col-md-6" style="text-align: right;">
+
+                <div class="col-md-12"
+                     style="text-align: right;padding: 0.5em 0;">
                     <a id="save" class="btn btn-info" href="#">
                         <i class="glyphicon glyphicon-pencil icon-white"></i>
                         一時保存
