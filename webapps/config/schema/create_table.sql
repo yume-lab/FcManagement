@@ -162,3 +162,19 @@ CREATE TABLE time_card_states (
   PRIMARY KEY (id),
   UNIQUE uni_time_card_states(path)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='勤怠状態マスタ' AUTO_INCREMENT=1;
+
+-- 店舗の詳細設定
+CREATE TABLE store_settings (
+  id INT unsigned NOT NULL AUTO_INCREMENT,
+  store_id INT unsigned NOT NULL,
+  training_hour INT DEFAULT 0,
+  training_hour_pay INT DEFAULT 0,
+  default_hour_pay INT DEFAULT 0,
+  default_fare INT DEFAULT 0,
+  rested_times TEXT DEFAULT NULL ,
+  is_deleted TINYINT(1) NOT NULL DEFAULT 0,
+  created datetime NOT NULL,
+  modified datetime NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE uni_store_settings(store_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='店舗個別設定マスタ' AUTO_INCREMENT=1;

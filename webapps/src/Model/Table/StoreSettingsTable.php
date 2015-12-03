@@ -1,19 +1,18 @@
 <?php
 namespace App\Model\Table;
 
-use App\Model\Entity\Store;
+use App\Model\Entity\StoreSetting;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * Stores Model
+ * StoreSettings Model
  *
- * @property \Cake\ORM\Association\BelongsTo $StoreCategories
- * @property \Cake\ORM\Association\HasMany $Employees
+ * @property \Cake\ORM\Association\BelongsTo $Stores
  */
-class StoresTable extends Table
+class StoreSettingsTable extends Table
 {
 
     /**
@@ -26,20 +25,13 @@ class StoresTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('stores');
-        $this->displayField('name');
+        $this->table('store_settings');
+        $this->displayField('id');
         $this->primaryKey('id');
 
         $this->addBehavior('Timestamp');
 
-        $this->belongsTo('StoreCategories', [
-            'foreignKey' => 'store_category_id',
-            'joinType' => 'INNER'
-        ]);
-        $this->hasMany('Employees', [
-            'foreignKey' => 'store_id'
-        ]);
-        $this->hasOne('StoreSettings');
+        $this->hasOne('Stores');
     }
 
     /**
@@ -55,36 +47,23 @@ class StoresTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->requirePresence('name', 'create')
-            ->notEmpty('name');
+            ->add('training_hour', 'valid', ['rule' => 'numeric'])
+            ->allowEmpty('training_hour');
 
         $validator
-            ->requirePresence('phone_number', 'create')
-            ->notEmpty('phone_number');
+            ->add('training_hour_pay', 'valid', ['rule' => 'numeric'])
+            ->allowEmpty('training_hour_pay');
 
         $validator
-            ->requirePresence('zip_code', 'create')
-            ->notEmpty('zip_code');
+            ->add('default_hour_pay', 'valid', ['rule' => 'numeric'])
+            ->allowEmpty('default_hour_pay');
 
         $validator
-            ->requirePresence('address_1', 'create')
-            ->notEmpty('address_1');
+            ->add('default_fare', 'valid', ['rule' => 'numeric'])
+            ->allowEmpty('default_fare');
 
         $validator
-            ->requirePresence('address_2', 'create')
-            ->notEmpty('address_2');
-
-        $validator
-            ->requirePresence('address_3', 'create')
-            ->notEmpty('address_3');
-
-        $validator
-            ->add('opened', 'valid', ['rule' => 'time'])
-            ->allowEmpty('opened');
-
-        $validator
-            ->add('closed', 'valid', ['rule' => 'time'])
-            ->allowEmpty('closed');
+            ->allowEmpty('rested_times');
 
         $validator
             ->add('is_deleted', 'valid', ['rule' => 'boolean'])
@@ -103,7 +82,7 @@ class StoresTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['store_category_id'], 'StoreCategories'));
+        $rules->add($rules->existsIn(['store_id'], 'Stores'));
         return $rules;
     }
 }
