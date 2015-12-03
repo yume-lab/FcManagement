@@ -146,7 +146,7 @@
          */
         $('form').submit(function() {
             var restedTimeValues = [];
-            $('.rested-time-row').each(function() {
+            $('#break-settings').children('.rested-time-row').each(function() {
                 var worked = $(this).find('[name="worked"]').val();
                 var rested = $(this).find('[name="rested"]').val();
                 // 時間は分に直す
