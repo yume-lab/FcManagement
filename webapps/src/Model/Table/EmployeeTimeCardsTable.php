@@ -86,19 +86,19 @@ class EmployeeTimeCardsTable extends Table
             ->allowEmpty('round_end_time');
 
         $validator
-            ->add('work_minute', 'valid', ['rule' => 'numeric'])
-            ->requirePresence('work_minute', 'create')
-            ->notEmpty('work_minute');
+            ->add('worked_minutes', 'valid', ['rule' => 'numeric'])
+            ->requirePresence('worked_minutes', 'create')
+            ->notEmpty('worked_minutes');
 
         $validator
-            ->add('break_minute', 'valid', ['rule' => 'numeric'])
-            ->requirePresence('break_minute', 'create')
-            ->notEmpty('break_minute');
+            ->add('rested_minutes', 'valid', ['rule' => 'numeric'])
+            ->requirePresence('rested_minutes', 'create')
+            ->notEmpty('rested_minutes');
 
         $validator
-            ->add('real_minute', 'valid', ['rule' => 'numeric'])
-            ->requirePresence('real_minute', 'create')
-            ->notEmpty('real_minute');
+            ->add('real_worked_minutes', 'valid', ['rule' => 'numeric'])
+            ->requirePresence('real_worked_minutes', 'create')
+            ->notEmpty('real_worked_minutes');
 
         $validator
             ->add('is_deleted', 'valid', ['rule' => 'boolean'])
@@ -203,7 +203,7 @@ class EmployeeTimeCardsTable extends Table
      *  - round_start_time
      *  - round_end_time
      *  - hour_pay
-     *  - break_minute
+     *  - rested_minutes
      * @return bool|\Cake\Datasource\EntityInterface
      */
     public function patch($storeId, $employeeId, $workedDate, $values)
@@ -336,17 +336,17 @@ class EmployeeTimeCardsTable extends Table
     private function summary($data)
     {
         $summaries = [
-            'work_minute' => empty($data['work_minute']) ? 0 : $data['work_minute'],
-            'break_minute' => empty($data['break_minute']) ? 0 : $data['break_minute'],
-            'real_minute' => empty($data['real_minute']) ? 0 : $data['real_minute']
+            'worked_minutes' => empty($data['worked_minutes']) ? 0 : $data['worked_minutes'],
+            'rested_minutes' => empty($data['rested_minutes']) ? 0 : $data['rested_minutes'],
+            'real_worked_minutes' => empty($data['real_worked_minutes']) ? 0 : $data['real_worked_minutes']
         ];
 
         if (isset($data['round_end_time'])) {
-            $summaries['work_minute'] = $this->diffMinutes($data['round_start_time'], $data['round_end_time']);
-            $summaries['real_minute'] = $summaries['work_minute'] - $summaries['break_minute'];
+            $summaries['worked_minutes'] = $this->diffMinutes($data['round_start_time'], $data['round_end_time']);
+            $summaries['real_worked_minutes'] = $summaries['worked_minutes'] - $summaries['rested_minutes'];
         }
-        if (!empty($summaries['work_minute'])) {
-            $summaries['real_minute'] = $summaries['work_minute'] - $summaries['break_minute'];
+        if (!empty($summaries['worked_minutes'])) {
+            $summaries['real_worked_minutes'] = $summaries['worked_minutes'] - $summaries['rested_minutes'];
         }
 
         return $summaries;

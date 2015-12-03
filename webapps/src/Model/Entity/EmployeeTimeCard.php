@@ -19,9 +19,9 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\Time $end_time
  * @property \Cake\I18n\Time $round_start_time
  * @property \Cake\I18n\Time $round_end_time
- * @property int $work_minute
- * @property int $break_minute
- * @property int $real_minute
+ * @property int $worked_minutes
+ * @property int $rested_minutes
+ * @property int $real_worked_minutes
  * @property bool $is_deleted
  * @property \Cake\I18n\Time $created
  * @property \Cake\I18n\Time $updated
