@@ -49,7 +49,7 @@ class ShiftTablesController extends AppController
         /** @var \App\Model\Table\StoreSettingsTable $StoreSettings */
         $StoreSettings = TableRegistry::get('StoreSettings');
         $setting = $StoreSettings->findByStoreId($store->id)->first();
-        $break = $setting->rested_times;
+        $break = empty($setting->rested_times) ? '[]' : $setting->rested_times;
 
         $this->set(compact('opened', 'closed', 'interval', 'times', 'employees', 'break'));
         $this->set('_serialize', ['employees']);
