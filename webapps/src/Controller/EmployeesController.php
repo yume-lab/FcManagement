@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Controller\AppController;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
+use Cake\Datasource\Exception\RecordNotFoundException;
 
 /**
  * Employees Controller
@@ -81,29 +82,37 @@ class EmployeesController extends AppController
      */
     public function edit($id = null)
     {
-        $employee = $this->Employees->get($id, [
-            'contain' => ['EmployeeSalaries'],
-            'conditions' => [
-                'Employees.store_id' => parent::getCurrentStoreId()
-            ],
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $employee = $this->Employees->patchEntity(
-                $employee,
-                $this->request->data,
-                ['associated' => ['EmployeeSalaries']]
-            );
-            if ($this->Employees->save($employee)) {
-                $this->Flash->success(__('従業員情報を更新しました。'));
-                return $this->redirect(['action' => 'index']);
-            } else {
-                $this->Flash->error('更新に失敗しました。担当者に問い合わせてください。');
+        try {
+            $employee = $this->Employees->get($id, [
+                'contain' => ['EmployeeSalaries'],
+                'conditions' => [
+                    'Employees.store_id' => parent::getCurrentStoreId()
+                ],
+            ]);
+
+            if ($this->request->is(['patch', 'post', 'put'])) {
+                $employee = $this->Employees->patchEntity(
+                    $employee,
+                    $this->request->data,
+                    ['associated' => ['EmployeeSalaries']]
+                );
+                if ($this->Employees->save($employee)) {
+                    $this->Flash->success(__('従業員情報を更新しました。'));
+                    return $this->redirect(['action' => 'index']);
+                } else {
+                    $this->Flash->error('更新に失敗しました。担当者に問い合わせてください。');
+                }
             }
+
+            $roles = $this->Employees->Roles->find('list', ['limit' => 200]);
+            $stores = $this->Employees->Stores->find('list', ['limit' => 200]);
+            $this->set(compact('employee', 'roles', 'stores'));
+            $this->set('_serialize', ['employee']);
+        } catch (RecordNotFoundException $ex) {
+            // 不正アクセスで従業員が見つからない場合
+            $this->Flash->error(__('対象の従業員が見つかりませんでした。'));
+            return $this->redirect(['action' => 'index']);
         }
-        $roles = $this->Employees->Roles->find('list', ['limit' => 200]);
-        $stores = $this->Employees->Stores->find('list', ['limit' => 200]);
-        $this->set(compact('employee', 'roles', 'stores'));
-        $this->set('_serialize', ['employee']);
     }
 
     /**
