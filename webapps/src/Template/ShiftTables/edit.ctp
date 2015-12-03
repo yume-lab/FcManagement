@@ -40,14 +40,17 @@ $resources = json_encode($resources);
 
         var calendarSelector = '#shift-calendar';
 
-        var restedTable = function() {
+        /**
+         * 休憩基本設定の情報
+         */
+        var restedTable = (function() {
             var range = $('#break-range').val();
             var restedInfo = $.parseJSON(range) || [];
             restedInfo.sort(function(one, two) {
                 return parseInt(one.worked) - parseInt(two.worked);
             });
             return restedInfo;
-        }
+        })();
 
         /**
          * Popoverの非表示処理.
@@ -373,19 +376,14 @@ $resources = json_encode($resources);
                     }
                 });
             },
-            // TODO: inputで従業員の人を表示させないようにしたら
-//            resources: {
-//                url: '/api/shift/resources',
-//                type: 'POST'
-//            }
-            resourceAreaWidth: '20%',
+            resourceAreaWidth: '25%',
             resourceColumns: [
                 {
                     labelText: '従業員',
                     field: 'title'
                 },
                 {
-                    labelText: '月合計',
+                    labelText: '月合計時間',
                     text: function(resource) {
                         console.log('text resource');
                         console.log(resource);
@@ -394,20 +392,23 @@ $resources = json_encode($resources);
                         });
                         console.log(events);
 
+                        // 総労働時間と実働時間の計算
                         var worked = 0;
                         var rested = 0;
                         (events || []).forEach(function(event, index, arr) {
-                            worked += event.end.diff(event.start, 'minutes');
-                            restedTable.some(function(info, index) {
-                                if (worked < info.worked) {
-                                    return true;
-                                }
-                                rested += info.rested;
-                            });
+                            var dayWorked = event.end.diff(event.start, 'minutes');
+                            var restedTimes = $.grep(restedTable, function(item, index) {
+                                return (item.worked <= dayWorked);
+                            }) || [];
+                            var dayRested = 0;
+                            if (restedTimes.length > 0) {
+                                dayRested = restedTimes.pop().rested;
+                            }
+                            worked += parseInt(dayWorked);
+                            rested += parseInt(dayRested);
                         });
-                        console.log(worked);
-                        console.log(rested);
-                        return worked == 0 ? '0' : (worked / 60) + ' 時間 ' + rested;
+                        return worked == 0 ? '0'
+                            : (worked / 60) + ' (' + ((worked - rested) / 60) + ')';
                     }
                 }
             ],
