@@ -224,6 +224,3 @@ CREATE TABLE time_card_states (
 ALTER TABLE employee_salaries CHANGE updated modified datetime NOT NULL;
 ALTER TABLE employee_time_cards CHANGE updated modified datetime NOT NULL;
 ALTER TABLE time_card_states CHANGE updated modified datetime NOT NULL;
-
-ALTER TABLE employee_time_cards ADD round_start_time TIME AFTER end_time;
-ALTER TABLE employee_time_cards ADD round_end_time TIME AFTER round_start_time;
