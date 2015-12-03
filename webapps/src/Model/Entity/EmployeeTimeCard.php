@@ -17,8 +17,8 @@ use Cake\ORM\Entity;
  * @property int $hour_pay
  * @property \Cake\I18n\Time $start_time
  * @property \Cake\I18n\Time $end_time
- * @property \Cake\I18n\Time $break_start_time
- * @property \Cake\I18n\Time $break_end_time
+ * @property \Cake\I18n\Time $round_start_time
+ * @property \Cake\I18n\Time $round_end_time
  * @property int $work_minute
  * @property int $break_minute
  * @property int $real_minute

@@ -78,12 +78,12 @@ class EmployeeTimeCardsTable extends Table
             ->allowEmpty('end_time');
 
         $validator
-            ->add('break_start_time', 'valid', ['rule' => 'time'])
-            ->allowEmpty('break_start_time');
+            ->add('round_start_time', 'valid', ['rule' => 'time'])
+            ->allowEmpty('round_start_time');
 
         $validator
-            ->add('break_end_time', 'valid', ['rule' => 'time'])
-            ->allowEmpty('break_end_time');
+            ->add('round_end_time', 'valid', ['rule' => 'time'])
+            ->allowEmpty('round_end_time');
 
         $validator
             ->add('work_minute', 'valid', ['rule' => 'numeric'])
