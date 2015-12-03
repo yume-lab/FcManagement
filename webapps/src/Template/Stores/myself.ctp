@@ -1,4 +1,9 @@
 <?php $this->assign('title', '店舗編集'); ?>
+<?php
+$rested_times = $store->store_setting->rested_times;
+$rested_times = empty($rested_times) ? [] : $rested_times;
+$rested_times = json_decode($rested_times, true);
+?>
 <style>
     .form-control {
         display: inline;
@@ -97,6 +102,22 @@
                                     ['label' => '支給金額（1勤務あたり）']); ?>
                             <legend>休憩設定</legend>
                             <div id="break-settings">
+                                <?php foreach ($rested_times as $info): ?>
+                                    <div class="rested-time-row">
+                                        総労働
+                                        <input class="form-control" type="number" name="worked"
+                                               value="<?= ($info['worked'] / 60) ?>">
+                                        時間で、
+                                        <input class="form-control" type="number" name="rested"
+                                               value="<?= $info['rested'] ?>">
+                                        分の休憩
+
+                                        <a class="btn btn-danger btn-sm delete-row" href="#">
+                                            <i class="glyphicon glyphicon-trash icon-white"></i>
+                                        </a>
+                                    </div>
+                                <?php endforeach; ?>
+
                                 <div id="base" style="display: none;">
                                     <div class="rested-time-row">
                                         総労働
@@ -177,7 +198,5 @@
             $(this).closest('.rested-time-row').remove();
             return false;
         });
-
-        addRestedTimeRow();
     });
 </script>
