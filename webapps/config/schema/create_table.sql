@@ -196,8 +196,8 @@ CREATE TABLE employee_time_cards (
   hour_pay SMALLINT unsigned NOT NULL,
   start_time TIME,
   end_time TIME,
-  break_start_time TIME,
-  break_end_time TIME,
+  round_start_time TIME,
+  round_end_time TIME,
   work_minute INT NOT NULL DEFAULT 0,
   break_minute INT NOT NULL DEFAULT 0,
   real_minute INT NOT NULL DEFAULT 0,
@@ -227,7 +227,3 @@ ALTER TABLE time_card_states CHANGE updated modified datetime NOT NULL;
 
 ALTER TABLE employee_time_cards ADD round_start_time TIME AFTER end_time;
 ALTER TABLE employee_time_cards ADD round_end_time TIME AFTER round_start_time;
-
--- TODO: いつか実行
--- ALTER TABLE employee_time_cards drop column break_start_time;
--- ALTER TABLE employee_time_cards drop column break_end_time;
