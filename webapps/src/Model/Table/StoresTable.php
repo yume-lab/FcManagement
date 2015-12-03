@@ -39,6 +39,7 @@ class StoresTable extends Table
         $this->hasMany('Employees', [
             'foreignKey' => 'store_id'
         ]);
+        $this->hasOne('StoreSettings');
     }
 
     /**

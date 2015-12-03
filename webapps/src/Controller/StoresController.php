@@ -119,8 +119,9 @@ class StoresController extends AppController
         // TODO: DBもしくは設定ファイルに、シフトと絡む
         $interval = 15;
         $store = $this->Stores->get(parent::getCurrentStoreId(), [
-            'contain' => []
+            'contain' => ['StoreSettings']
         ]);
+        $this->log($store);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $store = $this->Stores->patchEntity($store, $this->request->data);
             if ($this->Stores->save($store)) {

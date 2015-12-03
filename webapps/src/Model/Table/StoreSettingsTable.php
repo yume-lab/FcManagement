@@ -31,10 +31,7 @@ class StoreSettingsTable extends Table
 
         $this->addBehavior('Timestamp');
 
-        $this->belongsTo('Stores', [
-            'foreignKey' => 'store_id',
-            'joinType' => 'INNER'
-        ]);
+        $this->hasOne('Stores');
     }
 
     /**

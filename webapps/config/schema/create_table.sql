@@ -167,7 +167,9 @@ CREATE TABLE time_card_states (
 CREATE TABLE store_settings (
   id INT unsigned NOT NULL AUTO_INCREMENT,
   store_id INT unsigned NOT NULL,
-  training_minutes INT DEFAULT 0,
+  training_hour INT DEFAULT 0,
+  training_hour_pay INT DEFAULT 0,
+  default_hour_pay INT DEFAULT 0,
   default_fare INT DEFAULT 0,
   rested_times TEXT DEFAULT NULL ,
   is_deleted TINYINT(1) NOT NULL DEFAULT 0,
