@@ -21,7 +21,7 @@ page.viewportSize = {
     height: 900
 };
 
-page.open(address, function (status) {
+page.open(url, function (status) {
     if (status !== 'success') {
         console.log('Unable to load the address!');
         phantom.exit(1);

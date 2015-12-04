@@ -45,6 +45,7 @@ Router::scope('/', function ($routes) {
     $routes->connect('/fixed', ['controller' => 'FixedShiftTables', 'action' => 'index']);
     $routes->connect('/fixed/view/*', ['controller' => 'FixedShiftTables', 'action' => 'view']);
     $routes->connect('/fixed/output/*', ['controller' => 'FixedShiftTables', 'action' => 'output']);
+    $routes->connect('/fixed/printing/*', ['controller' => 'FixedShiftTables', 'action' => 'printing']);
 
     // 新勤怠一覧
     $routes->connect('/time-cards/', ['controller' => 'EmployeeTimeCards', 'action' => 'index']);

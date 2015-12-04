@@ -122,7 +122,7 @@ class FixedShiftTablesController extends AppController
         exec(vsprintf($command, $parameter));
 
         $command = <<< EOF
-wkhtmltopdf --page-size A4 --orientation landscape --encoding UTF-8 -B 1 -L 1 -R 1 -T 1 --disable-javascript --print-media-type %s %s';
+wkhtmltopdf --page-size A4 --orientation landscape --encoding UTF-8 -B 1 -L 1 -R 1 -T 1 --disable-javascript --print-media-type %s %s;
 EOF;
         $parameter = [
             $outHtml,
