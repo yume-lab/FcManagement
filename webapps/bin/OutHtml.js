@@ -5,11 +5,11 @@
  *  - 引数2: URL  ex. "/fixed/output/..."
  */
 var page = require('webpage').create(),
-    system = require('system'),
-    address, output, size;
+    system = require('system');
 
 var host = system.args[1];
 var address = system.args[2];
+var url = 'http://' + host + address;
 
 page.paperSize = {
     format: "A4",

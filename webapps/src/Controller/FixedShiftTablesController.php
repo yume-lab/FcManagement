@@ -102,4 +102,37 @@ class FixedShiftTablesController extends AppController
         $this->render('Pdf/output');
     }
 
+    public function printing($hash = null)
+    {
+        //define('TMP', ROOT . DS . 'tmp' . DS);
+        $bin = ROOT . DS . 'bin' . DS;
+        $script = $bin . 'OutHtml.js';
+        $outPath = TMP . 'pdf/shift/';
+
+        $outHtml = $outPath.$hash.'.html';
+        $outPdf = $outPath.$hash.'.pdf';
+
+        $command = 'phantomjs %s %s %s > %s;';
+        $parameter = [
+            $script,
+            'localhost:1111', // TODO: test
+            '/fixed/output/'.$hash,
+            $outHtml
+        ];
+        exec(vsprintf($command, $parameter));
+
+        $command = <<< EOF
+wkhtmltopdf --page-size A4 --orientation landscape --encoding UTF-8 -B 1 -L 1 -R 1 -T 1 --disable-javascript --print-media-type %s %s';
+EOF;
+        $parameter = [
+            $outHtml,
+            $outPdf
+        ];
+        exec(vsprintf($command, $parameter));
+
+        $this->response->type('pdf');
+        $this->response->file($outPdf ,
+            array('download'=> true, 'name'=> $outPdf));
+    }
+
 }
