@@ -17,6 +17,15 @@ class FixedShiftTablesController extends AppController
 {
 
     /**
+     * 初期処理.
+     */
+    public function initialize() {
+        parent::initialize();
+
+        $this->UserAuth->allow(['output']);
+    }
+
+    /**
      * 確定シフトの一覧表示
      *
      * @return void
@@ -67,17 +76,14 @@ class FixedShiftTablesController extends AppController
         $this->set('_serialize', ['data', 'employees']);
     }
 
-
-    public function initialize() {
-        parent::initialize();
-
-        $this->UserAuth->allow(['output']);
-    }
-
+    /**
+     * 確定されたシフトのPDF出力用Actionです.
+     * これはバッチからのみアクセスされます.
+     * @param null $hash
+     */
     public function output($hash = null)
     {
         $this->viewBuilder()->layout('Pdf/shift');
-
 
         $data = $this->FixedShiftTables->find()
             ->where(['hash' => $hash])
