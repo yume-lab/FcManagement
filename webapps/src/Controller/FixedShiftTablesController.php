@@ -67,4 +67,33 @@ class FixedShiftTablesController extends AppController
         $this->set('_serialize', ['data', 'employees']);
     }
 
+
+    public function initialize() {
+        parent::initialize();
+
+        $this->UserAuth->allow(['output']);
+    }
+
+    public function output($hash = null)
+    {
+        $this->viewBuilder()->layout('Pdf/shift');
+
+
+        $data = $this->FixedShiftTables->find()
+            ->where(['hash' => $hash])
+            ->where(['is_deleted' => false])
+            ->first();
+
+        if (empty($data)) {
+            throw new NotFoundException();
+        }
+        /** @var \App\Model\Table\EmployeesTable $Employees */
+        $Employees = TableRegistry::get('Employees');
+        $employees = $Employees->findByStoreId($data->store_id);
+        $this->set(compact('data', 'employees'));
+        $this->set('_serialize', ['data', 'employees']);
+
+        $this->render('Pdf/output');
+    }
+
 }

@@ -44,6 +44,7 @@ Router::scope('/', function ($routes) {
     // シフト表閲覧
     $routes->connect('/fixed', ['controller' => 'FixedShiftTables', 'action' => 'index']);
     $routes->connect('/fixed/view/*', ['controller' => 'FixedShiftTables', 'action' => 'view']);
+    $routes->connect('/fixed/output/*', ['controller' => 'FixedShiftTables', 'action' => 'output']);
 
     // 新勤怠一覧
     $routes->connect('/time-cards/', ['controller' => 'EmployeeTimeCards', 'action' => 'index']);
