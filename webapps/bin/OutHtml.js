@@ -27,7 +27,6 @@ page.open(url, function (status) {
         phantom.exit(1);
     } else {
         window.setTimeout(function () {
-            page.render(output);
             var html = page.content;
             html = html.replace(/href="/gi, 'href="http://'+host+'/');
             html = html.replace(/src="/gi, 'src="http://'+host+'/');

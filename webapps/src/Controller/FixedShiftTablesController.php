@@ -104,7 +104,10 @@ class FixedShiftTablesController extends AppController
 
     public function printing($hash = null)
     {
-        //define('TMP', ROOT . DS . 'tmp' . DS);
+        $this->autoRender = false;
+
+        // TODO: 全体的にシェルにする
+
         $bin = ROOT . DS . 'bin' . DS;
         $script = $bin . 'OutHtml.js';
         $outPath = TMP . 'pdf/shift/';
@@ -112,27 +115,31 @@ class FixedShiftTablesController extends AppController
         $outHtml = $outPath.$hash.'.html';
         $outPdf = $outPath.$hash.'.pdf';
 
-        $command = 'phantomjs %s %s %s > %s;';
+        $command = '/usr/local/bin/phantomjs %s %s %s;';
         $parameter = [
             $script,
             'localhost:1111', // TODO: test
-            '/fixed/output/'.$hash,
-            $outHtml
+            '/fixed/output/'.$hash
         ];
-        exec(vsprintf($command, $parameter));
+        $html = shell_exec(vsprintf($command, $parameter));
+        if (empty($html)) {
+            // TODO: 例外処理
+            return;
+        }
+        file_put_contents($outHtml, $html);
 
         $command = <<< EOF
-wkhtmltopdf --page-size A4 --orientation landscape --encoding UTF-8 -B 1 -L 1 -R 1 -T 1 --disable-javascript --print-media-type %s %s;
+/usr/local/bin/wkhtmltopdf --page-size A4 --orientation landscape --encoding UTF-8 -B 1 -L 1 -R 1 -T 1 --disable-javascript --print-media-type %s %s;
 EOF;
         $parameter = [
             $outHtml,
             $outPdf
         ];
-        exec(vsprintf($command, $parameter));
+        $result = shell_exec(vsprintf($command, $parameter));
 
         $this->response->type('pdf');
         $this->response->file($outPdf ,
-            array('download'=> true, 'name'=> $outPdf));
+            array('download'=> false, 'name'=> $hash.'.pdf'));
     }
 
 }
