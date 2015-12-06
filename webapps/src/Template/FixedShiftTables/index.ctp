@@ -15,7 +15,7 @@
                         <th>年月</th>
                         <th>確認用ID</th>
                         <th>作成日</th>
-                        <th>有効/無効</th>
+                        <th>操作</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -30,6 +30,14 @@
                             </td>
                             <td><?= h(date('Y/m/d H:i:s', strtotime($row->created))) ?></td>
                             <td><?= h(empty($row->is_deleted) ? '有効' : '無効') ?></td>
+                            <td class="actions center">
+                                <a class="btn btn-primary btn-sm" target="_blank"
+                                   href="/fixed/download/<?= $row->hash ?>">
+                                    <i class="glyphicon glyphicon-download icon-white"></i>
+                                    PDFダウンロード
+                                </a>
+                            </td>
+
                         </tr>
                     <?php endforeach; ?>
                     </tbody>

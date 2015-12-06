@@ -50,9 +50,6 @@ class FixedShiftTablesController extends AppController
      * シフト表表示.
      * このアクションは未ログインでも見れる.
      *
-     * TODO: ログインしなくても見れるように
-     * TODO: レイアウト整える
-     *
      * @param string|null $hash シフト表のハッシュ
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      * @return void
@@ -60,20 +57,44 @@ class FixedShiftTablesController extends AppController
     public function view($hash = null)
     {
         parent::removeViewFrame();
+        $this->setData($hash);
+    }
 
-        $data = $this->FixedShiftTables->find()
-            ->where(['hash' => $hash])
-            ->where(['is_deleted' => false])
-            ->first();
+    /**
+     * PDFダウンロード処理を行います.
+     * @param string|null $hash シフト表のハッシュ
+     * @return void PDFファイルダウンロードのレスポンス
+     */
+    public function download($hash = null)
+    {
+        $this->autoRender = false;
 
-        if (empty($data)) {
-            throw new NotFoundException();
-        }
-        /** @var \App\Model\Table\EmployeesTable $Employees */
-        $Employees = TableRegistry::get('Employees');
-        $employees = $Employees->findByStoreId(parent::getCurrentStoreId());
-        $this->set(compact('data', 'employees'));
-        $this->set('_serialize', ['data', 'employees']);
+        $data = $this->FixedShiftTables->findByHash($hash);
+        $ym = $data->target_ym;
+
+        // 保存先ディレクトリ作成
+        $structure = TMP_PDF_SHIFT . $hash . DS;
+        mkdir($structure, 0777, true);
+
+        // 元になるHTML作成
+        $script = BIN . 'OutHtml.js';
+        $command = PHANTOMJS . ' %s %s %s;';
+        $parameter = [$script, $this->request->host(), '/fixed/prepare/' . $hash];
+        $html = shell_exec(vsprintf($command, $parameter));
+
+        $htmlPath = $structure . $ym . '.html';
+        file_put_contents($htmlPath, $html);
+
+        // HTMLからPDFを作成
+        $pdfPath = $structure . $ym . '.pdf';
+        $command = <<< EOF
+%s --page-size A4 --orientation landscape --encoding UTF-8 --disable-javascript --print-media-type %s %s;
+EOF;
+        $parameter = [WKHTML, $htmlPath, $pdfPath];
+        shell_exec(vsprintf($command, $parameter));
+        $this->response->type('pdf');
+        $this->response->file($pdfPath,
+            array('download'=> true, 'name'=> $ym.'.pdf'));
     }
 
     /**
@@ -81,65 +102,29 @@ class FixedShiftTablesController extends AppController
      * これはバッチからのみアクセスされます.
      * @param null $hash
      */
-    public function output($hash = null)
+    public function prepare($hash = null)
     {
         $this->viewBuilder()->layout('Pdf/shift');
+        $this->setData($hash);
+        $this->render('Pdf/prepare');
+    }
 
-        $data = $this->FixedShiftTables->find()
-            ->where(['hash' => $hash])
-            ->where(['is_deleted' => false])
-            ->first();
-
+    /**
+     * シフト表に表示するデータを画面に設定します.
+     * @param $hash string ハッシュキー
+     */
+    private function setData($hash)
+    {
+        $data = $this->FixedShiftTables->findByHash($hash);
         if (empty($data)) {
             throw new NotFoundException();
         }
+
         /** @var \App\Model\Table\EmployeesTable $Employees */
         $Employees = TableRegistry::get('Employees');
         $employees = $Employees->findByStoreId($data->store_id);
         $this->set(compact('data', 'employees'));
         $this->set('_serialize', ['data', 'employees']);
-
-        $this->render('Pdf/output');
-    }
-
-    public function printing($hash = null)
-    {
-        $this->autoRender = false;
-
-        // TODO: 全体的にシェルにする
-
-        $bin = ROOT . DS . 'bin' . DS;
-        $script = $bin . 'OutHtml.js';
-        $outPath = TMP . 'pdf/shift/';
-
-        $outHtml = $outPath.$hash.'.html';
-        $outPdf = $outPath.$hash.'.pdf';
-
-        $command = '/usr/local/bin/phantomjs %s %s %s;';
-        $parameter = [
-            $script,
-            'localhost:1111', // TODO: test
-            '/fixed/output/'.$hash
-        ];
-        $html = shell_exec(vsprintf($command, $parameter));
-        if (empty($html)) {
-            // TODO: 例外処理
-            return;
-        }
-        file_put_contents($outHtml, $html);
-
-        $command = <<< EOF
-/usr/local/bin/wkhtmltopdf --page-size A4 --orientation landscape --encoding UTF-8 -B 1 -L 1 -R 1 -T 1 --disable-javascript --print-media-type %s %s;
-EOF;
-        $parameter = [
-            $outHtml,
-            $outPdf
-        ];
-        $result = shell_exec(vsprintf($command, $parameter));
-
-        $this->response->type('pdf');
-        $this->response->file($outPdf ,
-            array('download'=> false, 'name'=> $hash.'.pdf'));
     }
 
 }
