@@ -32,16 +32,15 @@ echo $this->Html->script(CHARISMA_BOWER.'/fullcalendar/dist/lang-all.js');
         width: 1em !important;
     }
 
-    /*
-        .fc-rows td.fc-widget-content div,
-        .fc-event-container {
-            height: 40px !important;
-        }
-        .fc-timeline-event,
-        .fc-timeline-event .fc-time {
-            padding: 0;
-        }
-    */
+    .fc-rows td.fc-widget-content div,
+    .fc-event-container {
+        height: 48px !important;
+    }
+    .fc-timeline-event,
+    .fc-timeline-event .fc-time {
+        padding: 0;
+        border: none !important;
+    }
 </style>
 
 <?php
