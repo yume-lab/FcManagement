@@ -22,7 +22,7 @@ class FixedShiftTablesController extends AppController
     public function initialize() {
         parent::initialize();
 
-        $this->UserAuth->allow(['output']);
+        $this->UserAuth->allow(['prepare']);
     }
 
     /**
@@ -76,21 +76,22 @@ class FixedShiftTablesController extends AppController
         $structure = TMP_PDF_SHIFT . $hash . DS;
         mkdir($structure, 0777, true);
 
+        // それぞれのパスを生成
+        $htmlPath = $structure . $ym . '.html';
+        $pdfPath = $structure . $ym . '.pdf';
+
         // 元になるHTML作成
         $script = BIN . 'OutHtml.js';
         $command = PHANTOMJS . ' %s %s %s;';
         $parameter = [$script, $this->request->host(), '/fixed/prepare/' . $hash];
         $html = shell_exec(vsprintf($command, $parameter));
-
-        $htmlPath = $structure . $ym . '.html';
         file_put_contents($htmlPath, $html);
 
         // HTMLからPDFを作成
-        $pdfPath = $structure . $ym . '.pdf';
-        $command = <<< EOF
-%s --page-size A4 --orientation landscape --encoding UTF-8 --disable-javascript --print-media-type %s %s;
-EOF;
-        $parameter = [WKHTML, $htmlPath, $pdfPath];
+        $command = WKHTML . '%s %s %s';
+        $option = ' --page-size A4 --orientation landscape --encoding UTF-8';
+        $option .= ' -L 3 -R 3 --disable-javascript --print-media-type';
+        $parameter = [$option, $htmlPath, $pdfPath];
         shell_exec(vsprintf($command, $parameter));
         $this->response->type('pdf');
         $this->response->file($pdfPath,
