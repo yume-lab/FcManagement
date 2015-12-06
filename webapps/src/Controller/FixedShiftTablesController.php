@@ -90,7 +90,7 @@ class FixedShiftTablesController extends AppController
         // HTMLからPDFを作成
         $command = WKHTML . '%s %s %s';
         $option = ' --page-size A4 --orientation landscape --encoding UTF-8';
-        $option .= ' -L 3 -R 3 --disable-javascript --print-media-type';
+        $option .= ' -L 3 -R 3 -B 3 -T 3 --disable-javascript --print-media-type';
         $parameter = [$option, $htmlPath, $pdfPath];
         shell_exec(vsprintf($command, $parameter));
         $this->response->type('pdf');
