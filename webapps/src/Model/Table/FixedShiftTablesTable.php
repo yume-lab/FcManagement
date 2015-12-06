@@ -119,4 +119,17 @@ class FixedShiftTablesTable extends Table
         $entity = $this->patchEntity($data, $record);
         return $this->save($entity);
     }
+
+    /**
+     * キーからデータを取得します.
+     * @param $hash string ハッシュキー
+     * @return mixed 検索結果
+     */
+    public function findByHash($hash)
+    {
+        return $this->find()
+            ->where(['hash' => $hash])
+            ->where(['is_deleted' => false])
+            ->first();
+    }
 }

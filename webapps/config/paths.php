@@ -94,3 +94,28 @@ define('CHARISMA_CSS', CHARISMA_ROOT.'/css');
 define('CHARISMA_JS', CHARISMA_ROOT.'/js');
 
 define('CHARISMA_BOWER', CHARISMA_ROOT.'/bower_components');
+
+/**
+ * binディレクトリへのパス
+ */
+define('BIN', ROOT . DS . 'bin' . DS);
+
+/**
+ * PDF置き場
+ */
+define('TMP_PDF', TMP . 'pdf' . DS);
+
+/**
+ * シフト表PDF関連置き場
+ */
+define('TMP_PDF_SHIFT', TMP_PDF . 'shift' . DS);
+
+/**
+ * phantomjsのパス
+ */
+define('PHANTOMJS', '/usr/local/bin/phantomjs');
+
+/**
+ * wkhtmltopdf
+ */
+define('WKHTML', '/usr/local/bin/wkhtmltopdf');
