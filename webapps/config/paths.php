@@ -87,13 +87,7 @@ define('CAKE', CORE_PATH . 'src' . DS);
 /**
  * Path to the Charisma template directory.
  */
-define('CHARISMA_ROOT', '/ch-assets');
-
-define('CHARISMA_CSS', CHARISMA_ROOT.'/css');
-
-define('CHARISMA_JS', CHARISMA_ROOT.'/js');
-
-define('CHARISMA_BOWER', CHARISMA_ROOT.'/bower_components');
+define('BOWER_PATH', '/bower_components');
 
 /**
  * binディレクトリへのパス
