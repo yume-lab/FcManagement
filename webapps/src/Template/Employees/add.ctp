@@ -72,15 +72,5 @@
     </div>
 </div>
 
-<script type="text/javascript">
-    $(function() {
-        /**
-         * タブ作動
-         */
-        $('#employeeTab a:first').tab('show');
-        $('#employeeTab a').click(function (e) {
-            e.preventDefault();
-            $(this).tab('show');
-        });
-    });
-</script>
+<?= $this->Html->script('Employees/edit.js'); ?>
+
