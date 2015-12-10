@@ -10,7 +10,7 @@ $(function () {
      */
     $(document).on('click', '.employee-row', function(e) {
         e.preventDefault();
-        $this = $(this);
+        var $this = $(this);
         $('#employee-name').html($this.find('.name').html()+'さん');
         $('#employee-id').val($this.data('id'));
 
