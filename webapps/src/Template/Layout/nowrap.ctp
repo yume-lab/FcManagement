@@ -38,6 +38,5 @@
     </div>
 
     <?= $this->element('Assets/footer') ?>
-    <?= $this->element('Script/Common/util') ?>
 </body>
 </html>

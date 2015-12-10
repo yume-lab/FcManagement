@@ -1,6 +1,5 @@
 <?php
 /**
- * Charismaのロード.
  * <body>タグ内で読み込むCSS, JSを記載します.
  */
 ?>
@@ -20,3 +19,4 @@
 <?= $this->Html->script('jquery.uploadify-3.1.min.js') ?>
 <?= $this->Html->script('jquery.history.js') ?>
 <?= $this->Html->script('charisma.js') ?>
+<?= $this->Html->script('app.js') ?>
