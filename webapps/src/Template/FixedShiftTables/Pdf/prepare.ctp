@@ -1,6 +1,6 @@
 <?php $this->assign('title', date('Y年m月', strtotime($data['target_ym'])) . 'シフト表' ); ?>
 
-<?= $this->element('Calendar/assets'); ?>
+<?= $this->element('Assets/calendar'); ?>
 <?= $this->Html->css('FixedShiftTables/prepare.css') ?>
 
 <div id="fix-shift-table"></div>

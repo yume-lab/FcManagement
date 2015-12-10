@@ -1,6 +1,6 @@
 <?php $this->assign('title', 'シフト作成'); ?>
 
-<?= $this->element('Calendar/assets'); ?>
+<?= $this->element('Assets/calendar'); ?>
 <?= $this->Html->css('ShiftTables/timeline.css') ?>
 <?= $this->Html->css('ShiftTables/edit.css') ?>
 <?= $this->element('Notice/show_top', ['message' => 'シフトを一時保存しました']); ?>
