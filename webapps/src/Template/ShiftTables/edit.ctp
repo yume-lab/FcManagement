@@ -1,6 +1,9 @@
 <?php $this->assign('title', 'シフト作成'); ?>
 
 <?= $this->element('Calendar/assets'); ?>
+<?= $this->Html->css('ShiftTables/timeline.css') ?>
+<?= $this->Html->css('ShiftTables/edit.css') ?>
+<?= $this->element('Notice/show_top', ['message' => 'シフトを一時保存しました']); ?>
 
 <?php
 // TODO: APIにする
@@ -16,15 +19,6 @@ foreach ($employees as $employee) {
 
 $resources = json_encode($resources);
 ?>
-
-<?php // 一時保存の完了通知用 ?>
-<?= $this->element('Notice/show_top', ['message' => 'シフトを一時保存しました']); ?>
-
-<style>
-    .fc-timelineMonth-view  .fc-time-area .fc-widget-header .fc-cell-text {
-        cursor: pointer;
-    }
-</style>
 
 <script>
 

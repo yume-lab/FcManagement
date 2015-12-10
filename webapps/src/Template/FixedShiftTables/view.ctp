@@ -1,6 +1,8 @@
 <?php $this->assign('title', date('Y年m月', strtotime($data['target_ym'])) . 'シフト表' ); ?>
 
 <?= $this->element('Calendar/assets'); ?>
+<?= $this->Html->css('ShiftTables/timeline.css') ?>
+<?= $this->Html->css('FixedShiftTables/view.css') ?>
 
 <?php
     $resources = [];
@@ -26,17 +28,6 @@
 
     $events = json_encode($events);
 ?>
-
-<style>
-    #calendar {
-        max-width: 1200px;
-        margin: 20px auto;
-    }
-    .fc-time-area col {
-        max-width: 2.2em;
-        min-width: 43px;
-    }
-</style>
 
 <script>
 
