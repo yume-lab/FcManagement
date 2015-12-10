@@ -1,21 +1,4 @@
-<style>
-    .editable-input {
-        display: none;
-    }
-    .editable-input input
-    {
-        height: 30px;
-        width: 4em;
-    }
-    .editable-input select
-    {
-        height: 30px;
-        width: 5em;
-    }
-    table th {
-        text-align: center;
-    }
-</style>
+<?= $this->Html->css('EmployeeTimeCards/table.css'); ?>
 
 <table class="table-bordered">
     <thead>
