@@ -1,0 +1,15 @@
+/** タイムカード入力画面CSS */
+
+#time-card-modal #clock {
+    text-align: center;
+}
+#clock-large {
+    height: 30px;
+}
+#employee-list .employee-row {
+    cursor: pointer;
+}
+#employee-list .employee-row:hover {
+    background-color: #f2dede;
+}
+

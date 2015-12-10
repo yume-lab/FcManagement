@@ -12,6 +12,7 @@ use Cake\ORM\TableRegistry;
  * @property \App\Model\Table\FixedShiftTablesTable.php $FixedShiftTables
  * @property \App\Model\Table\EmployeesTable $Employees
  * @property \App\Controller\Component\TimeCardComponent $TimeCard
+ * @property \App\Controller\Component\ShiftTableComponent $ShiftTable
  */
 class ShiftTablesController extends AppController
 {
@@ -25,7 +26,7 @@ class ShiftTablesController extends AppController
      * 使用コンポーネント
      * @var array
      */
-    public $components = ['TimeCard'];
+    public $components = ['TimeCard', 'ShiftTable'];
 
     /**
      * シフト編集画面
@@ -39,10 +40,6 @@ class ShiftTablesController extends AppController
         $interval = 15;
         $times = $this->TimeCard->buildTimes($store);
 
-        /** @var \App\Model\Table\EmployeesTable $Employees */
-        $Employees = TableRegistry::get('Employees');
-        $employees = $Employees->findByStoreId($store->id);
-
         $opened = date('H:i:s', strtotime($store->opened));
         $closed = date('H:i:s', strtotime($store->closed));
 
@@ -51,7 +48,9 @@ class ShiftTablesController extends AppController
         $setting = $StoreSettings->findByStoreId($store->id)->first();
         $break = empty($setting->rested_times) ? '[]' : $setting->rested_times;
 
-        $this->set(compact('opened', 'closed', 'interval', 'times', 'employees', 'break'));
+        $resources = $this->ShiftTable->buildResources($store->id);
+
+        $this->set(compact('opened', 'closed', 'interval', 'times', 'break', 'resources'));
         $this->set('_serialize', ['employees']);
     }
 
@@ -117,17 +116,6 @@ class ShiftTablesController extends AppController
         echo json_encode($response);
     }
 
-
-    /**
-     * TODO: 実装とフロントの修正
-     * API
-     * シフト表に表示する従業員を取得します.
-     */
-    public function getResources()
-    {
-
-    }
-
     /**
      * API
      * シフトの一時保存を行います.
@@ -175,5 +163,4 @@ class ShiftTablesController extends AppController
         }
         return $results;
     }
-
 }

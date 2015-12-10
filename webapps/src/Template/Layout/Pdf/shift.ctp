@@ -15,7 +15,7 @@
     </title>
     <?= $this->Html->meta('icon') ?>
 
-    <?= $this->element('Charisma/header') ?>
+    <?= $this->element('Assets/header') ?>
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
@@ -26,6 +26,6 @@
     <?= $this->fetch('content') ?>
 </div>
 
-<?= $this->element('Charisma/footer') ?>
+<?= $this->element('Assets/footer') ?>
 </body>
 </html>

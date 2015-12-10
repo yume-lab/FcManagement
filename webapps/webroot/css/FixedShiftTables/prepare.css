@@ -1,0 +1,29 @@
+/** 確定シフト PDF作成時の元HTML */
+
+body {
+    zoom:0.8;
+}
+body, html, #contents {
+    width: 96%;
+}
+.fc-timeline-event .fc-content {
+    white-space: pre-line;
+}
+div {
+    overflow: visible !important;
+}
+#fix-shift-table {
+}
+.fc-time-area col {
+    width: 1em !important;
+}
+
+.fc-rows td.fc-widget-content div,
+.fc-event-container {
+    height: 48px !important;
+}
+.fc-timeline-event,
+.fc-timeline-event .fc-time {
+    padding: 0;
+    border: none !important;
+}

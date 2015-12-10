@@ -1,22 +1,3 @@
-<style>
-    .editable-input {
-        display: none;
-    }
-    .editable-input input
-    {
-        height: 30px;
-        width: 4em;
-    }
-    .editable-input select
-    {
-        height: 30px;
-        width: 5em;
-    }
-    table th {
-        text-align: center;
-    }
-</style>
-
 <table class="table-bordered">
     <thead>
     <tr>

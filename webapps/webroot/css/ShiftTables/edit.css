@@ -1,0 +1,10 @@
+/** シフト編集 */
+
+.fc-timelineMonth-view  .fc-time-area .fc-widget-header .fc-cell-text {
+    cursor: pointer;
+}
+
+#calandar-wrapper .col-md-12 {
+    padding: 0.5em 0;
+}
+

@@ -12,9 +12,17 @@ use Cake\Network\Exception\NotFoundException;
  *
  * @property \App\Model\Table\FixedShiftTablesTable $FixedShiftTables
  * @property \App\Model\Table\EmployeesTable $Employees
+ * @property \App\Controller\Component\ShiftTableComponent $ShiftTable
  */
 class FixedShiftTablesController extends AppController
 {
+
+    /**
+     * 使用コンポーネント
+     * @var array
+     */
+    public $components = ['ShiftTable'];
+
 
     /**
      * 初期処理.
@@ -48,7 +56,6 @@ class FixedShiftTablesController extends AppController
 
     /**
      * シフト表表示.
-     * このアクションは未ログインでも見れる.
      *
      * @param string|null $hash シフト表のハッシュ
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
@@ -121,11 +128,27 @@ class FixedShiftTablesController extends AppController
             throw new NotFoundException();
         }
 
-        /** @var \App\Model\Table\EmployeesTable $Employees */
-        $Employees = TableRegistry::get('Employees');
-        $employees = $Employees->findByStoreId($data->store_id);
-        $this->set(compact('data', 'employees'));
+        $events = $this->buildEvents($data['body']);
+        $resources = $this->ShiftTable->buildResources($data->store_id);
+        $this->set(compact('data', 'events', 'resources'));
         $this->set('_serialize', ['data', 'employees']);
+    }
+
+    /**
+     * 表示するシフト情報を生成します.
+     * @param $body string JSON文字列
+     * @return string 整形済みのJSON文字列
+     */
+    private function buildEvents($body)
+    {
+        $events = [];
+        $shift = json_decode($body, true);
+        foreach ($shift as $s) {
+            unset($s['title']);
+            $s['resourceId'] = $s['employeeId'];
+            $events[] = $s;
+        }
+        return json_encode($events);
     }
 
 }

@@ -1,0 +1,18 @@
+/** ログイン中の店舗編集CSS */
+
+.form-control {
+    display: inline;
+    width: 20%;
+}
+.address-area {
+    display: table;
+    width: 100%;
+}
+.address-area .item {
+    display: table-cell;
+    padding-right: 0.5em;
+}
+.address-area .item input {
+    width: 100%;
+}
+

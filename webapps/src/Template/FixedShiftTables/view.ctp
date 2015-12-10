@@ -1,71 +1,13 @@
 <?php $this->assign('title', date('Y年m月', strtotime($data['target_ym'])) . 'シフト表' ); ?>
 
-<?= $this->element('Calendar/assets'); ?>
-
-<?php
-    $resources = [];
-    foreach ($employees as $employee) {
-        $tmp = [
-            'id' => $employee->id,
-            'title' => $employee->last_name,
-        ];
-        $resources[] = $tmp;
-        unset($tmp);
-    }
-
-    $resources = json_encode($resources);
-
-    $events = [];
-    $shift = json_decode($data['body']);
-    foreach ($shift as $s) {
-        $s = (array) $s;
-        $s['resourceId'] = $s['employeeId'];
-        unset($s['title']);
-        $events[] = $s;
-    }
-
-    $events = json_encode($events);
-?>
-
-<style>
-    #calendar {
-        max-width: 1200px;
-        margin: 20px auto;
-    }
-    .fc-time-area col {
-        max-width: 2.2em;
-        min-width: 43px;
-    }
-</style>
-
-<script>
-
-    $(function() {
-        $('#fix-shift-table').fullCalendar({
-            schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
-            now: '<?= date('Y-m-d', strtotime($data['target_ym'].'01')); ?>',
-            header: {
-                right: false
-            },
-            slotLabelFormat: {
-                month: [
-                    'D',
-                    'ddd'
-                ]
-            },
-            editable: false,
-            lang: 'ja',
-            timeFormat: 'H(:mm)',
-            defaultView: 'timelineMonth',
-            displayEventEnd: true,
-            resourceAreaWidth: '8%',
-            resourceLabelText: '従業員',
-            resources: <?= $resources ?>,
-            events: <?= $events ?>
-        });
-
-    });
-
-</script>
+<?= $this->element('Assets/calendar'); ?>
+<?= $this->Html->css('ShiftTables/timeline.css'); ?>
+<?= $this->Html->css('FixedShiftTables/view.css'); ?>
 
 <div id="fix-shift-table"></div>
+
+<input type="hidden" id="currentMonth" value="<?= date('Y-m-d', strtotime($data['target_ym'].'01')); ?>" />
+<input type="hidden" id="resources" value='<?= $resources ?>' />
+<input type="hidden" id="events" value='<?= $events ?>' />
+
+<?= $this->Html->script('FixedShiftTables/view.js'); ?>
