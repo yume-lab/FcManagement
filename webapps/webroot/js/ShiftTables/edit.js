@@ -2,7 +2,7 @@
  * シフト編集エリアのスクリプト
  */
 
-jQuery(document).ready(function($) {
+$(document).ready(function() {
     var $body = $('body');
 
     var MODE = {
@@ -30,7 +30,7 @@ jQuery(document).ready(function($) {
      * 従業員エリアのデータ
      */
     var resources = (function() {
-        return $('#resources').val();
+        return $.parseJSON($('#resources').val()) || [];
     })();
 
     /**
@@ -403,4 +403,4 @@ jQuery(document).ready(function($) {
         ],
         resources: resources
     });
-})(jQuery);
+});
