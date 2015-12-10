@@ -3,6 +3,7 @@
 <?= $this->element('Notice/show_top', ['message' => '勤怠データを更新しました。']); ?>
 
 <?= $this->Html->css('EmployeeTimeCards/index.css'); ?>
+<?= $this->Html->css('EmployeeTimeCards/table.css'); ?>
 
 <div class="row">
     <?php // 従業員エリア ?>

@@ -1,5 +1,3 @@
-<?= $this->Html->css('EmployeeTimeCards/table.css'); ?>
-
 <table class="table-bordered">
     <thead>
     <tr>
