@@ -5,7 +5,6 @@
 <?= $this->Html->css('ShiftTables/edit.css') ?>
 <?= $this->element('Notice/show_top', ['message' => 'シフトを一時保存しました']); ?>
 
-
 <div class="row">
     <div class="col-md-12">
         <div class="box-inner">
@@ -52,6 +51,6 @@
     <input id="fixed_shift" name="fixed_shift" type="hidden" value="" />
 </form>
 
-<?= $this->element('Popover/ShiftTables/input', ['employees' => $employees]); ?>
+<?= $this->element('Popover/ShiftTables/input', ['employees' => json_decode($resources, true)]); ?>
 
 <?= $this->Html->script('ShiftTables/edit.js') ?>

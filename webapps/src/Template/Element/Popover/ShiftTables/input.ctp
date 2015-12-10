@@ -12,8 +12,8 @@
         <h5>従業員</h5>
         <select id="employees" class="form-control popover-select" data-set-name="data-employeeId">
             <?php foreach ($employees as $employee): ?>
-                <option value="<?= $employee->id ?>">
-                    <?= h($employee->last_name) ?>
+                <option value="<?= $employee['id'] ?>">
+                    <?= h($employee['title']) ?>
                 </option>
             <?php endforeach; ?>
         </select>
