@@ -51,7 +51,9 @@ class ShiftTablesController extends AppController
         $setting = $StoreSettings->findByStoreId($store->id)->first();
         $break = empty($setting->rested_times) ? '[]' : $setting->rested_times;
 
-        $this->set(compact('opened', 'closed', 'interval', 'times', 'employees', 'break'));
+        $resources = $this->buildResources($employees);
+
+        $this->set(compact('opened', 'closed', 'interval', 'times', 'employees', 'break', 'resources'));
         $this->set('_serialize', ['employees']);
     }
 
@@ -117,17 +119,6 @@ class ShiftTablesController extends AppController
         echo json_encode($response);
     }
 
-
-    /**
-     * TODO: 実装とフロントの修正
-     * API
-     * シフト表に表示する従業員を取得します.
-     */
-    public function getResources()
-    {
-
-    }
-
     /**
      * API
      * シフトの一時保存を行います.
@@ -176,4 +167,20 @@ class ShiftTablesController extends AppController
         return $results;
     }
 
+    /**
+     * リソースエリアに表示する情報を生成します.
+     *
+     * @param $employees array 従業員情報
+     * @return string json文字列
+     */
+    private function buildResources($employees) {
+        $resources = [];
+        foreach ($employees as $employee) {
+            $resources[] = [
+                'id' => $employee->id,
+                'title' => $employee->last_name,
+            ];
+        }
+        return json_encode($resources);
+    }
 }

@@ -4,3 +4,7 @@
     cursor: pointer;
 }
 
+#calandar-wrapper .col-md-12 {
+    padding: 0.5em 0;
+}
+
