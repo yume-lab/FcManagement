@@ -129,7 +129,8 @@ class FixedShiftTablesController extends AppController
         }
 
         $events = $this->buildEvents($data['body']);
-        $this->set(compact('data', 'events'));
+        $resources = $this->ShiftTable->buildResources($data->store_id);
+        $this->set(compact('data', 'events', 'resources'));
         $this->set('_serialize', ['data', 'employees']);
     }
 
