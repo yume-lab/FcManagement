@@ -1,7 +1,7 @@
 /** 確定シフト PDF作成時の元HTML */
 
 body, html, #contents {
-    width: 100%;
+    width: 99%;
 }
 .fc-timeline-event .fc-content {
     white-space: pre-line;
