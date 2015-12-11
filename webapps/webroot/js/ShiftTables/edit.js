@@ -171,8 +171,8 @@ $(document).ready(function() {
             return (startYm === ym && ym === endYm);
         });
         var parameter = {
-            year: current.year(),
-            month: current.month() + 1,
+            year: current.format('YYYY'),
+            month: current.format('MM'),
             shift: events
         };
         showLoading();
@@ -233,8 +233,8 @@ $(document).ready(function() {
             return (startYm === ym && ym === endYm);
         });
         var data = {
-            year: current.year(),
-            month: current.month() + 1,
+            year: current.format('YYYY'),
+            month: current.format('MM'),
             shift: JSON.stringify(events)
         };
 
@@ -307,7 +307,7 @@ $(document).ready(function() {
         selectable: true,
         editable: true,
         timezone: 'Asia/Tokyo',
-        timeFormat: 'H(:mm)',
+        timeFormat: 'HH:mm',
         defaultView: 'timelineMonth',
         displayEventEnd: true,
         viewRender: function(view) {

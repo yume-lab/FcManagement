@@ -81,11 +81,16 @@ class FixedShiftTablesController extends AppController
 
         // 保存先ディレクトリ作成
         $structure = TMP_PDF_SHIFT . $hash . DS;
-        mkdir($structure, 0777, true);
+        if (!is_dir($structure)) {
+            mkdir($structure, 0777, true);
+        }
 
         // それぞれのパスを生成
         $htmlPath = $structure . $ym . '.html';
         $pdfPath = $structure . $ym . '.pdf';
+
+        $this->unlinkFile($htmlPath);
+        $this->unlinkFile($pdfPath);
 
         // 元になるHTML作成
         $script = BIN . 'OutHtml.js';
@@ -151,4 +156,14 @@ class FixedShiftTablesController extends AppController
         return json_encode($events);
     }
 
+    /**
+     * ファイルが存在していたら削除します.
+     *
+     * @param $path string 対象ファイルのパス
+     * @return bool 処理結果. 何もしなければfalseを返却.
+     */
+    private function unlinkFile($path)
+    {
+        return (file_exists($path)) ? unlink($path) : false;
+    }
 }

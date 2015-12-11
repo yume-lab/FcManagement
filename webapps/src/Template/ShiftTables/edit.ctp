@@ -16,8 +16,7 @@
                 <?= $this->Flash->render() ?>
                 <div class="col-md-12">
                     <div class="alert alert-info">
-                        「月合計時間」は、総労働 (実働時間)の順番で記載されています。<br/>
-                        例： 8 (7.5)
+                        「月合計時間」は、総労働 (実働時間)の順番で記載されています。 例: 8 (7.5)
                     </div>
                 </div>
 
