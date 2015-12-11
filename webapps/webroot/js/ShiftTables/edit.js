@@ -307,7 +307,7 @@ $(document).ready(function() {
         selectable: true,
         editable: true,
         timezone: 'Asia/Tokyo',
-        timeFormat: 'H(:mm)',
+        timeFormat: 'HH:mm',
         defaultView: 'timelineMonth',
         displayEventEnd: true,
         viewRender: function(view) {

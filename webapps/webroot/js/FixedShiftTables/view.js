@@ -31,7 +31,7 @@ $(function() {
         },
         editable: false,
         lang: 'ja',
-        timeFormat: 'H(:mm)',
+        timeFormat: 'HH:mm',
         defaultView: 'timelineMonth',
         displayEventEnd: true,
         resourceAreaWidth: '8em',
