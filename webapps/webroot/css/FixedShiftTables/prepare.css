@@ -1,10 +1,7 @@
 /** 確定シフト PDF作成時の元HTML */
 
-body {
-    zoom:0.8;
-}
 body, html, #contents {
-    width: 96%;
+    width: 100%;
 }
 .fc-timeline-event .fc-content {
     white-space: pre-line;
@@ -15,17 +12,22 @@ div {
 #fix-shift-table {
 }
 .fc-time-area col {
-    width: 1em !important;
+    min-width: 3em;
 }
-
+.fc-event {
+    line-height: 1;
+}
 .fc-rows td.fc-widget-content div,
+.fc-resource-area td.fc-widget-content div,
 .fc-event-container {
-    height: 48px !important;
+    height: 3.5em !important;
 }
 .fc-timeline-event,
 .fc-timeline-event .fc-time {
-    padding: 0;
     border: none !important;
+}
+.fc-timeline-event .fc-content {
+    padding: 2px;
 }
 
 .fc-unthemed .fc-divider,
