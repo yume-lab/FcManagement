@@ -89,6 +89,9 @@ class FixedShiftTablesController extends AppController
         $htmlPath = $structure . $ym . '.html';
         $pdfPath = $structure . $ym . '.pdf';
 
+        $this->unlinkFile($htmlPath);
+        $this->unlinkFile($pdfPath);
+
         // 元になるHTML作成
         $script = BIN . 'OutHtml.js';
         $command = PHANTOMJS . ' %s %s %s;';
@@ -153,4 +156,14 @@ class FixedShiftTablesController extends AppController
         return json_encode($events);
     }
 
+    /**
+     * ファイルが存在していたら削除します.
+     *
+     * @param $path string 対象ファイルのパス
+     * @return bool 処理結果. 何もしなければfalseを返却.
+     */
+    private function unlinkFile($path)
+    {
+        return (file_exists($path)) ? unlink($path) : false;
+    }
 }
