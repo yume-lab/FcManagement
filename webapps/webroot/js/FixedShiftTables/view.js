@@ -34,7 +34,7 @@ $(function() {
         timeFormat: 'H(:mm)',
         defaultView: 'timelineMonth',
         displayEventEnd: true,
-        resourceAreaWidth: '8%',
+        resourceAreaWidth: '8em',
         resourceLabelText: '従業員',
         resources: resources,
         events: events
