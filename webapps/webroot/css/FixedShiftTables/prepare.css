@@ -1,7 +1,7 @@
 /** 確定シフト PDF作成時の元HTML */
 
 body, html, #contents {
-    width: 99%;
+    width: 100%;
 }
 .fc-timeline-event .fc-content {
     white-space: pre-line;
@@ -10,6 +10,7 @@ div {
     overflow: visible !important;
 }
 #fix-shift-table {
+    min-width: 1425px;
 }
 .fc-time-area col {
     min-width: 3em;
