@@ -81,7 +81,9 @@ class FixedShiftTablesController extends AppController
 
         // 保存先ディレクトリ作成
         $structure = TMP_PDF_SHIFT . $hash . DS;
-        mkdir($structure, 0777, true);
+        if (!is_dir($structure)) {
+            mkdir($structure, 0777, true);
+        }
 
         // それぞれのパスを生成
         $htmlPath = $structure . $ym . '.html';
