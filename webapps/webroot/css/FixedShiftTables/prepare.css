@@ -10,7 +10,11 @@ div {
     overflow: visible !important;
 }
 #fix-shift-table {
+    /*
     min-width: 1425px;
+    */
+    /** 28日の月の幅に合わせる */
+    min-width: 1294px;
 }
 .fc-time-area col {
     min-width: 3em;

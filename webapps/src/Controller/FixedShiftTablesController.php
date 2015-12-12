@@ -85,26 +85,18 @@ class FixedShiftTablesController extends AppController
             mkdir($structure, 0777, true);
         }
 
-        // それぞれのパスを生成
-        $htmlPath = $structure . $ym . '.html';
         $pdfPath = $structure . $ym . '.pdf';
-
-        $this->unlinkFile($htmlPath);
         $this->unlinkFile($pdfPath);
 
-        // 元になるHTML作成
-        $script = BIN . 'OutHtml.js';
-        $command = PHANTOMJS . ' %s %s %s;';
-        $parameter = [$script, $this->request->host(), '/fixed/prepare/' . $hash];
-        $html = shell_exec(vsprintf($command, $parameter));
-        file_put_contents($htmlPath, $html);
+        $url = sprintf('%s/fixed/prepare/%s', $this->request->host(), $hash);
 
-        // HTMLからPDFを作成
+        // A3縦にして、全体が表示できるように
         $command = WKHTML . '%s %s %s';
-        $option = ' --page-size A4 --orientation landscape --encoding UTF-8';
-        $option .= ' -L 3 -R 3 -B 3 -T 3 --disable-javascript --print-media-type';
-        $parameter = [$option, $htmlPath, $pdfPath];
+        $option = ' --page-size A3 --encoding UTF-8 -L 3 -R 3 -B 3 -T 3 ';
+        $option .= ' --debug-javascript --javascript-delay 5000 --print-media-type';
+        $parameter = [$option, $url, $pdfPath];
         shell_exec(vsprintf($command, $parameter));
+
         $this->response->type('pdf');
         $this->response->file($pdfPath,
             array('download'=> true, 'name'=> $ym.'.pdf'));
