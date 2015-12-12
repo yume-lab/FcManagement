@@ -83,16 +83,19 @@ class FixedShiftTablesTable extends Table
     }
 
     /**
-     * 指定された年月のシフトを全て削除します.
+     * 同じ月で複数の確定シフトが出ないよう、
+     * 同年月のシフトを全て削除します.
      *
+     * @param $storeId int 店舗ID
      * @param $targetYm string 対象年月
      * @return \Cake\Database\StatementInterface
      */
-    public function removeAllByTargetYm($targetYm)
+    public function reset($storeId, $targetYm)
     {
         return $this->query()
             ->update()
             ->set(['is_deleted' => true])
+            ->where(['store_id' => $storeId])
             ->where(['target_ym' => $targetYm])
             ->execute();
     }
