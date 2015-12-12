@@ -69,7 +69,7 @@ class ShiftTablesController extends AppController
 
             /** @var \App\Model\Table\FixedShiftTablesTable $FixedShiftTables */
             $FixedShiftTables = TableRegistry::get('FixedShiftTables');
-            $FixedShiftTables->removeAllByTargetYm($targetYm);
+            $FixedShiftTables->reset($storeId, $targetYm);
 
             $body = $this->buildBody($shift);
             $result = $this->ShiftTables->patch($storeId, $targetYm, $body)
