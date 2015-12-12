@@ -1,11 +1,7 @@
 /** 確定シフト PDF作成時の元HTML */
 
 body, html, #contents {
-    /**
-     * この幅は、28日分のデータに合わせてあります.
-     * 28日以降に日付がある場合も、28日のセルにborderがうまく重なる大きさです.
-     */
-    min-width: 1294px;
+    width: 100%;
 }
 .fc-timeline-event .fc-content {
     white-space: pre-line;
@@ -14,7 +10,7 @@ div {
     overflow: visible !important;
 }
 #fix-shift-table {
-    width: 100%;
+    min-width: 1425px;
 }
 .fc-time-area col {
     min-width: 3em;
